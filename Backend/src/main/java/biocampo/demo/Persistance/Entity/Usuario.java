@@ -23,6 +23,7 @@ public class Usuario {
     private String apellido;
     private int edad;
     private String email;
+    private String contraseña;
     private String pais;
     private String telefono;
     private String direccion;
@@ -30,7 +31,7 @@ public class Usuario {
     private Rol rol;
     @OneToMany
     private List<Venta> compras;
-    enum Rol {
+    public enum Rol {
         ADMIN, USER
     }
 }
