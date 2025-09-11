@@ -1,5 +1,9 @@
 package biocampo.demo.Persistance.Entity;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,6 +23,8 @@ public class PostCosecha {
     private Long idPostCosecha;
     @OneToOne
     private Cosecha plantaCosechada;
+    @CreationTimestamp
+    private LocalDate fecha;
     private String limpieza;
     private String tratamiento;
 
