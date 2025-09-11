@@ -3,6 +3,8 @@ package biocampo.demo.Persistance.Entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +26,7 @@ public class Cosecha {
     private Long idCosecha;
     @ManyToOne
     private Planta planta;
+    @CreationTimestamp
     private LocalDate fechaCosecha;
     @Enumerated(EnumType.STRING)
     private Temporada temporada;

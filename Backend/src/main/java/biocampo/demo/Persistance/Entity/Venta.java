@@ -3,6 +3,8 @@ package biocampo.demo.Persistance.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class Venta {
     private Long idVenta;
     @ManyToOne
     private Usuario cliente;
+    @CreationTimestamp
     private LocalDateTime fechaVenta;
     @OneToMany
     private List<DetalleVenta> detalle;
