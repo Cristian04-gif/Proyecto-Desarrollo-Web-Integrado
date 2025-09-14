@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,9 @@ public class PostCosecha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPostCosecha;
+
     @OneToOne
+    @JoinColumn(name = "idCosecha")
     private Cosecha plantaCosechada;
     @CreationTimestamp
     private LocalDate fecha;

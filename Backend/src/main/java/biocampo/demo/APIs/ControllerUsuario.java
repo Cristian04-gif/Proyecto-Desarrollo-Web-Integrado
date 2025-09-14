@@ -47,14 +47,12 @@ public class ControllerUsuario {
 
     @PostMapping("/registrar")
     public ResponseEntity<Usuario> registrarUsuario(@RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido, @RequestParam("edad") int edad,
+            @RequestParam("apellido") String apellido,
             @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais,
-            @RequestParam("telefono") String telefono, @RequestParam("direccion") String direccion) {
+            @RequestParam("pais") String pais) {
 
         try {
-            Usuario user = servicesUsuario.guardarUsuario(nombre, apellido, edad, email, contra, pais, telefono,
-                    direccion);
+            Usuario user = servicesUsuario.guardarUsuario(nombre, apellido, email, contra, pais);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -64,14 +62,12 @@ public class ControllerUsuario {
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido, @RequestParam("edad") int edad,
+            @RequestParam("apellido") String apellido,
             @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais,
-            @RequestParam("telefono") String telefono, @RequestParam("direccion") String direccion) {
+            @RequestParam("pais") String pais) {
 
         try {
-            Usuario actualizar = servicesUsuario.actualizar(id, nombre, apellido, edad, email, contra, pais, telefono,
-                    direccion);
+            Usuario actualizar = servicesUsuario.actualizar(id, nombre, apellido, email, contra, pais);
             return ResponseEntity.ok(actualizar);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

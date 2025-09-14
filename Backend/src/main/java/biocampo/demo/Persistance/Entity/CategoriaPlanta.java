@@ -19,6 +19,6 @@ public class CategoriaPlanta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCateogriaPlanta;
     private String nombre;
-    @OneToMany
+    @OneToMany(mappedBy = "idPlanta")
     private List<Planta> planta;
 }

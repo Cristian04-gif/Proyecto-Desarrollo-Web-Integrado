@@ -1,7 +1,6 @@
 package biocampo.demo.Persistance.Entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -11,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,19 +22,15 @@ public class Usuario {
     private Long idUsuario;
     private String nombre;
     private String apellido;
-    private int edad;
     private String email;
     private String contraseña;
     private String pais;
-    private String telefono;
-    private String direccion;
     @CreationTimestamp
     private LocalDateTime fechaRegistro;
     @Enumerated(EnumType.STRING)
     private Rol rol;
-    @OneToMany
-    private List<Venta> compras;
+
     public enum Rol {
-        ADMIN, USER
+        ADMIN, CLIENTE, AGRONOMO, COMPRADOR, SUPERVISORES, ALMACEN, VENDEDOR
     }
 }

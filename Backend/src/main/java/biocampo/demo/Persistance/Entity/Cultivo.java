@@ -1,19 +1,20 @@
 package biocampo.demo.Persistance.Entity;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -29,7 +30,8 @@ public class Cultivo {
     private Long idCultivo;
     
     @ManyToOne
-    private Planta semilla;
+    @JoinColumn(name = "idPlanta")
+    private Planta planta;
     // 1 hectarea = 10 000 m2
     private int hectareas;
     private String fertilizante;
@@ -41,8 +43,11 @@ public class Cultivo {
     
     @Enumerated(EnumType.STRING)
     private Temporada temporada;
-    private Date fechaEstimadaCosecha;
+    private LocalDate fechaEstimadaCosecha;
 
-    @OneToMany
+    @OneToMany(mappedBy = "idPerdida")
     private List<Perdida> perdida;
+
+    @OneToMany(mappedBy = "cultivo", cascade = CascadeType.ALL)
+    private List<CultivoInsumo> insumo;
 }

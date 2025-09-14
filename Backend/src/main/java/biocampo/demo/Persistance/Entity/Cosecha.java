@@ -11,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -24,22 +25,28 @@ public class Cosecha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCosecha;
+
     @ManyToOne
+    @JoinColumn(name = "idPlanta")
     private Planta planta;
+
     @CreationTimestamp
     private LocalDate fechaCosecha;
+
     @Enumerated(EnumType.STRING)
     private Temporada temporada;
+
     @Enumerated(EnumType.STRING)
     private Recolector recolector;
-    @OneToMany
+    
+    @OneToMany(mappedBy = "idPerdida")
     private List<Perdida> idPerdida;
 
     enum Recolector {
         MAQUINARIA, MANUAL
     }
 
-    enum Temporada{
+    enum Temporada {
         PRIMAVERA, VERANO, OTONO, INVIERNO
     }
 }
