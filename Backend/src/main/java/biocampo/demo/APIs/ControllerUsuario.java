@@ -52,7 +52,7 @@ public class ControllerUsuario {
             @RequestParam("pais") String pais) {
 
         try {
-            Usuario user = servicesUsuario.guardarUsuario(nombre, apellido, email, contra, pais);
+            Usuario user = servicesUsuario.registrarUsuario(nombre, apellido, email, contra, pais);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

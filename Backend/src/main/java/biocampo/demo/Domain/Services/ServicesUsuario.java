@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import biocampo.demo.Domain.Repository.RepoEmpleado;
 import biocampo.demo.Domain.Repository.RepoUsuario;
+import biocampo.demo.Persistance.Entity.Empleado;
 import biocampo.demo.Persistance.Entity.Usuario;
 import biocampo.demo.Persistance.Entity.Usuario.Rol;
 
@@ -16,6 +18,9 @@ public class ServicesUsuario {
     @Autowired
     private RepoUsuario repoUsuario;
 
+    @Autowired
+    private RepoEmpleado repoEmpleado;
+
     public List<Usuario> listarTodo() {
         return repoUsuario.findAll();
     }
@@ -24,7 +29,7 @@ public class ServicesUsuario {
         return repoUsuario.findById(id);
     }
 
-    public Usuario guardarUsuario(String nombre, String apellido, String email, String contra, String pais) {
+    public Usuario registrarUsuario(String nombre, String apellido, String email, String contra, String pais) {
 
         Usuario user = new Usuario();
         user.setNombre(nombre);
@@ -33,13 +38,25 @@ public class ServicesUsuario {
         user.setContraseña(contra);
         user.setPais(pais);
 
-        String[] verificarCorreo = email.split("@");
-        for (String i : verificarCorreo) {
-            if (i != "utp.edu.pe") {
-                user.setRol(Rol.CLIENTE);
-            } else {
-                user.setRol(Rol.ADMIN);
+        if (email.toLowerCase().endsWith("@utp.edu.pe")) {
+            System.out.println("CORREO EMPRESARIAL EN SERVICESuSUARIO: "+email);
+            Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(email);
+            System.out.println("EMPLEADO: ");
+            if (existe.isPresent()) {
+                Empleado empleado = existe.get();
+                String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
+                System.out.println("cargo serviceUsuario: "+cargo);
+                for (Rol rol : Rol.values()) {
+                    if (rol.toString().equalsIgnoreCase(cargo)) {
+                        user.setRol(rol);
+                        break;
+                    }
+                }
+            }else{
+                System.out.println("NO SE ENCONTRO EL CORREO");
             }
+        } else {
+            user.setRol(Rol.CLIENTE);
         }
         return repoUsuario.save(user);
     }
@@ -54,11 +71,44 @@ public class ServicesUsuario {
             if (apellido != null)
                 actualizar.setApellido(apellido);
             if (email != null)
-                actualizar.setEmail(email);
+                if (email.toLowerCase().endsWith("@utp.edu.pe")) {
+                    Optional<Empleado> existeEmpleado = repoEmpleado.findByEmailEmpresarial(email);
+                    if (existe.isPresent()) {
+                        Empleado empleado = existeEmpleado.get();
+                        String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
+                        for (Rol rol : Rol.values()) {
+                            if (rol.toString().equalsIgnoreCase(cargo)) {
+                                actualizar.setRol(rol);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    actualizar.setRol(Rol.CLIENTE);
+                }
+            actualizar.setEmail(email);
             if (contra != null)
                 actualizar.setContraseña(contra);
             if (pais != null)
                 actualizar.setPais(pais);
+            /*
+             * if (rol != null) {
+             * Optional<Empleado> existeEmpleado =
+             * repoEmpleado.findByEmailEmpresarial(email);
+             * if (existe.isPresent()) {
+             * Empleado empleado = existeEmpleado.get();
+             * String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
+             * for (Rol rol2 : Rol.values()) {
+             * if (rol2.toString().equalsIgnoreCase(cargo)) {
+             * actualizar.setRol(rol2);
+             * break;
+             * }
+             * }
+             * } else {
+             * actualizar.setRol(Rol.CLIENTE);
+             * }
+             * }
+             */
             return repoUsuario.save(actualizar);
         } else {
             return null;
@@ -66,7 +116,7 @@ public class ServicesUsuario {
 
     }
 
-    public void eliminar(Long id){
+    public void eliminar(Long id) {
         repoUsuario.deleteById(id);
     }
 }
