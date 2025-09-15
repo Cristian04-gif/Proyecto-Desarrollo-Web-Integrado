@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -41,6 +42,9 @@ public class Cosecha {
     
     @OneToMany(mappedBy = "idPerdida")
     private List<Perdida> idPerdida;
+
+    @ManyToMany(mappedBy = "cosecha")
+    private List<Empleado> empleados;
 
     enum Recolector {
         MAQUINARIA, MANUAL

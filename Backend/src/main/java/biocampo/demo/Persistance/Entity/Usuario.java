@@ -31,6 +31,6 @@ public class Usuario {
     private Rol rol;
 
     public enum Rol {
-        ADMIN, CLIENTE, AGRONOMO, COMPRADOR, SUPERVISORES, ALMACEN, VENDEDOR
+        ADMIN, CLIENTE, AGRONOMO, COMPRADOR, SUPERVISOR, ALMACEN, VENDEDOR
     }
 }
