@@ -39,7 +39,7 @@ public class ServicesPlanta {
         if (categoriaExiste.isPresent()) {
             nueva.setCategoria(categoria);
         }
-        ;
+        
         if (stock != 0) {
             nueva.setDisponible(true);
         } else {
@@ -60,6 +60,7 @@ public class ServicesPlanta {
             if (stock >= 0)
                 actualizar.setStock(stock);
             if (categoria != null) {
+                
                 Optional<CategoriaPlanta> categoriaExiste = repoCategoriaPlanta
                         .findById(categoria.getIdCateogriaPlanta());
 

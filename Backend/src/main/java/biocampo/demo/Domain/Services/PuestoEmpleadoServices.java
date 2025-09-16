@@ -30,7 +30,9 @@ public class PuestoEmpleadoServices {
     }
 
     public PuestoEmpleado actualizar(Long id, String nombre) {
+
         Optional<PuestoEmpleado> puesto = puestoEmpleado.findById(id);
+        
         if (puesto.isPresent()) {
             PuestoEmpleado actualizar = puesto.get();
             actualizar.setNombrePuesto(nombre);

@@ -39,19 +39,19 @@ public class ServicesUsuario {
         user.setPais(pais);
 
         if (email.toLowerCase().endsWith("@utp.edu.pe")) {
-            System.out.println("CORREO EMPRESARIAL EN SERVICESuSUARIO: "+email);
+            
             Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(email);
-            System.out.println("EMPLEADO: ");
+            
             if (existe.isPresent()) {
                 Empleado empleado = existe.get();
                 String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-                System.out.println("cargo serviceUsuario: "+cargo);
                 for (Rol rol : Rol.values()) {
                     if (rol.toString().equalsIgnoreCase(cargo)) {
                         user.setRol(rol);
                         break;
                     }
                 }
+
             }else{
                 System.out.println("NO SE ENCONTRO EL CORREO");
             }
@@ -64,16 +64,21 @@ public class ServicesUsuario {
     public Usuario actualizar(Long id, String nombre, String apellido, String email, String contra, String pais) {
 
         Optional<Usuario> existe = repoUsuario.findById(id);
+
         if (existe.isPresent()) {
+
             Usuario actualizar = existe.get();
             if (nombre != null)
                 actualizar.setNombre(nombre);
             if (apellido != null)
                 actualizar.setApellido(apellido);
             if (email != null)
+
                 if (email.toLowerCase().endsWith("@utp.edu.pe")) {
+                    
                     Optional<Empleado> existeEmpleado = repoEmpleado.findByEmailEmpresarial(email);
                     if (existe.isPresent()) {
+                        
                         Empleado empleado = existeEmpleado.get();
                         String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
                         for (Rol rol : Rol.values()) {
@@ -91,24 +96,7 @@ public class ServicesUsuario {
                 actualizar.setContraseña(contra);
             if (pais != null)
                 actualizar.setPais(pais);
-            /*
-             * if (rol != null) {
-             * Optional<Empleado> existeEmpleado =
-             * repoEmpleado.findByEmailEmpresarial(email);
-             * if (existe.isPresent()) {
-             * Empleado empleado = existeEmpleado.get();
-             * String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-             * for (Rol rol2 : Rol.values()) {
-             * if (rol2.toString().equalsIgnoreCase(cargo)) {
-             * actualizar.setRol(rol2);
-             * break;
-             * }
-             * }
-             * } else {
-             * actualizar.setRol(Rol.CLIENTE);
-             * }
-             * }
-             */
+            
             return repoUsuario.save(actualizar);
         } else {
             return null;

@@ -40,7 +40,9 @@ public class EmpleadoServices {
         String correoEmpresarial = "E" + dni + "@utp.edu.pe";
 
         Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(puesto.getIdPuesto());
+        
         if (existePuesto.isPresent()) {
+
             Empleado nuevo = Empleado.builder()
                     .nombres(nombres)
                     .apellidos(apellidos)
@@ -56,7 +58,7 @@ public class EmpleadoServices {
                     .build();
 
             repoEmpleado.save(nuevo);
-            System.out.println("cargo: " + nuevo.getPuesto().getNombrePuesto());
+
             String cargo = nuevo.getPuesto().getNombrePuesto().toUpperCase();
             for (Rol rol : Rol.values()) {
 
@@ -65,6 +67,7 @@ public class EmpleadoServices {
                     servicesUsuario.registrarUsuario(nombres, apellidos, correoEmpresarial, "123", pais);
                     break;
                 }
+
             }
             return nuevo;
 
@@ -90,27 +93,27 @@ public class EmpleadoServices {
             actualizar.setDni(dni);
             actualizar.setPais(pais);
             actualizar.setDireccion(direccion);
+            actualizar.setSalario(salario);
 
             Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(puesto.getIdPuesto());
             if (existePuesto.isPresent()) {
+
                 actualizar.setPuesto(puesto);
-                String cargo = puesto.getNombrePuesto().toUpperCase();
-                System.out.println("cargo: " + cargo);
-                System.out.println("CORREO EMPRESARIAL: "+actualizar.getEmailEmpresarial());
+                repoEmpleado.save(actualizar);
+
+                String cargo = actualizar.getPuesto().getNombrePuesto().toUpperCase();
                 for (Rol rol : Rol.values()) {
-                    System.out.println("ROL: " + rol);
                     if (rol.toString().equalsIgnoreCase(cargo)) {
-                        //servicesUsuario.actualizar(id, nombres, apellidos, actualizar.getEmailEmpresarial(), cargo, pais);
-                        servicesUsuario.registrarUsuario(nombres, apellidos, actualizar.getEmailEmpresarial(), cargo, pais);
+                        servicesUsuario.registrarUsuario(nombres, apellidos, actualizar.getEmailEmpresarial(), "321",
+                                pais);
                         break;
                     } else {
-
                         servicesUsuario.eliminar(actualizar.getIdEmpleado());
-                    } 
+                    }
                 }
             }
-            actualizar.setSalario(salario);
-            return repoEmpleado.save(actualizar);
+
+            return actualizar;
         } else {
             return null;
         }
@@ -118,5 +121,6 @@ public class EmpleadoServices {
 
     public void eliminarEmpleado(Long id) {
         repoEmpleado.deleteById(id);
+        servicesUsuario.eliminar(id);
     }
 }

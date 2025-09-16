@@ -32,15 +32,18 @@ public class ServicesCategoriaPlanta {
     }
 
     public CategoriaPlanta actualizar(Long id, String nombre) {
+
         Optional<CategoriaPlanta> existe = repoCategoriaPlanta.findById(id);
 
         if (existe.isPresent()) {
-            CategoriaPlanta actualizar = existe.get();
 
+            CategoriaPlanta actualizar = existe.get();
             if (nombre != null)
                 actualizar.setNombre(nombre);
             return repoCategoriaPlanta.save(actualizar);
+
         } else {
+            
             CategoriaPlanta nueva = new CategoriaPlanta();
             nueva.setNombre(nombre);
             return repoCategoriaPlanta.save(nueva);

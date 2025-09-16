@@ -20,6 +20,7 @@ public class ServicesImagenes {
     }
 
     public Imagen subirImagen(String url, TipoEntidad tipo, Long idReferencia) {
+        
         Imagen nueva = Imagen.builder()
                 .url(url)
                 .tipoEntidad(tipo)
