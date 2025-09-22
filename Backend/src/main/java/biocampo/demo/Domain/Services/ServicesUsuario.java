@@ -39,9 +39,9 @@ public class ServicesUsuario {
         user.setPais(pais);
 
         if (email.toLowerCase().endsWith("@utp.edu.pe")) {
-            
+
             Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(email);
-            
+
             if (existe.isPresent()) {
                 Empleado empleado = existe.get();
                 String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
@@ -52,7 +52,7 @@ public class ServicesUsuario {
                     }
                 }
 
-            }else{
+            } else {
                 System.out.println("NO SE ENCONTRO EL CORREO");
             }
         } else {
@@ -75,10 +75,10 @@ public class ServicesUsuario {
             if (email != null)
 
                 if (email.toLowerCase().endsWith("@utp.edu.pe")) {
-                    
+
                     Optional<Empleado> existeEmpleado = repoEmpleado.findByEmailEmpresarial(email);
                     if (existe.isPresent()) {
-                        
+
                         Empleado empleado = existeEmpleado.get();
                         String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
                         for (Rol rol : Rol.values()) {
@@ -96,7 +96,7 @@ public class ServicesUsuario {
                 actualizar.setContraseña(contra);
             if (pais != null)
                 actualizar.setPais(pais);
-            
+
             return repoUsuario.save(actualizar);
         } else {
             return null;

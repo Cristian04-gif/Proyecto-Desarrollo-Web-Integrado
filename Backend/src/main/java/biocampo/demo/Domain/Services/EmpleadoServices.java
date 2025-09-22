@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import biocampo.demo.Domain.DTO.AutController.AuthServices;
+import biocampo.demo.Domain.DTO.AutController.RegisterRequest;
 import biocampo.demo.Domain.Repository.RepoEmpleado;
 import biocampo.demo.Domain.Repository.RepoPuestoEmpleado;
 import biocampo.demo.Persistance.Entity.Empleado;
@@ -25,6 +27,9 @@ public class EmpleadoServices {
     @Autowired
     private ServicesUsuario servicesUsuario;
 
+    @Autowired
+    private AuthServices authServices;
+
     public List<Empleado> listarTodo() {
         return repoEmpleado.findAll();
     }
@@ -40,7 +45,7 @@ public class EmpleadoServices {
         String correoEmpresarial = "E" + dni + "@utp.edu.pe";
 
         Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(puesto.getIdPuesto());
-        
+
         if (existePuesto.isPresent()) {
 
             Empleado nuevo = Empleado.builder()
@@ -64,7 +69,15 @@ public class EmpleadoServices {
 
                 if (rol.toString().equalsIgnoreCase(cargo)) {
                     System.out.println("rol: " + rol.toString());
-                    servicesUsuario.registrarUsuario(nombres, apellidos, correoEmpresarial, "123", pais);
+                    // servicesUsuario.registrarUsuario(nombres, apellidos, correoEmpresarial,
+                    // "123", pais);
+                    RegisterRequest registerRequest = RegisterRequest.builder()
+                            .nombre(nombres)
+                            .apellido(apellidos)
+                            .email(correoEmpresarial)
+                            .contraseña("123")
+                            .pais(pais).build();
+                    authServices.register(registerRequest);
                     break;
                 }
 
