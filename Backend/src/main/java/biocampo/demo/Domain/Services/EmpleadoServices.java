@@ -69,8 +69,7 @@ public class EmpleadoServices {
 
                 if (rol.toString().equalsIgnoreCase(cargo)) {
                     System.out.println("rol: " + rol.toString());
-                    // servicesUsuario.registrarUsuario(nombres, apellidos, correoEmpresarial,
-                    // "123", pais);
+                    
                     RegisterRequest registerRequest = RegisterRequest.builder()
                             .nombre(nombres)
                             .apellido(apellidos)
