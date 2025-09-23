@@ -33,8 +33,8 @@ public class AuthServices {
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails user = repoUsuario.findByNombre(request.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        UserDetails user = repoUsuario.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         String token = jwtServices.getToken(user);
         return AuthResponse.builder().token(token).build();
     }

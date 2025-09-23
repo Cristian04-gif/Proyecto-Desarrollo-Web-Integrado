@@ -10,5 +10,6 @@ import biocampo.demo.Persistance.Entity.Usuario;
 
 @Repository
 public interface RepoUsuario extends JpaRepository<Usuario, Long>{
-    Optional<Usuario> findByNombre(String nombre);
+    //Optional<Usuario> findByNombre(String nombre);
+    Optional<Usuario> findByEmail(String email);
 }
