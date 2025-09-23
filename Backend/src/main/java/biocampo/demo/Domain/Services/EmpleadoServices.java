@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Services;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import biocampo.demo.Domain.Repository.RepoEmpleado;
 import biocampo.demo.Domain.Repository.RepoPuestoEmpleado;
 import biocampo.demo.Persistance.Entity.Empleado;
 import biocampo.demo.Persistance.Entity.PuestoEmpleado;
+import biocampo.demo.Persistance.Entity.Usuario;
 import biocampo.demo.Persistance.Entity.Usuario.Rol;
 
 @Service
@@ -33,43 +33,31 @@ public class EmpleadoServices {
         return repoEmpleado.findById(id);
     }
 
-    public Empleado registrarEmpleado(String nombres, String apellidos, int edad, String telefono,
-            String emailPersonal, String dni, String pais, String direccion, PuestoEmpleado puesto,
-            BigDecimal salario) {
+    public Empleado registrarEmpleado(Empleado empleado) {
+        Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
 
-        String correoEmpresarial = "E" + dni + "@utp.edu.pe";
-
-        Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(puesto.getIdPuesto());
-        
         if (existePuesto.isPresent()) {
 
-            Empleado nuevo = Empleado.builder()
-                    .nombres(nombres)
-                    .apellidos(apellidos)
-                    .edad(edad)
-                    .telefono(telefono)
-                    .emailPersonal(emailPersonal)
-                    .emailEmpresarial(correoEmpresarial)
-                    .dni(dni)
-                    .pais(pais)
-                    .direccion(direccion)
-                    .puesto(puesto)
-                    .salario(salario)
-                    .build();
+            repoEmpleado.save(empleado);
 
-            repoEmpleado.save(nuevo);
-
-            String cargo = nuevo.getPuesto().getNombrePuesto().toUpperCase();
+            PuestoEmpleado cargoEmpleado = existePuesto.get();
             for (Rol rol : Rol.values()) {
 
-                if (rol.toString().equalsIgnoreCase(cargo)) {
-                    System.out.println("rol: " + rol.toString());
-                    servicesUsuario.registrarUsuario(nombres, apellidos, correoEmpresarial, "123", pais);
+                if (rol.toString().equalsIgnoreCase(cargoEmpleado.getNombrePuesto())) {
+                    Usuario user = Usuario.builder()
+                            .nombre(empleado.getNombres())
+                            .apellido(empleado.getApellidos())
+                            .email(empleado.getEmailEmpresarial())
+                            .contraseña("123")
+                            .pais(empleado.getPais())
+                            .rol(rol)
+                            .build();
+                    servicesUsuario.registrarUsuario(user);
                     break;
                 }
 
             }
-            return nuevo;
+            return empleado;
 
         } else {
             return null;
@@ -77,40 +65,51 @@ public class EmpleadoServices {
 
     }
 
-    public Empleado actualizarEmpleado(Long id, String nombres, String apellidos, int edad, String telefono,
-            String emailPersonal, String dni, String pais, String direccion, PuestoEmpleado puesto,
-            BigDecimal salario) {
+    
+    public Empleado actualizarEmpleado(Long id, Empleado empleado) {
 
         Optional<Empleado> existe = repoEmpleado.findById(id);
+        System.out.println("Si existe el empleado");
 
         if (existe.isPresent()) {
             Empleado actualizar = existe.get();
-            actualizar.setNombres(nombres);
-            actualizar.setApellidos(apellidos);
-            actualizar.setEdad(edad);
-            actualizar.setTelefono(telefono);
-            actualizar.setEmailPersonal(emailPersonal);
-            actualizar.setDni(dni);
-            actualizar.setPais(pais);
-            actualizar.setDireccion(direccion);
-            actualizar.setSalario(salario);
+            actualizar.setNombres(empleado.getNombres());
+            actualizar.setApellidos(empleado.getApellidos());
+            actualizar.setEdad(empleado.getEdad());
+            actualizar.setTelefono(empleado.getTelefono());
+            actualizar.setEmailPersonal(empleado.getEmailPersonal());
+            actualizar.setDni(empleado.getDni());
+            actualizar.setPais(empleado.getPais());
+            actualizar.setDireccion(empleado.getDireccion());
+            actualizar.setSalario(empleado.getSalario());
 
-            Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(puesto.getIdPuesto());
+            Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
+            
             if (existePuesto.isPresent()) {
-
+                PuestoEmpleado puesto = existePuesto.get();
                 actualizar.setPuesto(puesto);
-                repoEmpleado.save(actualizar);
 
-                String cargo = actualizar.getPuesto().getNombrePuesto().toUpperCase();
-                for (Rol rol : Rol.values()) {
-                    if (rol.toString().equalsIgnoreCase(cargo)) {
-                        servicesUsuario.registrarUsuario(nombres, apellidos, actualizar.getEmailEmpresarial(), "321",
-                                pais);
-                        break;
-                    } else {
-                        servicesUsuario.eliminar(actualizar.getIdEmpleado());
+                Empleado empleadoActualizado = repoEmpleado.save(actualizar);
+                if (servicesUsuario.buscarUsuarioEmail(empleadoActualizado.getEmailEmpresarial()).isPresent()) {
+                    System.out.println("El usuario ya existe");
+                } else {
+                    for (Rol rol : Rol.values()) {
+
+                        if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                            Usuario user = Usuario.builder()
+                                    .nombre(empleado.getNombres())
+                                    .apellido(empleado.getApellidos())
+                                    .email(empleado.getEmailEmpresarial())
+                                    .contraseña("123")
+                                    .pais(empleado.getPais())
+                                    .rol(rol)
+                                    .build();
+                            servicesUsuario.registrarUsuario(user);
+                            break;
+                        }
                     }
                 }
+
             }
 
             return actualizar;

@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -46,13 +46,10 @@ public class ControllerUsuario {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Usuario> registrarUsuario(@RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido,
-            @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais) {
+    public ResponseEntity<Usuario> registrarUsuario(@RequestBody Usuario usuario) {
 
         try {
-            Usuario user = servicesUsuario.registrarUsuario(nombre, apellido, email, contra, pais);
+            Usuario user = servicesUsuario.registrarUsuario(usuario);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,13 +58,10 @@ public class ControllerUsuario {
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido,
-            @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais) {
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
 
         try {
-            Usuario actualizar = servicesUsuario.actualizar(id, nombre, apellido, email, contra, pais);
+            Usuario actualizar = servicesUsuario.actualizar(id, usuario);
             return ResponseEntity.ok(actualizar);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

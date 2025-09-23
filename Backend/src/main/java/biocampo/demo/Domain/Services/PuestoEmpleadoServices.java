@@ -23,13 +23,28 @@ public class PuestoEmpleadoServices {
         return puestoEmpleado.findById(id);
     }
 
-    public PuestoEmpleado registrar(String nombre) {
+    /*public PuestoEmpleado registrar(String nombre) {
         PuestoEmpleado puesto = PuestoEmpleado.builder()
                 .nombrePuesto(nombre).build();
         return puestoEmpleado.save(puesto);
+    }*/
+    public PuestoEmpleado registrar(PuestoEmpleado puesto) {
+        return puestoEmpleado.save(puesto);
     }
 
-    public PuestoEmpleado actualizar(Long id, String nombre) {
+    public PuestoEmpleado actualizar(Long id, PuestoEmpleado puesto) {
+
+        Optional<PuestoEmpleado> existe = puestoEmpleado.findById(id);
+
+        if (existe.isPresent()) {
+            PuestoEmpleado actualizar = existe.get();
+            actualizar.setNombrePuesto(puesto.getNombrePuesto());
+            return puestoEmpleado.save(actualizar);
+        } else {
+            return null;
+        }
+    }
+    /*public PuestoEmpleado actualizar(Long id, String nombre) {
 
         Optional<PuestoEmpleado> puesto = puestoEmpleado.findById(id);
         
@@ -40,7 +55,7 @@ public class PuestoEmpleadoServices {
         } else {
             return null;
         }
-    }
+    }*/
 
     public void eliminar(Long id) {
         puestoEmpleado.deleteById(id);

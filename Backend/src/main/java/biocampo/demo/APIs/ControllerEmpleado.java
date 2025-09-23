@@ -1,6 +1,5 @@
 package biocampo.demo.APIs;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import biocampo.demo.Domain.Services.EmpleadoServices;
 import biocampo.demo.Persistance.Entity.Empleado;
-import biocampo.demo.Persistance.Entity.PuestoEmpleado;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/empleados")
@@ -42,35 +41,28 @@ public class ControllerEmpleado {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    
     @PostMapping("/registrar")
-    public ResponseEntity<Empleado> registrar(@RequestParam("nombres") String nombres,
-            @RequestParam("apellidos") String apellidos, @RequestParam("edad") int edad,
-            @RequestParam("telefono") String telefono, @RequestParam("emailPersonal") String emailPersonal,
-            @RequestParam("dni") String dni, @RequestParam("pais") String pais,
-            @RequestParam("direccion") String direccion, @RequestParam("puesto") PuestoEmpleado puesto,
-            @RequestParam("salario") BigDecimal salario) {
-
+    public ResponseEntity<Empleado> registrar(@RequestBody Empleado empleado) {
+        String correoEmpresarial = "E" + empleado.getDni() + "@utp.edu.pe";
+        empleado.setEmailEmpresarial(correoEmpresarial);
         try {
-            Empleado nuevo = empleadoServices.registrarEmpleado(nombres, apellidos, edad, telefono, emailPersonal, dni,
-                    pais, direccion, puesto, salario);
+            System.out.println(empleado.getPuesto().getNombrePuesto());
+            System.out.println(empleado.getEmailEmpresarial());
+            Empleado nuevo = empleadoServices.registrarEmpleado(empleado);
+            
             return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 
-    @PutMapping("actualizar/{id}")
-    public ResponseEntity<Empleado> actualizar(@PathVariable Long id, @RequestParam("nombres") String nombres,
-            @RequestParam("apellidos") String apellidos, @RequestParam("edad") int edad,
-            @RequestParam("telefono") String telefono, @RequestParam("emailPersonal") String emailPersonal,
-            @RequestParam("dni") String dni, @RequestParam("pais") String pais,
-            @RequestParam("direccion") String direccion, @RequestParam("puesto") PuestoEmpleado puesto,
-            @RequestParam("salario") BigDecimal salario) {
-
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<Empleado> actualizar(@PathVariable Long id, @RequestBody Empleado empleado) {
         try {
-            Empleado empleado = empleadoServices.actualizarEmpleado(id, nombres, apellidos, edad, telefono,
-                    emailPersonal, dni, pais, direccion, puesto, salario);
-            return new ResponseEntity<>(empleado, HttpStatus.ACCEPTED);
+            Empleado actualizar = empleadoServices.actualizarEmpleado(id, empleado);
+            return new ResponseEntity<>(actualizar, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

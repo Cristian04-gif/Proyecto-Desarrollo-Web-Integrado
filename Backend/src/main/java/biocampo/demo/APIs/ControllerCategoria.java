@@ -15,9 +15,9 @@ import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -46,10 +46,10 @@ public class ControllerCategoria {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<CategoriaPlanta> registrarCategoria(@RequestParam("nombre") String nombre) {
+    public ResponseEntity<CategoriaPlanta> registrarCategoria(@RequestBody CategoriaPlanta categoria) {
         try {
-            CategoriaPlanta categoria = categoriaPlanta.registrar(nombre);
-            return new ResponseEntity<>(categoria, HttpStatus.CREATED);
+            CategoriaPlanta nueva = categoriaPlanta.registrar(categoria.getNombre());
+            return new ResponseEntity<>(nueva, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -57,9 +57,9 @@ public class ControllerCategoria {
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<CategoriaPlanta> actualizarCategoria(@PathVariable Long id,
-            @RequestParam("nombre") String nombre) {
+            @RequestBody CategoriaPlanta categoria) {
         try {
-            CategoriaPlanta actualizar = categoriaPlanta.actualizar(id, nombre);
+            CategoriaPlanta actualizar = categoriaPlanta.actualizar(id, categoria.getNombre());
             return ResponseEntity.ok(actualizar);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

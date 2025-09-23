@@ -19,7 +19,7 @@ public class ServicesImagenes {
         return repoImagenes.findAll();
     }
 
-    public Imagen subirImagen(String url, TipoEntidad tipo, Long idReferencia) {
+    /*public Imagen subirImagen(String url, TipoEntidad tipo, Long idReferencia) {
         
         Imagen nueva = Imagen.builder()
                 .url(url)
@@ -27,6 +27,9 @@ public class ServicesImagenes {
                 .idReferencia(idReferencia)
                 .build();
         return repoImagenes.save(nueva);
+    }*/
+    public Imagen subirImagen(Imagen imagen) {
+        return repoImagenes.save(imagen);
     }
 
     public List<Imagen> obtenerImgRelacionado(TipoEntidad tipo, Long id) {

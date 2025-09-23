@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,7 +43,7 @@ public class Empleado {
 
     @ManyToOne
     @JoinColumn(name = "idPuesto")
-    @JsonManagedReference
+    @JsonBackReference
     private PuestoEmpleado puesto;
 
     private BigDecimal salario;
