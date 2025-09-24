@@ -33,11 +33,12 @@ public class ServicesUsuario {
     public Optional<Usuario> buscarUsuario(Long id) {
         return repoUsuario.findById(id);
     }
+
     public Optional<Usuario> buscarUsuarioEmail(String email) {
         return repoUsuario.findByEmail(email);
     }
 
-    public Usuario registrarUsuario(Usuario usuario) {
+    /*public Usuario registrarUsuario(Usuario usuario) {
 
         if (usuario.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
 
@@ -56,16 +57,6 @@ public class ServicesUsuario {
                         }
                     }
                 }
-                /*
-                 * String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-                 * 
-                 * for (Rol rol : Rol.values()) {
-                 * if (rol.toString().equalsIgnoreCase(cargo)) {
-                 * usuario.setRol(rol);
-                 * break;
-                 * }
-                 * }
-                 */
 
             } else {
                 System.out.println("NO SE ENCONTRO EL CORREO");
@@ -75,117 +66,50 @@ public class ServicesUsuario {
         }
         return repoUsuario.save(usuario);
     }
-    /*
-     * public Usuario registrarUsuario(String nombre, String apellido, String email,
-     * String contra, String pais) {
-     * 
-     * Usuario user = new Usuario();
-     * user.setNombre(nombre);
-     * user.setApellido(apellido);
-     * user.setEmail(email);
-     * user.setContraseña(contra);
-     * user.setPais(pais);
-     * 
-     * if (email.toLowerCase().endsWith("@utp.edu.pe")) {
-     * 
-     * Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(email);
-     * 
-     * if (existe.isPresent()) {
-     * Empleado empleado = existe.get();
-     * String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-     * for (Rol rol : Rol.values()) {
-     * if (rol.toString().equalsIgnoreCase(cargo)) {
-     * user.setRol(rol);
-     * break;
-     * }
-     * }
-     * 
-     * }else{
-     * System.out.println("NO SE ENCONTRO EL CORREO");
-     * }
-     * } else {
-     * user.setRol(Rol.CLIENTE);
-     * }
-     * return repoUsuario.save(user);
-     * }
-     */
-
-    /*
-     * public Usuario actualizar(Long id, String nombre, String apellido, String
-     * email, String contra, String pais) {
-     * 
-     * Optional<Usuario> existe = repoUsuario.findById(id);
-     * 
-     * if (existe.isPresent()) {
-     * 
-     * Usuario actualizar = existe.get();
-     * if (nombre != null)
-     * actualizar.setNombre(nombre);
-     * if (apellido != null)
-     * actualizar.setApellido(apellido);
-     * if (email != null)
-     * 
-     * if (email.toLowerCase().endsWith("@utp.edu.pe")) {
-     * 
-     * Optional<Empleado> existeEmpleado =
-     * repoEmpleado.findByEmailEmpresarial(email);
-     * if (existe.isPresent()) {
-     * 
-     * Empleado empleado = existeEmpleado.get();
-     * String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-     * for (Rol rol : Rol.values()) {
-     * if (rol.toString().equalsIgnoreCase(cargo)) {
-     * actualizar.setRol(rol);
-     * break;
-     * }
-     * }
-     * }
-     * } else {
-     * actualizar.setRol(Rol.CLIENTE);
-     * }
-     * actualizar.setEmail(email);
-     * if (contra != null)
-     * actualizar.setContraseña(contra);
-     * if (pais != null)
-     * actualizar.setPais(pais);
-     * 
-     * return repoUsuario.save(actualizar);
-     * } else {
-     * return null;
-     * }
-     * 
-     * }
-     */
+    */
     public Usuario actualizar(Long id, Usuario usuario) {
-
+        System.out.println("Actualzar usuario");
         Optional<Usuario> existe = repoUsuario.findById(id);
         if (existe.isPresent()) {
-
+            System.out.println("Si existe el usuario");
             Usuario actualizar = existe.get();
             if (usuario.getNombre() != null)
                 actualizar.setNombre(usuario.getNombre());
             if (usuario.getApellido() != null)
                 actualizar.setApellido(usuario.getApellido());
-            if (usuario.getEmail() != null)
-
+            if (usuario.getEmail() != null) {
                 if (usuario.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
 
                     Optional<Empleado> existeEmpleado = repoEmpleado.findByEmailEmpresarial(usuario.getEmail());
-                    if (existe.isPresent()) {
 
+                    if (existeEmpleado.isPresent()) {
+                        System.out.println("EL usuario es un empleado");
                         Empleado empleado = existeEmpleado.get();
-                        String cargo = empleado.getPuesto().getNombrePuesto().toUpperCase();
-                        for (Rol rol : Rol.values()) {
-                            if (rol.toString().equalsIgnoreCase(cargo)) {
-                                actualizar.setRol(rol);
-                                break;
+                        Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado
+                                .findById(empleado.getPuesto().getIdPuesto());
+                        if (existePuesto.isPresent()) {
+                            
+                            PuestoEmpleado puesto = existePuesto.get();
+                            System.out.println("Si existe el puesto: " + puesto.getNombrePuesto());
+                            boolean roleSet = false;
+                            for (Rol rol : Rol.values()) {
+                                if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                                    actualizar.setRol(rol);
+                                    roleSet = true;
+                                    break;
+                                    
+                                }
+                            }
+                            if (roleSet == false ) {
+                                actualizar.setRol(Rol.CLIENTE);
                             }
                         }
                     }
                 } else {
                     actualizar.setRol(Rol.CLIENTE);
                 }
-            actualizar.setEmail(usuario.getEmail());
+                actualizar.setEmail(usuario.getEmail());
+            }
             if (usuario.getContraseña() != null)
                 actualizar.setContraseña(usuario.getContraseña());
             if (usuario.getPais() != null)

@@ -45,7 +45,7 @@ public class ControllerUsuario {
         }
     }
 
-    @PostMapping("/registrar")
+    /*@PostMapping("/registrar")
     public ResponseEntity<Usuario> registrarUsuario(@RequestBody Usuario usuario) {
 
         try {
@@ -55,7 +55,7 @@ public class ControllerUsuario {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }
+    }*/
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
