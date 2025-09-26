@@ -103,6 +103,7 @@ public class EmpleadoServices {
                     if (usuarioEncontrado.isPresent()) {
                         Usuario usuario = usuarioEncontrado.get();
                         Long idUsuario = usuario.getIdUsuario();
+                        
                         System.out.println("ID USUARIO: " + idUsuario);
                         servicesUsuario.actualizar(idUsuario, usuario);
 

@@ -46,11 +46,11 @@ public class ControllerUsuario {
 
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity<String> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
 
         try {
-            Usuario actualizar = servicesUsuario.actualizar(id, usuario);
-            return ResponseEntity.ok(actualizar);
+            /*Usuario actualizar = */servicesUsuario.actualizar(id, usuario);
+            return ResponseEntity.ok().body("se actualizo el usuario con id: " + usuario.getIdUsuario());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -28,29 +28,6 @@ public class ServicesPlanta {
         return repoPlanta.findById(id);
     }
 
-    /*
-     * public Planta registrar(String nombre, int stock, CategoriaPlanta categoria)
-     * {
-     * 
-     * Planta nueva = new Planta();
-     * nueva.setNombre(nombre);
-     * nueva.setStock(stock);
-     * 
-     * Optional<CategoriaPlanta> categoriaExiste =
-     * repoCategoriaPlanta.findById(categoria.getIdCateogriaPlanta());
-     * 
-     * if (categoriaExiste.isPresent()) {
-     * nueva.setCategoria(categoria);
-     * }
-     * 
-     * if (stock != 0) {
-     * nueva.setDisponible(true);
-     * } else {
-     * nueva.setDisponible(false);
-     * }
-     * return repoPlanta.save(nueva);
-     * }
-     */
     public Planta registrar(Planta planta) {
         if (planta.getNombre() == null || planta.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de la planta no puede estar vacío");
@@ -72,41 +49,6 @@ public class ServicesPlanta {
         }
         return repoPlanta.save(planta);
     }
-
-    /*
-     * public Planta actualizarPlanta(Long id, String nombre, int stock,
-     * CategoriaPlanta categoria) {
-     * 
-     * Optional<Planta> existe = repoPlanta.findById(id);
-     * 
-     * if (existe.isPresent()) {
-     * Planta actualizar = existe.get();
-     * 
-     * if (nombre != null)
-     * actualizar.setNombre(nombre);
-     * if (stock >= 0)
-     * actualizar.setStock(stock);
-     * if (categoria != null) {
-     * 
-     * Optional<CategoriaPlanta> categoriaExiste = repoCategoriaPlanta
-     * .findById(categoria.getIdCateogriaPlanta());
-     * 
-     * if (categoriaExiste.isPresent()) {
-     * actualizar.setCategoria(categoria);
-     * }
-     * }
-     * if (stock != 0) {
-     * actualizar.setDisponible(true);
-     * } else {
-     * actualizar.setDisponible(false);
-     * }
-     * 
-     * return repoPlanta.save(actualizar);
-     * } else {
-     * return null;
-     * }
-     * }
-     */
 
     public Planta actualizarPlanta(Long id, Planta planta) {
 

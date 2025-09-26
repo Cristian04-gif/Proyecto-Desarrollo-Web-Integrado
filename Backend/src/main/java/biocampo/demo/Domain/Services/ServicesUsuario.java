@@ -38,35 +38,6 @@ public class ServicesUsuario {
         return repoUsuario.findByEmail(email);
     }
 
-    /*public Usuario registrarUsuario(Usuario usuario) {
-
-        if (usuario.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
-
-            Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(usuario.getEmail());
-
-            if (existe.isPresent()) {
-                Empleado empleado = existe.get();
-
-                Optional<PuestoEmpleado> exstePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
-                if (exstePuesto.isPresent()) {
-                    PuestoEmpleado cargoEmpleado = exstePuesto.get();
-                    for (Rol rol : Rol.values()) {
-                        if (rol.toString().equalsIgnoreCase(cargoEmpleado.getNombrePuesto())) {
-                            usuario.setRol(rol);
-                            break;
-                        }
-                    }
-                }
-
-            } else {
-                System.out.println("NO SE ENCONTRO EL CORREO");
-            }
-        } else {
-            usuario.setRol(Rol.CLIENTE);
-        }
-        return repoUsuario.save(usuario);
-    }
-    */
     public Usuario actualizar(Long id, Usuario usuario) {
         System.out.println("Actualzar usuario");
         Optional<Usuario> existe = repoUsuario.findById(id);
