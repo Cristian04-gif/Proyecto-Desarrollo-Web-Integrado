@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import biocampo.demo.Domain.Services.ServicesImagenes;
@@ -14,6 +13,7 @@ import biocampo.demo.Persistance.Entity.Imagen;
 import biocampo.demo.Persistance.Entity.Imagen.TipoEntidad;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -25,15 +25,13 @@ public class ControllerImgs {
     private ServicesImagenes servicesImagenes;
 
     @PostMapping("/registrar")
-    public ResponseEntity<Imagen> subirImg(@RequestParam("url") String url, @RequestParam("tipo") TipoEntidad tipo,
-            @RequestParam("idReferncia") Long id) {
+    public ResponseEntity<Imagen> subirImg(@RequestBody Imagen imagen) {
         try {
-            Imagen imagen = servicesImagenes.subirImagen(url, tipo, id);
-            return new ResponseEntity<>(imagen, HttpStatus.CREATED);
+            Imagen nueva = servicesImagenes.subirImagen(imagen);
+            return new ResponseEntity<>(nueva, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @GetMapping("/{tipo}/{idReferencia}")

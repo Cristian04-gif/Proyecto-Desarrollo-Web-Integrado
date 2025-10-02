@@ -5,8 +5,8 @@ import '../styles/registerStyles.css';
 
 export default function RegisterForm() {
   const [form, setForm] = useState({
-    nombre: '', apellido: '', edad: '', email: '',
-    contraseña: '', pais: '', telefono: '', direccion: ''
+    nombre: '', apellido: '', email: '',
+    contraseña: '', pais: ''
   });
   const [error, setError] = useState('');
   const [usuario, setUsuario] = useState(null);
@@ -32,10 +32,10 @@ export default function RegisterForm() {
       <h2 className="register-title">Registro de usuario</h2>
       {Object.entries(form).map(([key, value]) => (
         <div key={key}>
-          <label className="register-label">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+          <label className="register-label">{key.charAt(0).toLowerCase() + key.slice(1)}</label>
           <input
-            type={key === 'edad' ? 'number' : key === 'email' ? 'email' : 'text'}
             name={key}
+            type={key === 'email' ? 'email' : key === 'contraseña' ? 'password' : 'text'}
             value={value}
             onChange={handleChange}
             className="register-input"

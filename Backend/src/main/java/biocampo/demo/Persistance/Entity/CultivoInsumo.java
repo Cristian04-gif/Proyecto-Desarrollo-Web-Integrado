@@ -7,27 +7,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Producto {
+@Builder
+@AllArgsConstructor
+public class CultivoInsumo {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idProducto;
-    @OneToOne
-    @JoinColumn(name = "idPostCosecha")
-    private PostCosecha PantaPostCosecha;
-    @Lob
-    private String imgProducto;
-    private String etiqueta;
-    private float peso;
-    private BigDecimal precio;
-    private int cantidad;
-    private boolean disponible;
+    private Long id;
+    private BigDecimal cantidad;
+
+    @ManyToOne
+    @JoinColumn(name="idCultivo")
+    private Cultivo cultivo;
+
+    @ManyToOne
+    @JoinColumn(name = "idInsumo")
+    private Insumo insumo;
 }

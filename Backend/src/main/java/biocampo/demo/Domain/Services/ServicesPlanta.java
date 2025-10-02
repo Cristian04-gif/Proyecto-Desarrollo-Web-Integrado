@@ -28,46 +28,48 @@ public class ServicesPlanta {
         return repoPlanta.findById(id);
     }
 
-    public Planta registrar(String nombre, int stock, CategoriaPlanta categoria) {
-
-        Planta nueva = new Planta();
-        nueva.setNombre(nombre);
-        nueva.setStock(stock);
-
-        Optional<CategoriaPlanta> categoriaExiste = repoCategoriaPlanta.findById(categoria.getIdCateogriaPlanta());
-
-        if (categoriaExiste.isPresent()) {
-            nueva.setCategoria(categoria);
+    public Planta registrar(Planta planta) {
+        if (planta.getNombre() == null || planta.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la planta no puede estar vacío");
         }
-        ;
-        if (stock != 0) {
-            nueva.setDisponible(true);
+        if (planta.getStock() < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo");
+        }
+        if (planta.getCategoria() != null) {
+            Optional<CategoriaPlanta> categoriaExiste = repoCategoriaPlanta
+                    .findById(planta.getCategoria().getIdCategoriaPlanta());
+            if (!categoriaExiste.isPresent()) {
+                throw new IllegalArgumentException("La categoría proporcionada no existe");
+            }
+        }
+        if (planta.getStock() != 0) {
+            planta.setDisponible(true);
         } else {
-            nueva.setDisponible(false);
+            planta.setDisponible(false);
         }
-        return repoPlanta.save(nueva);
+        return repoPlanta.save(planta);
     }
 
-    public Planta actualizarPlanta(Long id, String nombre, int stock, CategoriaPlanta categoria) {
+    public Planta actualizarPlanta(Long id, Planta planta) {
 
         Optional<Planta> existe = repoPlanta.findById(id);
-
         if (existe.isPresent()) {
             Planta actualizar = existe.get();
 
-            if (nombre != null)
-                actualizar.setNombre(nombre);
-            if (stock >= 0)
-                actualizar.setStock(stock);
-            if (categoria != null) {
+            if (planta.getNombre() != null)
+                actualizar.setNombre(planta.getNombre());
+            if (planta.getStock() >= 0)
+                actualizar.setStock(planta.getStock());
+            if (planta.getCategoria() != null) {
+
                 Optional<CategoriaPlanta> categoriaExiste = repoCategoriaPlanta
-                        .findById(categoria.getIdCateogriaPlanta());
+                        .findById(planta.getCategoria().getIdCategoriaPlanta());
 
                 if (categoriaExiste.isPresent()) {
-                    actualizar.setCategoria(categoria);
+                    actualizar.setCategoria(planta.getCategoria());
                 }
             }
-            if (stock != 0) {
+            if (planta.getStock() != 0) {
                 actualizar.setDisponible(true);
             } else {
                 actualizar.setDisponible(false);

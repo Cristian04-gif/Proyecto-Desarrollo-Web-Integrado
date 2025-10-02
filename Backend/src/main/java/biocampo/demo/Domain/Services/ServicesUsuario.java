@@ -6,7 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import biocampo.demo.Domain.Repository.RepoEmpleado;
+import biocampo.demo.Domain.Repository.RepoPuestoEmpleado;
 import biocampo.demo.Domain.Repository.RepoUsuario;
+import biocampo.demo.Persistance.Entity.Empleado;
+import biocampo.demo.Persistance.Entity.PuestoEmpleado;
 import biocampo.demo.Persistance.Entity.Usuario;
 import biocampo.demo.Persistance.Entity.Usuario.Rol;
 
@@ -16,6 +20,12 @@ public class ServicesUsuario {
     @Autowired
     private RepoUsuario repoUsuario;
 
+    @Autowired
+    private RepoEmpleado repoEmpleado;
+
+    @Autowired
+    private RepoPuestoEmpleado repoPuestoEmpleado;
+
     public List<Usuario> listarTodo() {
         return repoUsuario.findAll();
     }
@@ -24,72 +34,69 @@ public class ServicesUsuario {
         return repoUsuario.findById(id);
     }
 
-    public Usuario guardarUsuario(String nombre, String apellido, int edad, String email, String contra, String pais,
-            String telefono,
-            String direccion) {
-
-        Usuario user = new Usuario();
-        user.setNombre(nombre);
-        user.setApellido(apellido);
-        user.setEdad(edad);
-        user.setEmail(email);
-        user.setContraseña(contra);
-        user.setPais(pais);
-        user.setTelefono(telefono);
-        user.setDireccion(direccion);
-
-        String[] verificarCorreo = email.split("@");
-        for (String i : verificarCorreo) {
-            if (i != "utp.edu.pe") {
-                user.setRol(Rol.USER);
-            } else {
-                user.setRol(Rol.ADMIN);
-            }
-        }
-        return repoUsuario.save(user);
+    public Optional<Usuario> buscarUsuarioEmail(String email) {
+        return repoUsuario.findByEmail(email);
     }
 
-    public Usuario actualizar(Long id, String nombre, String apellido, int edad, String email, String contra,
-            String pais,
-            String telefono,
-            String direccion) {
-
+    public Usuario actualizar(Long id, Usuario usuario) {
+        System.out.println("Actualzar usuario");
         Optional<Usuario> existe = repoUsuario.findById(id);
         if (existe.isPresent()) {
+            System.out.println("Si existe el usuario");
             Usuario actualizar = existe.get();
-            if (nombre != null)
-                actualizar.setNombre(nombre);
-            if (apellido != null)
-                actualizar.setApellido(apellido);
-            if (edad != 0)
-                actualizar.setEdad(edad);
-            if (email != null)
-                actualizar.setEmail(email);
-            if (contra != null)
-                actualizar.setContraseña(contra);
-            if (pais != null)
-                actualizar.setPais(pais);
-            if (telefono != null)
-                actualizar.setTelefono(telefono);
-            if (direccion != null)
-                actualizar.setDireccion(direccion);
+            if (usuario.getNombre() != null)
+                actualizar.setNombre(usuario.getNombre());
+            if (usuario.getApellido() != null)
+                actualizar.setApellido(usuario.getApellido());
+            if (usuario.getEmail() != null) {
+                if (usuario.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
+
+                    Optional<Empleado> existeEmpleado = repoEmpleado.findByEmailEmpresarial(usuario.getEmail());
+
+                    if (existeEmpleado.isPresent()) {
+                        System.out.println("EL usuario es un empleado");
+                        Empleado empleado = existeEmpleado.get();
+                        Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado
+                                .findById(empleado.getPuesto().getIdPuesto());
+                        if (existePuesto.isPresent()) {
+                            
+                            PuestoEmpleado puesto = existePuesto.get();
+                            System.out.println("Si existe el puesto: " + puesto.getNombrePuesto());
+                            boolean roleSet = false;
+                            for (Rol rol : Rol.values()) {
+                                if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                                    actualizar.setRol(rol);
+                                    roleSet = true;
+                                    break;
+                                    
+                                }
+                            }
+                            if (roleSet == false ) {
+                                actualizar.setRol(Rol.CLIENTE);
+                            }
+                        }
+                    }
+                } else {
+                    actualizar.setRol(Rol.CLIENTE);
+                }
+                actualizar.setEmail(usuario.getEmail());
+            }
+            if (usuario.getContraseña() != null)
+                actualizar.setContraseña(usuario.getContraseña());
+            if (usuario.getPais() != null)
+                actualizar.setPais(usuario.getPais());
+
             return repoUsuario.save(actualizar);
         } else {
             return null;
         }
-
     }
 
     public void eliminar(Long id) {
         repoUsuario.deleteById(id);
     }
 
-    public Optional<Usuario> verificarCredenciales(String email, String contra) {
-        Optional<Usuario> user = repoUsuario.findByEmail(email);
-        if (user.isPresent() && user.get().getContraseña().equals(contra)) {
-            return user;
-        } else {
-            return Optional.empty();
-        }
+    public void eliminarUsuarioEmpleado(String email) {
+        repoUsuario.deleteByEmail(email);
     }
 }

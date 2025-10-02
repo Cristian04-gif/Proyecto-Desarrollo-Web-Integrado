@@ -16,9 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -45,45 +44,13 @@ public class ControllerUsuario {
         }
     }
 
-    @PostMapping("/registrar")
-    public ResponseEntity<Usuario> registrarUsuario(@RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido, @RequestParam("edad") int edad,
-            @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais,
-            @RequestParam("telefono") String telefono, @RequestParam("direccion") String direccion) {
-
-        try {
-            Usuario user = servicesUsuario.guardarUsuario(nombre, apellido, edad, email, contra, pais, telefono,
-                    direccion);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestParam("email") String email,
-            @RequestParam("contraseña") String contra) {
-        Optional<Usuario> usuario = servicesUsuario.verificarCredenciales(email, contra);
-        if (usuario.isPresent()) {
-            return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido, @RequestParam("edad") int edad,
-            @RequestParam("email") String email, @RequestParam("contraseña") String contra,
-            @RequestParam("pais") String pais,
-            @RequestParam("telefono") String telefono, @RequestParam("direccion") String direccion) {
+    public ResponseEntity<String> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
 
         try {
-            Usuario actualizar = servicesUsuario.actualizar(id, nombre, apellido, edad, email, contra, pais, telefono,
-                    direccion);
-            return ResponseEntity.ok(actualizar);
+            /*Usuario actualizar = */servicesUsuario.actualizar(id, usuario);
+            return ResponseEntity.ok().body("se actualizo el usuario con id: " + usuario.getIdUsuario());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
