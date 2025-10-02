@@ -24,7 +24,8 @@ public class ServicesUsuario {
         return repoUsuario.findById(id);
     }
 
-    public Usuario guardarUsuario(String nombre, String apellido, int edad, String email, String contra, String pais, String telefono,
+    public Usuario guardarUsuario(String nombre, String apellido, int edad, String email, String contra, String pais,
+            String telefono,
             String direccion) {
 
         Usuario user = new Usuario();
@@ -48,7 +49,8 @@ public class ServicesUsuario {
         return repoUsuario.save(user);
     }
 
-    public Usuario actualizar(Long id, String nombre, String apellido, int edad, String email, String contra, String pais,
+    public Usuario actualizar(Long id, String nombre, String apellido, int edad, String email, String contra,
+            String pais,
             String telefono,
             String direccion) {
 
@@ -78,7 +80,16 @@ public class ServicesUsuario {
 
     }
 
-    public void eliminar(Long id){
+    public void eliminar(Long id) {
         repoUsuario.deleteById(id);
+    }
+
+    public Optional<Usuario> verificarCredenciales(String email, String contra) {
+        Optional<Usuario> user = repoUsuario.findByEmail(email);
+        if (user.isPresent() && user.get().getContraseña().equals(contra)) {
+            return user;
+        } else {
+            return Optional.empty();
+        }
     }
 }

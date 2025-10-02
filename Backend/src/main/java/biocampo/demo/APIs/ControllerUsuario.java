@@ -62,6 +62,17 @@ public class ControllerUsuario {
 
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestParam("email") String email,
+            @RequestParam("contraseña") String contra) {
+        Optional<Usuario> usuario = servicesUsuario.verificarCredenciales(email, contra);
+        if (usuario.isPresent()) {
+            return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestParam("nombre") String nombre,
             @RequestParam("apellido") String apellido, @RequestParam("edad") int edad,
