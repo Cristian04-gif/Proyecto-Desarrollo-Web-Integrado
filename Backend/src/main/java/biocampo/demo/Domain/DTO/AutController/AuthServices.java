@@ -10,9 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import biocampo.demo.Domain.DTO.JWT.JwtServices;
-import biocampo.demo.Domain.Repository.RepoEmpleado;
-import biocampo.demo.Domain.Repository.RepoPuestoEmpleado;
-import biocampo.demo.Domain.Repository.RepoUsuario;
+import biocampo.demo.Persistance.CRUD.RepoEmpleado;
+import biocampo.demo.Persistance.CRUD.RepoPuestoEmpleado;
+import biocampo.demo.Persistance.CRUD.RepoUsuario;
 import biocampo.demo.Persistance.Entity.Empleado;
 import biocampo.demo.Persistance.Entity.PuestoEmpleado;
 import biocampo.demo.Persistance.Entity.Usuario;
