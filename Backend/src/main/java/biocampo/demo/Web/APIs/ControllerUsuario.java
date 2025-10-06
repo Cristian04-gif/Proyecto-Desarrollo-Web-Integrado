@@ -3,6 +3,9 @@ package biocampo.demo.Web.APIs;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import biocampo.demo.Domain.DTO.AutController.AuthResponse;
+import biocampo.demo.Domain.DTO.AutController.AuthServices;
+import biocampo.demo.Domain.DTO.AutController.RegisterRequest;
 import biocampo.demo.Domain.Model.User;
 import biocampo.demo.Domain.Services.UserService;
 import biocampo.demo.Persistance.Entity.Usuario;
@@ -32,6 +35,9 @@ public class ControllerUsuario {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthServices authServices;
+
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -48,10 +54,10 @@ public class ControllerUsuario {
         }
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    @PutMapping("update/{email}")
+    public ResponseEntity<AuthResponse> updateUser(@PathVariable String email, @RequestBody RegisterRequest user) {
         try {
-            User updatedUser = userService.updateUser(id, user);
+            AuthResponse updatedUser = authServices.update(email, user);
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

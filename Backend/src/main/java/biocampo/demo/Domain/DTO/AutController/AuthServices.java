@@ -84,4 +84,40 @@ public class AuthServices {
 
     }
 
+    public AuthResponse update(String email, RegisterRequest request) {
+        Optional<Usuario> usuarioExistente = repoUsuario.findByEmail(email);
+        if (usuarioExistente.isEmpty()) {
+            throw new RuntimeException("El correo no está registrado");
+        }
+        Usuario user = usuarioExistente.get();
+        user.setNombre(request.getNombre());
+        user.setApellido(request.getApellido());
+        user.setPais(request.getPais());
+
+        if (request.getContraseña() != null && !request.getContraseña().isEmpty()) {
+            user.setContraseña(passwordEncoder.encode(request.getContraseña()));
+        }
+
+        Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(request.getEmail());
+        if (existe.isPresent()) {
+            Empleado empleado = existe.get();
+
+            Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
+
+            if (existePuesto.isPresent()) {
+                PuestoEmpleado puesto = existePuesto.get();
+                for (Rol rol : Rol.values()) {
+                    if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                        user.setRol(rol);
+                        break;
+                    }
+                }
+            }
+        } else {
+            user.setRol(Rol.CLIENTE);
+        }
+        repoUsuario.save(user);
+        return AuthResponse.builder().token(jwtServices.getToken(user)).build();
+
+    }
 }
