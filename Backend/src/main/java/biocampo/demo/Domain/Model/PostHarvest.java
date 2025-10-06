@@ -1,0 +1,28 @@
+package biocampo.demo.Domain.Model;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class PostHarvest {
+    private Long postHarvestId;
+    private Harvest harvest;
+    private LocalDate dateProcessed;
+    private String cleaningMethod;
+    private String treatmentMethod;
+    private Packing packing;
+    private Storage storage;
+    private List<Employee> employees;
+
+    public enum Packing {
+        BAG, BOX, CRATE
+    }
+
+    public enum Storage {
+        SILO, WAREHOUSE, REFRIGERATED_STORAGE;
+    }
+}

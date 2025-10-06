@@ -26,6 +26,7 @@ public class Producto {
     @Lob
     private String imgProducto;
     private String etiqueta;
+    private String descripcion;
     private float peso;
     private BigDecimal precio;
     private int cantidad;

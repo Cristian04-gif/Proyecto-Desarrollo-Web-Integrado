@@ -35,7 +35,7 @@ public class Cultivo {
     private Planta planta;
     // 1 hectarea = 10 000 m2
     private int hectareas;
-    private String fertilizante;
+    //private String fertilizante;
     private BigDecimal costo;
     
     @CreationTimestamp

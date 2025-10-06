@@ -47,7 +47,7 @@ public class PostCosecha {
     }
 
     enum Almacenamiento {
-        SILO, BODEGA, CAMARAFRIA;
+        SILO, BODEGA, CAMARA_FRIA;
     }
 
 

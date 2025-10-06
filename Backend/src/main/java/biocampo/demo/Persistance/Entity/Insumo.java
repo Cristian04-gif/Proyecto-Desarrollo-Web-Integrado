@@ -50,6 +50,6 @@ public class Insumo {
 
 
     public enum Tipo {
-        SEMILLA, FERTILIZANTE, PESTICIDA
+        SEMILLA, FERTILIZANTE, PESTICIDA, HERBICIDA
     }
 }

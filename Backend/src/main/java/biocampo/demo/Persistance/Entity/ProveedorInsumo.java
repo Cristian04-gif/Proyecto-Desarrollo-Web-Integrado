@@ -31,7 +31,6 @@ public class ProveedorInsumo {
     @ManyToOne
     @JoinColumn(name = "idInsumo")
     private Insumo insumo;
-
     private BigDecimal precio;
 
 }

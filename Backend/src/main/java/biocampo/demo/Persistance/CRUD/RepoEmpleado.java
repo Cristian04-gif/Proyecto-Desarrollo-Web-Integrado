@@ -11,6 +11,6 @@ import biocampo.demo.Persistance.Entity.Empleado;
 
 @Repository
 public interface RepoEmpleado extends JpaRepository<Empleado, Long>{
-    Optional<Empleado> findByNombres(String nombres);
+    //Optional<Empleado> findByNombres(String nombres);
     Optional<Empleado> findByEmailEmpresarial(String emailEmpresarial);
 }
