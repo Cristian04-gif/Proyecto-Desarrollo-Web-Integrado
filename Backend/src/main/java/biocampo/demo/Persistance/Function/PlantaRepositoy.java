@@ -1,0 +1,47 @@
+package biocampo.demo.Persistance.Function;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import biocampo.demo.Domain.Model.Plant;
+import biocampo.demo.Domain.Repository.PlantRepository;
+import biocampo.demo.Persistance.CRUD.RepoPlanta;
+import biocampo.demo.Persistance.Entity.Planta;
+import biocampo.demo.Persistance.Mappings.PlantMapper;
+
+@Repository
+public class PlantaRepositoy implements PlantRepository {
+
+    @Autowired
+    private RepoPlanta repoPlanta;
+    @Autowired
+    private PlantMapper plantMapper;
+
+    
+    @Override
+    public List<Plant> getAll() {
+        List<Planta> todos = repoPlanta.findAll();
+        return plantMapper.toPlants(todos);
+    }
+
+    @Override
+    public Optional<Plant> getById(Long id) {
+        return repoPlanta.findById(id).map(planta -> plantMapper.toPlant(planta));
+    }
+
+    @Override
+    public Plant save(Plant plant) {
+        Planta planta = plantMapper.toPlanta(plant);
+        Planta plantaGuardada = repoPlanta.save(planta);
+        return plantMapper.toPlant(plantaGuardada);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repoPlanta.deleteById(id);
+    }
+
+}

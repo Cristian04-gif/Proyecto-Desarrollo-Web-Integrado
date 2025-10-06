@@ -1,10 +1,18 @@
 package biocampo.demo.Domain.Model;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Employee {
     private Long employeeId;
     private String firstName;
@@ -18,5 +26,6 @@ public class Employee {
     private String address;
     private JobPosition jobPosition;
     private double salary;
-    private String hireDate;
+    @CreationTimestamp
+    private LocalDate hireDate;
 }

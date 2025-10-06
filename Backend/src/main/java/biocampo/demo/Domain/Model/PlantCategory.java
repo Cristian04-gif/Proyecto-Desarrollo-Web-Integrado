@@ -1,14 +1,17 @@
 package biocampo.demo.Domain.Model;
 
-import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class PlantCategory {
     private Long categoryId;
     private String categoryName;
-    private List<Plant> plant;
+    //private List<Plant> plant;
 }

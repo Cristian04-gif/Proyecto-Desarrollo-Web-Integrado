@@ -8,9 +8,7 @@ import biocampo.demo.Domain.DTO.AutController.AuthServices;
 import biocampo.demo.Domain.DTO.AutController.RegisterRequest;
 import biocampo.demo.Domain.Model.User;
 import biocampo.demo.Domain.Services.UserService;
-import biocampo.demo.Persistance.Entity.Usuario;
-import biocampo.demo.Persistance.Function.ServicesUsuario;
-import jakarta.persistence.EntityNotFoundException;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 
 
