@@ -1,6 +1,7 @@
 package biocampo.demo.Persistance.Entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,7 @@ public class Producto {
     private Long idProducto;
     @OneToOne
     @JoinColumn(name = "idPostCosecha")
-    private PostCosecha PantaPostCosecha;
+    private PostCosecha plantaPostCosecha;
     @Lob
     private String imgProducto;
     private String etiqueta;
@@ -31,4 +33,7 @@ public class Producto {
     private BigDecimal precio;
     private int cantidad;
     private boolean disponible;
+
+    @OneToMany(mappedBy = "producto")
+    private List<DetalleVenta> detalles;
 }

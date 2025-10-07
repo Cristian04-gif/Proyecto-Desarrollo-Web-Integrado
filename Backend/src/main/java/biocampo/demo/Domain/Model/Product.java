@@ -20,6 +20,6 @@ public class Product {
     private float weight;
     private BigDecimal price;
     private int stock;
-    private boolean isActive;
+    private boolean active;
     
 }

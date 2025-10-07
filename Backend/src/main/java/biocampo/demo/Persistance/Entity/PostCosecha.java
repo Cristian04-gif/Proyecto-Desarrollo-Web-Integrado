@@ -42,11 +42,11 @@ public class PostCosecha {
     @ManyToMany(mappedBy = "postCosecha")
     private List<Empleado> empleados;
     
-    enum Empaque {
+    public enum Empaque {
         SACO, CAJA, BANDEJA
     }
 
-    enum Almacenamiento {
+    public enum Almacenamiento {
         SILO, BODEGA, CAMARA_FRIA;
     }
 

@@ -20,7 +20,7 @@ public class PostHarvest {
     private String treatmentMethod;
     private String packing;
     private String storage;
-    private List<Employee> employees;
+    //private List<Employee> employees;
 
     /*public enum Packing {
         BAG, BOX, CRATE

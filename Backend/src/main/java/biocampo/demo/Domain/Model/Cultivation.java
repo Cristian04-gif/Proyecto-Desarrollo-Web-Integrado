@@ -18,6 +18,7 @@ public class Cultivation {
     private int hectares;
     private BigDecimal cost;
     private LocalDate startDate;
+    private int eachIrrigation;
     private String season;
     private LocalDate endDate;
     //private List<Loss> losses;

@@ -1,5 +1,6 @@
 package biocampo.demo.Persistance.Entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class Venta {
 
     @CreationTimestamp
     private LocalDateTime fechaVenta;
-    
+    private BigDecimal total;
+
     @OneToMany(mappedBy = "idDetalleVenta")
     private List<DetalleVenta> detalle;
 }
