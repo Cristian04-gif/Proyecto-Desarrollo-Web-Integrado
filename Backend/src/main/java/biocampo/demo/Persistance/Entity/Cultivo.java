@@ -49,7 +49,7 @@ public class Cultivo {
     @OneToMany(mappedBy = "idPerdida")
     private List<Perdida> perdida;
 
-    @OneToMany(mappedBy = "cultivo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cultivo", cascade = CascadeType.MERGE)
     private List<CultivoInsumo> insumo;
 
     @ManyToMany(mappedBy = "cultivo")

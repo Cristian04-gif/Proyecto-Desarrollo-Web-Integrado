@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Services;
 
-import java.lang.Thread.Builder;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +48,10 @@ public class PlantService {
                 .available(disponible)
                 .category(plant.getCategory())
                 .build();
+        System.out.println("Objeto creado");
+        System.out.println("nombre: "+registerPlant.getName());
+        System.out.println("disponible: "+registerPlant.isAvailable());
+        System.out.println("CategoriaPlanta: "+registerPlant.getCategory().getCategoryName());
         return plantRepository.save(registerPlant);
     }
 
@@ -72,7 +75,9 @@ public class PlantService {
             } else{
                 throw new IllegalArgumentException("Error! la categoria no existe");
             }
-
+            System.out.println("Planta actualizada");
+            System.out.println("nombre: "+toUpdate.getName());
+            System.out.println("categoria: "+toUpdate.getCategory().getCategoryName());
             return plantRepository.save(toUpdate);
         } else{
             return null;

@@ -48,13 +48,17 @@ public class EmployeeService {
                 .getJobPosition(employee.getJobPosition().getPositionId());
         Employee emp;
         if (jobPosition.isPresent()) {
+
             JobPosition jp = jobPosition.get();
             employee.setJobPosition(jp);
             System.out.println("puesto: " + jp.getPositionName());
             emp = employeeRepository.save(employee);
+
             System.out.println("Empleado registrado");
             System.out.println("posicion del empleado: " + emp.getJobPosition().getPositionName());
+
             for (Usuario.Rol rol : Usuario.Rol.values()) {
+
                 if (rol.toString().equalsIgnoreCase(emp.getJobPosition().getPositionName())) {
                     System.out.println("rol: " + rol.toString());
 
@@ -108,48 +112,45 @@ public class EmployeeService {
                     toUpdate.setJobPosition(jobPosition.get());
                     Employee employeeUpdate = employeeRepository.save(toUpdate);
 
-                    if (userService.getUserByEmail(employeeUpdate.getWorkEmail()).isPresent()) {
+                    Optional<User> userFound = userService.getUserByEmail(employeeUpdate.getWorkEmail());
+                    if (userFound.isPresent()) {
                         System.out.println("El usuario ya existe");
 
-                        Optional<User> userFound = userService.getUserByEmail(employeeUpdate.getWorkEmail());
-                        if (userFound.isPresent()) {
-                            User user = userFound.get();
-                            Long userId = user.getUserId();
-                            System.out.println("ID USUARIO: " + userId);
-                            userService.updateUser(userId, user);
-                        }
+                        User user = userFound.get();
+                        System.out.println("Usuario: " + user.getLastName());
+                        System.out.println("email: " + user.getEmail());
+
+                        RegisterRequest updateUser = RegisterRequest.builder()
+                                .nombre(user.getFirstName())
+                                .apellido(user.getLastName())
+                                .email(user.getEmail())
+                                .contraseña(user.getPassword())
+                                .pais(user.getCountry())
+                                .build();
+                        authServices.update(user.getEmail(), updateUser);
+
                     } else {
                         for (Usuario.Rol rol : Usuario.Rol.values()) {
-
                             if (rol.toString().equalsIgnoreCase(jobPosition.get().getPositionName())) {
                                 RegisterRequest registerRequest = RegisterRequest.builder()
                                         .nombre(employeeUpdate.getFirstName())
                                         .apellido(employeeUpdate.getLastName())
                                         .email(employeeUpdate.getWorkEmail())
                                         .contraseña("123")
-                                        .pais(employeeUpdate.getCountry()).build();
+                                        .pais(employeeUpdate.getCountry())
+                                        .build();
                                 authServices.register(registerRequest);
                                 break;
                             }
                         }
-
-                    }
-
-                    for (Usuario.Rol rol : Usuario.Rol.values()) {
-                        if (rol.toString().equalsIgnoreCase(toUpdate.getJobPosition().getPositionName())) {
-                            System.out.println("rol: " + rol.toString());
-
-                            break;
-                        }
                     }
                 }
 
-                // return toUpdate;
-            } else {
-                throw new IllegalArgumentException("El empleado con ID " + id + " no existe");
             }
+            return toUpdate;
+        } else {
+            return null;
         }
-        return employee;
     }
 
     public void deleteEmployee(Long id) {

@@ -18,15 +18,15 @@ public class PostHarvest {
     private LocalDate dateProcessed;
     private String cleaningMethod;
     private String treatmentMethod;
-    private Packing packing;
-    private Storage storage;
+    private String packing;
+    private String storage;
     private List<Employee> employees;
 
-    public enum Packing {
+    /*public enum Packing {
         BAG, BOX, CRATE
     }
 
     public enum Storage {
         SILO, WAREHOUSE, REFRIGERATED_STORAGE;
-    }
+    }*/
 }

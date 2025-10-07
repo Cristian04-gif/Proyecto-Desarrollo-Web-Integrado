@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +18,5 @@ public class Supplier {
     private String email;
     private String address;
 
-    private List<InputSupplier> suppliedInputs;
+    //private List<InputSupplier> suppliedInputs;
 }

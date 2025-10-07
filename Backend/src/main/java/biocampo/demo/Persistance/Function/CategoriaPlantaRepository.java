@@ -33,8 +33,10 @@ public class CategoriaPlantaRepository implements PlantCategoryRepository {
 
     @Override
     public PlantCategory save(PlantCategory category) {
+        System.out.println("Entro al repositorio");
         CategoriaPlanta categoriaPlanta = mapper.toCategoriaPlanta(category);
         CategoriaPlanta categoriaPlantaGuardado = repoCategoriaPlanta.save(categoriaPlanta);
+        System.out.println("se guardo la categoria");
         return mapper.toCategory(categoriaPlantaGuardado);
     }
 

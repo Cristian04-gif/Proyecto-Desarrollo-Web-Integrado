@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +16,7 @@ public class Customer {
     private int age;
     private String phone;
     private String address;
-    private Type type;
-    private List<Sale> purchases;
-    public enum Type {
-        WHOLESALER, RETAILER
-    }
+    private String type;
+    //private List<Sale> purchases;
+    
 }

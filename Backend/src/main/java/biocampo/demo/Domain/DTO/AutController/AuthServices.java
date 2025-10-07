@@ -106,11 +106,16 @@ public class AuthServices {
 
             if (existePuesto.isPresent()) {
                 PuestoEmpleado puesto = existePuesto.get();
+                boolean positionEmployee = false;
                 for (Rol rol : Rol.values()) {
                     if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
                         user.setRol(rol);
+                        positionEmployee = true;
                         break;
                     }
+                }
+                if (!positionEmployee) {
+                    user.setRol(Rol.CLIENTE);
                 }
             }
         } else {
