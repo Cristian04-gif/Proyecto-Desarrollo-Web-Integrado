@@ -1,35 +1,127 @@
-.register-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 2rem;
+/* Fondo general */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #e6f4e6;
 }
 
-.register-card {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Contenedor centrado */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* evita que se rompa en pantallas pequeñas */
+  padding: 1rem;
+  background-color: #bde3c8;
+  box-sizing: border-box;
 }
 
-.register-title {
+/* Tarjeta de registro */
+.register-box {
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  width: 100%;
   text-align: center;
-  margin-bottom: 1rem;
-  color: #2c3e50;
 }
 
+/* Título */
+.register-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 2rem;
+}
+
+/* Campo individual */
+.register-field {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+/* Etiquetas */
 .register-label {
+  display: block;
+  margin-bottom: 6px;
   font-weight: 500;
-  margin-top: 1rem;
+  color: #444;
+  font-size: 14px;
 }
 
+/* Inputs */
 .register-input {
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: 6px;
+  padding: 12px;
   border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.register-input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(15, 17, 15, 0.2);
+  outline: none;
+} 
+
+/* Botón principal */
 .register-button {
+  background-color: #6eb48f;
+  color: white;
+  border: none;
+  padding: 12px;
   width: 100%;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+  background-color: #1b5e20;
+}
+
+/* Alertas */
+.register-alert {
+  margin-top: 1rem;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.alert-danger {
+  background-color: #fdecea;
+  color: #b71c1c;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Enlace inferior */
+.register-links {
+  margin-top: 1.5rem;
+  font-size: 14px;
+}
+
+.register-links a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.register-links a:hover {
+  text-decoration: underline;
+}
+
+/* Soporte institucional */
+.support-text {
+  margin-top: 2rem;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
 }
