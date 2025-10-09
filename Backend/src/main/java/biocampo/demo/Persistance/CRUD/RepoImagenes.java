@@ -1,4 +1,4 @@
-package biocampo.demo.Domain.Repository;
+package biocampo.demo.Persistance.CRUD;
 
 import java.util.List;
 

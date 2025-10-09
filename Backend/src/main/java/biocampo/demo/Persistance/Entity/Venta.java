@@ -1,5 +1,6 @@
 package biocampo.demo.Persistance.Entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -22,10 +24,15 @@ public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVenta;
+
     @ManyToOne
-    private Usuario cliente;
+    @JoinColumn(name = "idCliente")
+    private Cliente cliente;
+
     @CreationTimestamp
     private LocalDateTime fechaVenta;
-    @OneToMany
+    private BigDecimal total;
+
+    @OneToMany(mappedBy = "idDetalleVenta")
     private List<DetalleVenta> detalle;
 }

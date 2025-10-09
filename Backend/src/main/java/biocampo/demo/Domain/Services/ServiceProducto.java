@@ -2,48 +2,70 @@ package biocampo.demo.Domain.Services;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import biocampo.demo.Persistance.Entity.Producto;
-import biocampo.demo.Domain.Repository.RepoProducto;
+
+import biocampo.demo.Domain.Model.Product;
+import biocampo.demo.Domain.Repository.ProductRepository;
 
 @Service
 public class ServiceProducto {
 
     @Autowired
-    private RepoProducto repoProducto;
+    private ProductRepository productRepository;
 
-    // Listar todos los productos
-    public List<Producto> listarProductos() {
-        return repoProducto.findAll();
+    // Obtener todos los productos
+    public List<Product> getAllProducts() {
+        return productRepository.getAll(); // <-- Cambiado de findAll() a getAll()
     }
 
-    // Buscar producto por ID
-    public Optional<Producto> buscarProductoPorId(Long idProducto) {
-        return repoProducto.findById(idProducto);
+    // Obtener producto por ID
+    public Optional<Product> getProductById(Long id) {
+        return productRepository.getById(id); // <-- Cambiado de findById() a getById()
     }
 
     // Registrar nuevo producto
-    public Producto registrarProducto(Producto producto) {
-        return repoProducto.save(producto);
+    public Product registerProduct(Product product) {
+        return productRepository.save(product); // save() funciona igual
     }
 
     // Actualizar producto existente
-    public Optional<Producto> actualizarProducto(Long idProducto, Producto datosActualizados) {
-        return repoProducto.findById(idProducto).map(producto -> {
-            producto.setPantaPostCosecha(datosActualizados.getPantaPostCosecha());
-            producto.setImgProducto(datosActualizados.getImgProducto());
-            producto.setEtiqueta(datosActualizados.getEtiqueta());
-            producto.setPeso(datosActualizados.getPeso());
-            producto.setPrecio(datosActualizados.getPrecio());
-            producto.setCantidad(datosActualizados.getCantidad());
-            producto.setDisponible(datosActualizados.isDisponible());
-            return repoProducto.save(producto);
-        });
+    public Product updateProduct(Long id, Product updatedData) {
+        Optional<Product> existingProduct = productRepository.getById(id);
+
+        if (existingProduct.isPresent()) {
+            Product toUpdate = existingProduct.get();
+
+            if (updatedData.getPostHarvest() != null)
+                toUpdate.setPostHarvest(updatedData.getPostHarvest());
+            if (updatedData.getImageUrl() != null)
+                toUpdate.setImageUrl(updatedData.getImageUrl());
+            if (updatedData.getName() != null)
+                toUpdate.setName(updatedData.getName());
+            if (updatedData.getDescription() != null)
+                toUpdate.setDescription(updatedData.getDescription());
+            if (updatedData.getWeight() != 0)
+                toUpdate.setWeight(updatedData.getWeight());
+            if (updatedData.getPrice() != null)
+                toUpdate.setPrice(updatedData.getPrice());
+            if (updatedData.getStock() != 0)
+                toUpdate.setStock(updatedData.getStock());
+
+            // Booleano
+            toUpdate.setActive(updatedData.isActive());
+
+            return productRepository.save(toUpdate);
+        } else {
+            return null;
+        }
     }
 
     // Eliminar producto
-    public void eliminarProducto(Long idProducto) {
-        repoProducto.deleteById(idProducto);
+    public void deleteProduct(Long id) {
+        Optional<Product> existingProduct = productRepository.getById(id);
+        if (existingProduct.isPresent()) {
+            productRepository.deleteById(id);
+        }
     }
 }

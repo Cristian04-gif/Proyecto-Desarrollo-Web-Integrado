@@ -16,33 +16,47 @@ public class ServicePerdida {
     private RepoPerdida repoPerdida;
 
     // Listar todas las pérdidas
-    public List<Perdida> listarPerdidas() {
+    public List<Perdida> getAllPerdidas() {
         return repoPerdida.findAll();
     }
 
-    // Buscar pérdida por ID
-    public Optional<Perdida> buscarPerdidaPorId(Long idPerdida) {
+    // Obtener pérdida por ID
+    public Optional<Perdida> getPerdidaById(Long idPerdida) {
         return repoPerdida.findById(idPerdida);
     }
 
     // Registrar nueva pérdida
-    public Perdida registrarPerdida(Perdida perdida) {
+    public Perdida registerPerdida(Perdida perdida) {
         return repoPerdida.save(perdida);
     }
 
     // Actualizar pérdida existente
-    public Optional<Perdida> actualizarPerdida(Long idPerdida, Perdida datosActualizados) {
-        return repoPerdida.findById(idPerdida).map(perdida -> {
-            perdida.setTipoPerdida(datosActualizados.getTipoPerdida());
-            perdida.setAccion(datosActualizados.getAccion());
-            perdida.setCultivo(datosActualizados.getCultivo());
-            perdida.setCosecha(datosActualizados.getCosecha());
-            return repoPerdida.save(perdida);
-        });
+    public Perdida updatePerdida(Long idPerdida, Perdida updatedData) {
+        Optional<Perdida> existingPerdida = repoPerdida.findById(idPerdida);
+
+        if (existingPerdida.isPresent()) {
+            Perdida toUpdate = existingPerdida.get();
+
+            if (updatedData.getTipoPerdida() != null)
+                toUpdate.setTipoPerdida(updatedData.getTipoPerdida());
+            if (updatedData.getAccion() != null)
+                toUpdate.setAccion(updatedData.getAccion());
+            if (updatedData.getCultivo() != null)
+                toUpdate.setCultivo(updatedData.getCultivo());
+            if (updatedData.getCosecha() != null)
+                toUpdate.setCosecha(updatedData.getCosecha());
+
+            return repoPerdida.save(toUpdate);
+        } else {
+            return null;
+        }
     }
 
     // Eliminar pérdida
-    public void eliminarPerdida(Long idPerdida) {
-        repoPerdida.deleteById(idPerdida);
+    public void deletePerdida(Long idPerdida) {
+        Optional<Perdida> existingPerdida = repoPerdida.findById(idPerdida);
+        if (existingPerdida.isPresent()) {
+            repoPerdida.deleteById(idPerdida);
+        }
     }
 }

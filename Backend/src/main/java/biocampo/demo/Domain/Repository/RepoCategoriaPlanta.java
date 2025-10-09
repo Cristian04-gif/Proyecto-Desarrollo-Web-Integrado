@@ -1,11 +1,21 @@
 package biocampo.demo.Domain.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
 
-import biocampo.demo.Persistance.Entity.CategoriaPlanta;
+import biocampo.demo.Domain.Model.PlantCategory;
 
-@Repository
-public interface RepoCategoriaPlanta extends JpaRepository<CategoriaPlanta, Long>{
+public interface RepoCategoriaPlanta {
 
+    // Obtener todas las categorías
+    List<PlantCategory> getAll();
+
+    // Obtener categoría por ID
+    Optional<PlantCategory> getById(Long id);
+
+    // Guardar o actualizar categoría
+    PlantCategory save(PlantCategory category);
+
+    // Eliminar categoría por ID
+    void deleteById(Long id);
 }
