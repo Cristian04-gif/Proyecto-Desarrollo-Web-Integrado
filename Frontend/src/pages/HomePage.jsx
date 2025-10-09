@@ -2,6 +2,7 @@ import { Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../styles/homeStyles.css';
 
+
 export default function HomePage() {
   return (
     <>
@@ -66,23 +67,32 @@ export default function HomePage() {
           </div>
           <div className="tech-grid">
             {[
-              { icon: '🗺️', title: 'Mapeo de campo', desc: 'Trazamos mapas y geolocalizamos toda la información.', link: 'https://example.com/mapeo' },
-              { icon: '🛰️', title: 'Seguimiento', desc: 'Monitoreamos el crecimiento de cultivos con imágenes satelitales.', link: 'https://example.com/seguimiento' },
-              { icon: '🛡️', title: 'Defensa y análisis', desc: 'Analizamos amenazas como hongos, malezas e insectos.', link: 'https://example.com/defensa' },
-              { icon: '📊', title: 'DSS', desc: 'Tomamos decisiones óptimas con información integrada.', link: 'https://example.com/dss' },
-              { icon: '📱', title: 'Exploración de cultivos', desc: 'Registramos y geolocalizamos muestras desde el móvil.', link: 'https://example.com/exploracion' },
-              { icon: '🌡️', title: 'Conexión con sensores', desc: 'Conectamos sensores para monitorear parámetros ambientales.', link: 'https://example.com/sensores' },
-              { icon: '🧬', title: 'Agricultura de precisión', desc: 'Recomendaciones agronómicas basadas en mapas variables.', link: 'https://example.com/precision' }
+              { icon: '🗺️', title: 'Mapeo de campo', desc: 'Trazamos mapas y geolocalizamos toda la información.', slug: 'mapeo' },
+              { icon: '🛰️', title: 'Seguimiento', desc: 'Monitoreamos el crecimiento de cultivos con imágenes satelitales.', slug: 'seguimiento' },
+              { icon: '🛡️', title: 'Defensa y análisis', desc: 'Analizamos amenazas como hongos, malezas e insectos.', slug: 'defensa' },
+              { icon: '📊', title: 'DSS', desc: 'Tomamos decisiones óptimas con información integrada.', slug: 'dss' },
+              { icon: '📱', title: 'Exploración de cultivos', desc: 'Registramos y geolocalizamos muestras desde el móvil.', slug: 'exploracion' },
+              { icon: '🌡️', title: 'Conexión con sensores', desc: 'Conectamos sensores para monitorear parámetros ambientales.', slug: 'sensores' },
+              { icon: '🧬', title: 'Agricultura de precisión', desc: 'Recomendaciones agronómicas basadas en mapas variables.', slug: 'precision' }
             ].map((tech, index) => (
               <div key={index} className="tech-card">
                 <div className="tech-icon">{tech.icon}</div>
                 <h3 className="tech-card-title">{tech.title}</h3>
                 <p className="tech-card-desc">{tech.desc}</p>
-                <a href={tech.link} target="_blank" rel="noopener noreferrer" className="tech-button">Ver más</a>
+                <a
+                  href={`/tecnologia/${tech.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tech-button"
+                >
+                  Ver más
+                </a>
               </div>
             ))}
           </div>
         </section>
+
+
 
         {/* Herramientas y servicios digitales */}
         <section id="herramientas" className="tools-section">
@@ -170,30 +180,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Impacto en números */}
-      <section className="impact-stats">
-        <h2 className="stats-title">Los números importan</h2>
-        <div className="stats-row">
-          <div className="stat-item">
-            <i className="icon">🛰️</i>
-            <p><strong>2,304,000</strong><br />Imágenes satelitales al mes</p>
-          </div>
-          <div className="stat-item">
-            <i className="icon">🌐</i>
-            <p><strong>10</strong><br />Idiomas disponibles</p>
-          </div>
-          <div className="stat-item">
-            <i className="icon">🌎</i>
-            <p><strong>95</strong><br />Naciones alcanzadas</p>
-          </div>
-          <div className="stat-item">
-            <i className="icon">👩‍🌾</i>
-            <p><strong>5,394</strong><br />Profesionales formados</p>
-          </div>
-        </div>
-      </section>
-
-
       {/* Institucional footer */}
       <section className="biocampo-footer">
         <div className="footer-header">
@@ -279,24 +265,20 @@ export default function HomePage() {
         </form>
       </section>
 
-
-
-
       {/* Footer */}
       <footer className="agriplus-footer">
         <div className="footer-contact">
           <div className="contact-line">
-            <span><strong>Agriplus s.r.l.</strong></span>
-            <span>Head Office: Salezze 620 - 45030 Ceneselli (RO) - Italy</span>
-            <span>Tel: +39 0425 769355</span>
-            <span>Email: donato@agriplus.com</span>
-            <span>PEC: codfis.p.iva01166680295</span>
+            <span><strong>Biocampo S.A.C.</strong></span>
+            <span>Sede Central: Av. Alfredo Mendiola 6377, Los Olivos 15306</span>
+            <span>Tel: +51 987654321</span>
+            <span>Email: Biocampo@gmail.com</span>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© Copyright 1985 - 2023 Agriplus</p>
-          <p>P.0.FESR 2014 - 2020 - Contattaci</p>
+          <p>© Copyright - 2025 Biocampo</p>
+          <p>P.0.FESR - 2025 - Contato</p>
         </div>
       </footer>
 
