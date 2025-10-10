@@ -10,7 +10,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* evita que se rompa en pantallas pequeñas */
+  min-height: 100vh; 
   padding: 1rem;
   background-color: #bde3c8;
   box-sizing: border-box;

@@ -15,6 +15,7 @@ export default function LoginPage() {
       const user = await login(email, contraseña);
       setUsuario(user);
       setError('');
+      window.location.href = 'http://localhost:5173/'; 
     } catch (err) {
       setError(err.message);
       setUsuario(null);

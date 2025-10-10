@@ -114,7 +114,7 @@ body, html {
   border-radius: 8px;
   transition: background-color 0.2s ease-in-out;
   text-decoration: none;
-  margin-right: 20px; /* separa del borde derecho */
+  margin-right: 20px; 
 }
 
 .btn-register:hover {
@@ -123,7 +123,7 @@ body, html {
 
 .auth-buttons {
   display: flex;
-  gap: 12px; /* Espacio entre botones */
+  gap: 12px; 
 }
 
 
@@ -516,7 +516,7 @@ body, html {
 }
 
 .benefit-item {
-  flex: 1 1 calc(16.66% - 20px); /* 6 en fila con espacio */
+  flex: 1 1 calc(16.66% - 20px); 
   text-align: center;
   padding: 10px;
 }
@@ -597,13 +597,13 @@ body, html {
   gap: 60px; /* más espacio entre columnas */
   max-width: 1200px;
   margin: auto;
-  padding-top: 40px; /* espacio entre header y columnas */
+  padding-top: 40px; 
 }
 
 .footer-column h4 {
   font-size: 1.1rem;
   color: #2f855a;
-  margin-bottom: 20px; /* más espacio debajo del título */
+  margin-bottom: 20px; 
 }
 
 .footer-column ul {
@@ -614,7 +614,7 @@ body, html {
 
 .footer-column ul li {
   margin-bottom: 12px;
-  line-height: 1.5; /* mejora legibilidad */
+  line-height: 1.5; 
 }
 
 .footer-column ul li a {
@@ -808,7 +808,7 @@ body, html {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px; /* separación entre elementos */
+  gap: 30px; 
 }
 
 .contact-line span {
@@ -819,11 +819,11 @@ body, html {
 .footer-bottom {
   background-color: #1a202c;
   color: #e2e8f0;
-  padding: 5px 5px; /* menos margen vertical */
+  padding: 5px 5px;
   text-align: center;
   font-size: 0.85rem;
   display: flex;
-  flex-direction: column; /* menos espacio entre líneas */
+  flex-direction: column; 
   margin: 0px;
 }
 
@@ -837,5 +837,5 @@ body, html {
 }
 
 .footer-bottom p {
-  margin: 2px 0; /* reduce el espacio vertical entre líneas */
+  margin: 2px 0; 
 }

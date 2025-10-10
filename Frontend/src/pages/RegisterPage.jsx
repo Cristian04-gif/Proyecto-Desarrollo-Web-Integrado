@@ -43,10 +43,12 @@ export default function RegisterPage() {
       const user = await register(form);
       setUsuario(user);
       setError('');
+      window.location.href = 'http://localhost:5173/login';
     } catch (err) {
       setError(err.message);
       setUsuario(null);
     }
+
   };
 
   return (

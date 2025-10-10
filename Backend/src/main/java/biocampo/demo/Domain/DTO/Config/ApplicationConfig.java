@@ -53,8 +53,9 @@ public class ApplicationConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("Authorization")
+                .allowedHeaders("Authorization", "Content-Type") // ✅ aquí agregas Content-Type
                 .allowCredentials(true)
                 .maxAge(3600);
     }
+
 }
