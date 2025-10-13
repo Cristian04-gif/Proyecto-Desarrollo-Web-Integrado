@@ -49,7 +49,7 @@ public class ControllerEmpleado {
 
     @PostMapping("/register")
     public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee) {
-        String workEmail = "E" + employee.getDni() + "@utp.edu.pe";
+        String workEmail = "E" + employee.getDni() + "@biocampo.com";
         employee.setWorkEmail(workEmail);
         try {
             Employee newEmployee = employeeService.registerEmployee(employee);

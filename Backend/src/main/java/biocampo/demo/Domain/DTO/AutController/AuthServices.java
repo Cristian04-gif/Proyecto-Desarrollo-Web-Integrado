@@ -39,7 +39,8 @@ public class AuthServices {
     public AuthResponse login(LoginRequest request) {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        UserDetails user = repoUsuario.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserDetails user = repoUsuario.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         String token = jwtServices.getToken(user);
         return AuthResponse.builder().token(token).build();
     }
@@ -54,6 +55,8 @@ public class AuthServices {
         user.setPais(request.getPais());
 
         if (request.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
+            user.setRol(Rol.ADMIN);
+        } else if (request.getEmail().toLowerCase().endsWith("@biocampo.com")) {
             System.out.println("EL correo es empresarial");
             Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(request.getEmail());
             if (existe.isPresent()) {
@@ -66,11 +69,11 @@ public class AuthServices {
                     System.out.println("El cargo existe");
                     PuestoEmpleado puesto = existePuesto.get();
                     for (Rol rol : Rol.values()) {
-                    if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
-                        user.setRol(rol);
-                        break;
+                        if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                            user.setRol(rol);
+                            break;
+                        }
                     }
-                }
                 }
             } else {
                 System.out.println("NO SE ENCONTRO EL CORREO");

@@ -2,7 +2,6 @@ package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
 
-import biocampo.demo.Persistance.Entity.Cultivo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Harvest {
     private Long harvestId;
-    private Cultivo cultivation;
+    private Cultivation cultivation;
     private LocalDate dateHarvested;
     private String season;
     private String collector;
