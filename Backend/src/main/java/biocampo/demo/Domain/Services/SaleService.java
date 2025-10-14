@@ -7,32 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import biocampo.demo.Domain.Model.Sale;
-import biocampo.demo.Domain.Repository.RepoVenta;
+import biocampo.demo.Domain.Repository.SaleRepository;
 
 @Service
-public class ServiceVenta {
+public class SaleService {
 
     @Autowired
-    private RepoVenta repoVenta;
+    private SaleRepository saleRepository;
 
     // Obtener todas las ventas
     public List<Sale> getAllSales() {
-        return repoVenta.getAll();
+        return saleRepository.getAll();
     }
 
     // Obtener venta por ID
     public Optional<Sale> getSaleById(Long id) {
-        return repoVenta.getById(id);
+        return saleRepository.getById(id);
     }
 
     // Registrar nueva venta
     public Sale registerSale(Sale sale) {
-        return repoVenta.save(sale);
+        return saleRepository.save(sale);
     }
 
     // Actualizar venta existente
     public Sale updateSale(Long id, Sale updatedSale) {
-        Optional<Sale> existingSale = repoVenta.getById(id);
+        Optional<Sale> existingSale = saleRepository.getById(id);
 
         if (existingSale.isPresent()) {
             Sale toUpdate = existingSale.get();
@@ -44,18 +44,16 @@ public class ServiceVenta {
             if (updatedSale.getTotal() != null)
                 toUpdate.setTotal(updatedSale.getTotal());
 
-            return repoVenta.save(toUpdate);
+            return saleRepository.save(toUpdate);
         } else {
-            // Si no existe, opcionalmente se puede crear una nueva venta
-            return repoVenta.save(updatedSale);
+            // También podrías lanzar una excepción si no existe
+            return saleRepository.save(updatedSale);
         }
     }
 
     // Eliminar venta
     public void deleteSale(Long id) {
-        Optional<Sale> existingSale = repoVenta.getById(id);
-        if (existingSale.isPresent()) {
-            repoVenta.deleteById(id);
-        }
+        Optional<Sale> existingSale = saleRepository.getById(id);
+        existingSale.ifPresent(s -> saleRepository.deleteById(id));
     }
 }

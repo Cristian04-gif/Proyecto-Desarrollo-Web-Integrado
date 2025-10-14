@@ -15,34 +15,42 @@ public class PlantCategoryService {
     @Autowired
     private PlantCategoryRepository categoryRepository;
 
-    public List<PlantCategory> getAll(){
+    // Obtener todas las categorías
+    public List<PlantCategory> getAll() {
         return categoryRepository.getAll();
     }
 
-    public Optional<PlantCategory> getPlantCategory(Long id){
+    // Obtener categoría por ID
+    public Optional<PlantCategory> getPlantCategory(Long id) {
         return categoryRepository.getPlantCategory(id);
     }
 
-    public PlantCategory registerCategory(PlantCategory category){
+    // Registrar nueva categoría
+    public PlantCategory registerCategory(PlantCategory category) {
         return categoryRepository.save(category);
     }
 
-    public PlantCategory updateCategory(Long id, PlantCategory category){
-        Optional<PlantCategory> exist = categoryRepository.getPlantCategory(id);
+    // Actualizar categoría existente
+    public PlantCategory updateCategory(Long id, PlantCategory updatedCategory) {
+        Optional<PlantCategory> existing = categoryRepository.getPlantCategory(id);
 
-        if (exist.isPresent()) {
-            System.out.println("LA CATEGORIA EXISTE");
-            PlantCategory toUpdate = exist.get();
-            System.out.println("NOMBRE: "+toUpdate.getCategoryName());
-            toUpdate.setCategoryName(category.getCategoryName());
-            System.out.println("sE ACTUALIZO LA CATEGORIA");
+        if (existing.isPresent()) {
+            PlantCategory toUpdate = existing.get();
+
+            // Evita sobreescribir con nulos
+            if (updatedCategory.getCategoryName() != null) {
+                toUpdate.setCategoryName(updatedCategory.getCategoryName());
+            }
+
             return categoryRepository.save(toUpdate);
-        } else{
+        } else {
+            // Podrías devolver null o lanzar excepción personalizada
             return null;
         }
     }
 
-    public void deleteCategory(Long id){
+    // Eliminar categoría
+    public void deleteCategory(Long id) {
         categoryRepository.delete(id);
     }
 }
