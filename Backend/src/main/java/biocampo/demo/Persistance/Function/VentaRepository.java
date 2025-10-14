@@ -27,7 +27,7 @@ public class VentaRepository implements SaleRepository{
     }
 
     @Override
-    public Optional<Sale> getbyId(Long id) {
+    public Optional<Sale> getById(Long id) {
         return repoVenta.findById(id).map(venta -> saleMapper.toSale(venta));
     }
 
