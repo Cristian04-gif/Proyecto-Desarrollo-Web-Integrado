@@ -1,7 +1,8 @@
 package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
-import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +16,13 @@ import lombok.NoArgsConstructor;
 public class PostHarvest {
     private Long postHarvestId;
     private Harvest harvest;
+    @CreationTimestamp
     private LocalDate dateProcessed;
     private String cleaningMethod;
     private String treatmentMethod;
     private String packing;
     private String storage;
+    private int stock;
     //private List<Employee> employees;
 
     /*public enum Packing {

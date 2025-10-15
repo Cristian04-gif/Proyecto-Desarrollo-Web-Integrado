@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/puesto")
-public class ControlerPuestoEmpleado {
+@RequestMapping("/api/jobPosition")
+public class JopPositionController {
 
     @Autowired
     private JobPositionService jobPositionService;
@@ -37,7 +37,7 @@ public class ControlerPuestoEmpleado {
     public ResponseEntity<JobPosition> getJobPositionById(@PathVariable Long id) {
         Optional<JobPosition> existe = jobPositionService.getJobPositionById(id);
 
-        return existe.map(value -> new ResponseEntity<>(existe.get(), HttpStatus.OK))
+        return existe.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -70,56 +70,4 @@ public class ControlerPuestoEmpleado {
             return ResponseEntity.notFound().build();
         }
     }
-    /*
-     * @Autowired
-     * private PuestoEmpleadoServices puestoEmpleadoServices;
-     * 
-     * @GetMapping("/todos")
-     * public ResponseEntity<List<PuestoEmpleado>> listarTodo() {
-     * List<PuestoEmpleado> lista = puestoEmpleadoServices.listarTodo();
-     * return new ResponseEntity<>(lista, HttpStatus.OK);
-     * }
-     * 
-     * @GetMapping("/buscar/{id}")
-     * public ResponseEntity<Optional<PuestoEmpleado>> buscar(@PathVariable Long id)
-     * {
-     * Optional<PuestoEmpleado> existe = puestoEmpleadoServices.buscar(id);
-     * 
-     * return existe.map(value -> new ResponseEntity<>(existe, HttpStatus.OK))
-     * .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-     * }
-     * 
-     * @PostMapping("/registrar")
-     * public ResponseEntity<PuestoEmpleado> registrar(@RequestBody PuestoEmpleado
-     * puesto) {
-     * try {
-     * PuestoEmpleado nuevo = puestoEmpleadoServices.registrar(puesto);
-     * return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-     * }
-     * }
-     * 
-     * @PutMapping("/actualizar/{id}")
-     * public ResponseEntity<PuestoEmpleado> actualizar(@PathVariable Long
-     * id, @RequestBody PuestoEmpleado puesto) {
-     * try {
-     * PuestoEmpleado actualizar = puestoEmpleadoServices.actualizar(id, puesto);
-     * return new ResponseEntity<>(actualizar, HttpStatus.ACCEPTED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-     * }
-     * }
-     * 
-     * 
-     * @DeleteMapping("/eliminar/{id}")
-     * public ResponseEntity<Void> eliminar(@PathVariable Long id){
-     * try {
-     * puestoEmpleadoServices.eliminar(id);
-     * return ResponseEntity.noContent().build();
-     * } catch (EntityNotFoundException e) {
-     * return ResponseEntity.notFound().build();
-     * }
-     * }
-     */
 }

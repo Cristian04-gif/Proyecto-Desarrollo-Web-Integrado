@@ -11,4 +11,5 @@ public interface CultivationRepository {
     Optional<Cultivation> getById(Long id);
     Cultivation save(Cultivation cultivation);
     void deleteById(Long id);
+    List<Cultivation> findBySeason(String season);
 }

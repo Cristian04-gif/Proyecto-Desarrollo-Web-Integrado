@@ -10,6 +10,7 @@ import biocampo.demo.Domain.Model.Customer;
 import biocampo.demo.Domain.Repository.CustomerRepository;
 import biocampo.demo.Persistance.CRUD.RepoCliente;
 import biocampo.demo.Persistance.Entity.Cliente;
+import biocampo.demo.Persistance.Entity.Cliente.Tipo;
 import biocampo.demo.Persistance.Mappings.CustomerMapper;
 
 @Repository
@@ -42,6 +43,18 @@ public class ClienteRepository implements CustomerRepository{
     @Override
     public void deleteById(Long id) {
         repoCliente.deleteById(id);
+    }
+
+    @Override
+    public List<Customer> findByType(String type) {
+        for (Tipo tipo : Tipo.values()) {
+            if (tipo.toString().equalsIgnoreCase(type)) {
+                List<Cliente> listaTipo = repoCliente.findByTipo(tipo);
+                return customerMapper.toCustomers(listaTipo);
+            }
+        }
+        return null;
+        
     }
 
 }

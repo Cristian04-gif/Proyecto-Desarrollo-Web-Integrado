@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/api/imagenes")
-public class ControllerImgs {
+@RequestMapping("/api/images")
+public class ImgsController {
 
     @Autowired
     private ImageService imageService;
@@ -52,25 +52,5 @@ public class ControllerImgs {
         }
 
     }  
-
-    /*@Autowired
-    private ServicesImagenes servicesImagenes;
-
-    @PostMapping("/registrar")
-    public ResponseEntity<Imagen> subirImg(@RequestBody Imagen imagen) {
-        try {
-            Imagen nueva = servicesImagenes.subirImagen(imagen);
-            return new ResponseEntity<>(nueva, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/{tipo}/{idReferencia}")
-    public ResponseEntity<List<Imagen>> buscarImgRelacionada(@PathVariable TipoEntidad tipo,
-            @PathVariable Long idReferencia) {
-        List<Imagen> lista = servicesImagenes.obtenerImgRelacionado(tipo, idReferencia);
-        return ResponseEntity.ok(lista);
-    }*/
 
 }

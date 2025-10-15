@@ -21,6 +21,7 @@ public interface PostHarvestMapper {
         @Mapping(source = "tratamiento", target = "treatmentMethod"),
         @Mapping(source = "empaque", target = "packing"),
         @Mapping(source = "almacenamiento", target = "storage"),
+        @Mapping(source = "stock", target = "stock")
     })
 
     PostHarvest toPostHarvest(PostCosecha postCosecha);

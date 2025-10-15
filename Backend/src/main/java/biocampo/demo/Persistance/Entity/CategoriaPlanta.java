@@ -29,4 +29,7 @@ public class CategoriaPlanta {
     @OneToMany(mappedBy = "idPlanta", cascade = CascadeType.MERGE)
     @JsonManagedReference
     private List<Planta> planta;
+
+    @OneToMany(mappedBy = "idProducto")
+    private List<Producto> productos;
 }

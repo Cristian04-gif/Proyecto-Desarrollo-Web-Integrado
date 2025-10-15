@@ -39,6 +39,8 @@ public class PostCosecha {
     @Enumerated(EnumType.STRING)
     private Almacenamiento almacenamiento;
 
+    private int stock;
+
     @ManyToMany(mappedBy = "postCosecha")
     private List<Empleado> empleados;
     

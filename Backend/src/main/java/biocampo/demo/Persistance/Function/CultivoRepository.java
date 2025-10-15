@@ -10,6 +10,7 @@ import biocampo.demo.Domain.Model.Cultivation;
 import biocampo.demo.Domain.Repository.CultivationRepository;
 import biocampo.demo.Persistance.CRUD.RepoCultivo;
 import biocampo.demo.Persistance.Entity.Cultivo;
+import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
 import biocampo.demo.Persistance.Mappings.CultivationMapper;
 
 @Repository
@@ -41,6 +42,17 @@ public class CultivoRepository implements CultivationRepository {
     @Override
     public void deleteById(Long id) {
         repoCultivo.deleteById(id);
+    }
+
+    @Override
+    public List<Cultivation> findBySeason(String season) {
+        for (Temporada temp : Temporada.values()) {
+            if (temp.toString().equalsIgnoreCase(season)) {
+                List<Cultivo> listaTemp = repoCultivo.findByTemporada(temp);
+                return cultivationMapper.toCultivations(listaTemp);
+            }
+        }
+        return null;
     }
 
 }

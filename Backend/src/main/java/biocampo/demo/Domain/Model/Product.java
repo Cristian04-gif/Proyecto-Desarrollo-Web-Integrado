@@ -21,5 +21,6 @@ public class Product {
     private BigDecimal price;
     private int stock;
     private boolean active;
+    private PlantCategory plantCategory;
     
 }

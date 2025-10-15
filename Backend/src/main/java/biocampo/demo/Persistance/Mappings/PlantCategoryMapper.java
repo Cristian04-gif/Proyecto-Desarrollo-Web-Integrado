@@ -23,5 +23,6 @@ public interface PlantCategoryMapper {
 
     @InheritInverseConfiguration
     @Mapping(target = "planta", ignore = true)
+    @Mapping(target = "productos", ignore = true)
     CategoriaPlanta toCategoriaPlanta(PlantCategory plantCategory);
 }

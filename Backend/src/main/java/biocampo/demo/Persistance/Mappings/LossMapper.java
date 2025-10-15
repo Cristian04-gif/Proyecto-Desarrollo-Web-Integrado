@@ -16,7 +16,9 @@ public interface LossMapper {
     @Mappings({
         @Mapping(source = "idPerdida", target = "lossId"),
         @Mapping(source = "tipoPerdida", target = "typeLoss"),
-        @Mapping(source = "accion", target = "action"),
+        @Mapping(source = "descripcion", target = "description"),
+        @Mapping(source = "porcentajeAfectacion", target = "pocentageAffect"),
+        @Mapping(source = "fechaPerdida", target = "lossDate"),
         @Mapping(source = "cultivo", target = "cultivation"),
         @Mapping(source = "cosecha", target = "harvest"),
     })
