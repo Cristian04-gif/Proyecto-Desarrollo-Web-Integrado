@@ -32,12 +32,12 @@ public class DetalleVenta {
 
     private int cantidad;
 
-    private BigDecimal total;
+    private BigDecimal subtotal;
 
     @Enumerated(EnumType.STRING)
     private Metodo pago;
 
-    enum Metodo {
+    public enum Metodo {
         PAYPAL, TARJETA
     }
 }

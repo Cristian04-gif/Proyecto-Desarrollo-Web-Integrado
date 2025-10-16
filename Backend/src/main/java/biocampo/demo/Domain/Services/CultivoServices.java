@@ -44,7 +44,6 @@ public class CultivoServices {
         if (existe.isPresent()) {
             Cultivo actualizar = existe.get();
             actualizar.setHectareas(cultivo.getHectareas());
-            actualizar.setFertilizante(cultivo.getFertilizante());
             actualizar.setCosto(cultivo.getCosto());
             actualizar.setCadaRiego(cultivo.getCadaRiego());
             actualizar.setTemporada(cultivo.getTemporada());

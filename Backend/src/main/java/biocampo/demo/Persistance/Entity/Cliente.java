@@ -42,7 +42,7 @@ public class Cliente {
     @JoinColumn(name = "idCliente")
     private List<Venta> compras;
 
-    enum Tipo {
+    public enum Tipo {
         MAYORISTA, MINORISTA
     }
 }

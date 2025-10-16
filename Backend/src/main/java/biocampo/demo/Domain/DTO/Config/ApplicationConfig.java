@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import biocampo.demo.Domain.Repository.RepoUsuario;
+import biocampo.demo.Persistance.CRUD.RepoUsuario;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

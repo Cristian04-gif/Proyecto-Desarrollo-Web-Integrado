@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import biocampo.demo.Domain.Repository.RepoCosecha;
-import biocampo.demo.Domain.Repository.RepoPlanta;
+import biocampo.demo.Persistance.CRUD.RepoCosecha;
+import biocampo.demo.Persistance.CRUD.RepoCultivo;
 import biocampo.demo.Persistance.Entity.Cosecha;
-import biocampo.demo.Persistance.Entity.Planta;
+import biocampo.demo.Persistance.Entity.Cultivo;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -19,7 +19,7 @@ public class CosechaServices {
     private RepoCosecha repoCosecha;
 
     @Autowired
-    private RepoPlanta repoPlanta;
+    private RepoCultivo repoCultivo;
 
     public List<Cosecha> listarTodo() {
         return repoCosecha.findAll();
@@ -30,9 +30,9 @@ public class CosechaServices {
     }
 
     public Cosecha registrarCosecha(Cosecha cosecha) {
-        Optional<Planta> planta = repoPlanta.findById(cosecha.getPlanta().getIdPlanta());
-        if (planta.isPresent()) {
-            cosecha.setPlanta(planta.get());
+        Optional<Cultivo> cultivo = repoCultivo.findById(cosecha.getCultivo().getIdCultivo());
+        if (cultivo.isPresent()) {
+            cosecha.setCultivo(cultivo.get());
             return repoCosecha.save(cosecha);
         } else {
             return null;
@@ -47,8 +47,8 @@ public class CosechaServices {
             actualizar.setTemporada(cosecha.getTemporada());
             actualizar.setRecolector(cosecha.getRecolector());
 
-            Optional<Planta> planta = repoPlanta.findById(cosecha.getPlanta().getIdPlanta());
-            planta.ifPresent(actualizar::setPlanta);
+            Optional<Cultivo> cultivo = repoCultivo.findById(cosecha.getCultivo().getIdCultivo());
+            cultivo.ifPresent(actualizar::setCultivo);
 
             return repoCosecha.save(actualizar);
         } else {

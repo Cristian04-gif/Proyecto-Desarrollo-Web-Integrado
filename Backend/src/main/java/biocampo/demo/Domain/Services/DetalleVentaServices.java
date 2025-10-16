@@ -52,7 +52,6 @@ public class DetalleVentaServices {
         if (existe.isPresent()) {
             DetalleVenta actualizar = existe.get();
             actualizar.setCantidad(detalleVenta.getCantidad());
-            actualizar.setTotal(detalleVenta.getTotal());
             actualizar.setPago(detalleVenta.getPago());
 
             Optional<Venta> venta = repoVenta.findById(detalleVenta.getVenta().getIdVenta());

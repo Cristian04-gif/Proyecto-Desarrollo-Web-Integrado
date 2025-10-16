@@ -26,7 +26,7 @@ public class PuestoEmpleado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPuesto;
     private String nombrePuesto;
-    @OneToMany(mappedBy = "idEmpleado", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idEmpleado", cascade = CascadeType.MERGE)
     @JsonManagedReference
     private List<Empleado> empleado;
 }

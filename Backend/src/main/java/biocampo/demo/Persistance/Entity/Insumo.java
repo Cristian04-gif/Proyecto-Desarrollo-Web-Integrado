@@ -42,14 +42,14 @@ public class Insumo {
     @JoinColumn(name = "idCultivo")
     private Cultivo cultivo;
 
-    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "insumo", cascade = CascadeType.MERGE)
     private List<ProveedorInsumo> proveedorInsumos;
 
-    @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "insumo", cascade = CascadeType.MERGE)
     private List<CultivoInsumo> cultivoInsumos;
 
 
     public enum Tipo {
-        SEMILLA, FERTILIZANTE, PESTICIDA
+        SEMILLA, FERTILIZANTE, PESTICIDA, HERBICIDA
     }
 }

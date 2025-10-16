@@ -28,8 +28,8 @@ public class Cosecha {
     private Long idCosecha;
 
     @ManyToOne
-    @JoinColumn(name = "idPlanta")
-    private Planta planta;
+    @JoinColumn(name = "idCultivo")
+    private Cultivo cultivo;
 
     @CreationTimestamp
     private LocalDate fechaCosecha;
@@ -46,11 +46,11 @@ public class Cosecha {
     @ManyToMany(mappedBy = "cosecha")
     private List<Empleado> empleados;
 
-    enum Recolector {
+    public enum Recolector {
         MAQUINARIA, MANUAL
     }
 
-    enum Temporada {
+    public enum Temporada {
         PRIMAVERA, VERANO, OTONO, INVIERNO
     }
 }

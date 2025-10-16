@@ -26,7 +26,10 @@ public class CategoriaPlanta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCategoriaPlanta;
     private String nombre;
-    @OneToMany(mappedBy = "idPlanta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idPlanta", cascade = CascadeType.MERGE)
     @JsonManagedReference
     private List<Planta> planta;
+
+    @OneToMany(mappedBy = "idProducto")
+    private List<Producto> productos;
 }

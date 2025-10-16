@@ -30,6 +30,6 @@ public class Proveedor {
     private String email;
     private String direccion;
 
-    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.MERGE)
     private List<ProveedorInsumo> proveedorInsumos;
 }
