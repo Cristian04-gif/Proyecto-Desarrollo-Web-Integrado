@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Mapeo from './pages/tecnologia/Mapeo';
+import Seguimiento from './pages/tecnologia/Seguimiento';
+import Defensa from './pages/tecnologia/Defensa';
+import DSS from './pages/tecnologia/DSS';
+import Exploracion from './pages/tecnologia/Exploracion';
+import Sensores from './pages/tecnologia/Sensores';
+import Precision from './pages/tecnologia/Precision';
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/tecnologia/mapeo" element={<Mapeo />} />
+      <Route path="/tecnologia/seguimiento" element={<Seguimiento />} />
+      <Route path="/tecnologia/defensa" element={<Defensa />} />
+      <Route path="/tecnologia/dss" element={<DSS />} />
+      <Route path="/tecnologia/exploracion" element={<Exploracion />} />
+      <Route path="/tecnologia/sensores" element={<Sensores />} />
+      <Route path="/tecnologia/precision" element={<Precision />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
