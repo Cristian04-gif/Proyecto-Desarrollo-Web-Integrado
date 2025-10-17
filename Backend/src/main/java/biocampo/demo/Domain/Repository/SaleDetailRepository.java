@@ -13,4 +13,5 @@ public interface SaleDetailRepository {
     SaleDetail save(SaleDetail detail);
     void deleteById(Long id);
     List<SaleDetail> findBySale(Sale sale);
+    List<SaleDetail> saveAll(List<SaleDetail> details);
 }

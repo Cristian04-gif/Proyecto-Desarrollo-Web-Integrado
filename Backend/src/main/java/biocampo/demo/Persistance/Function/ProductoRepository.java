@@ -76,4 +76,11 @@ public class ProductoRepository implements ProductRepository {
         return productMapper.toProducts(menorPercio);
     }
 
+    /*@Override
+    public List<Product> getAllById(List<Product> products) {
+        List<Producto> productos = productMapper.toProductos(products);
+        List<Long> productosIds = 
+        List<Producto> productos2 = repoProducto.findAllById(productosIds);
+    }*/
+
 }

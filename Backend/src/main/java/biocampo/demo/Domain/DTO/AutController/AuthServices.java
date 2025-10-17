@@ -56,6 +56,7 @@ public class AuthServices {
 
         if (request.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
             user.setRol(Rol.ADMIN);
+
         } else if (request.getEmail().toLowerCase().endsWith("@biocampo.com")) {
             System.out.println("EL correo es empresarial");
             Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(request.getEmail());
@@ -78,6 +79,7 @@ public class AuthServices {
             } else {
                 System.out.println("NO SE ENCONTRO EL CORREO");
             }
+
         } else {
             user.setRol(Rol.CLIENTE);
         }
@@ -95,35 +97,40 @@ public class AuthServices {
         Usuario user = usuarioExistente.get();
         user.setNombre(request.getNombre());
         user.setApellido(request.getApellido());
+        user.setEmail(request.getEmail());
         user.setPais(request.getPais());
 
         if (request.getContraseña() != null && !request.getContraseña().isEmpty()) {
             user.setContraseña(passwordEncoder.encode(request.getContraseña()));
         }
+        if (request.getEmail().toLowerCase().endsWith("@utp.edu.pe")) {
+            user.setRol(Rol.ADMIN);
+        } else {
+            Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(request.getEmail());
+            if (existe.isPresent()) {
+                Empleado empleado = existe.get();
 
-        Optional<Empleado> existe = repoEmpleado.findByEmailEmpresarial(request.getEmail());
-        if (existe.isPresent()) {
-            Empleado empleado = existe.get();
+                Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
 
-            Optional<PuestoEmpleado> existePuesto = repoPuestoEmpleado.findById(empleado.getPuesto().getIdPuesto());
-
-            if (existePuesto.isPresent()) {
-                PuestoEmpleado puesto = existePuesto.get();
-                boolean positionEmployee = false;
-                for (Rol rol : Rol.values()) {
-                    if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
-                        user.setRol(rol);
-                        positionEmployee = true;
-                        break;
+                if (existePuesto.isPresent()) {
+                    PuestoEmpleado puesto = existePuesto.get();
+                    boolean positionEmployee = false;
+                    for (Rol rol : Rol.values()) {
+                        if (rol.toString().equalsIgnoreCase(puesto.getNombrePuesto())) {
+                            user.setRol(rol);
+                            positionEmployee = true;
+                            break;
+                        }
+                    }
+                    if (!positionEmployee) {
+                        user.setRol(Rol.CLIENTE);
                     }
                 }
-                if (!positionEmployee) {
-                    user.setRol(Rol.CLIENTE);
-                }
+            } else {
+                user.setRol(Rol.CLIENTE);
             }
-        } else {
-            user.setRol(Rol.CLIENTE);
         }
+
         repoUsuario.save(user);
         return AuthResponse.builder().token(jwtServices.getToken(user)).build();
 

@@ -17,6 +17,9 @@ public interface PlantMapper {
         @Mapping(source = "idPlanta", target = "plantId"),
         @Mapping(source = "nombre", target = "name"),
         @Mapping(source = "stock", target = "stock"),
+        @Mapping(source = "densidadSiembra", target = "seedingDensity"),
+        @Mapping(source = "pesoSemillaPromedio", target = "averageSeedWeight"),
+        @Mapping(source = "pesoPorPaquete", target = "weightPerPackage"),
         @Mapping(source = "disponible", target = "available"),
         @Mapping(source = "categoria", target = "category"),
     })

@@ -20,5 +20,6 @@ public class Sale {
     @CreationTimestamp
     private LocalDateTime saleDate;
     private BigDecimal total;
+    private String paymentMethod;
     //private List<SaleDetail> details;
 }

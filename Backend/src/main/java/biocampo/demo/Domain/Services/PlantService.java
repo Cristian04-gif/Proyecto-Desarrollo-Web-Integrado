@@ -28,31 +28,39 @@ public class PlantService {
     }
 
     public Plant registerPlant(Plant plant) {
-        boolean disponible = false;
-        if (plant.getStock() != 0) {
-            disponible = true;
-        }
 
+        if (plant.getStock() > 0) {
+            plant.setAvailable(true);
+            System.out.println("Se ingrese un stock positivo");
+        } else {
+            throw new IllegalArgumentException("NO se puede ingresar una numero menor a 0");
+        }
+        System.out.println("Commpureba si la categoria existe");
         Optional<PlantCategory> existCategory = categoryRepository
                 .getPlantCategory(plant.getCategory().getCategoryId());
 
         if (existCategory.isPresent()) {
-            PlantCategory category = existCategory.get();
-            System.out.println("categoria: " + category.getCategoryId());
-            plant.setCategory(category);
+            // PlantCategory category = existCategory.get();
+            System.out.println("categoria: " + existCategory.get().getCategoryId());
+            plant.setCategory(existCategory.get());
+        } else {
+            throw new IllegalArgumentException("Error! la categoria no existe");
         }
 
-        Plant registerPlant = Plant.builder()
-                .name(plant.getName())
-                .stock(plant.getStock())
-                .available(disponible)
-                .category(plant.getCategory())
-                .build();
-        System.out.println("Objeto creado");
-        System.out.println("nombre: "+registerPlant.getName());
-        System.out.println("disponible: "+registerPlant.isAvailable());
-        System.out.println("CategoriaPlanta: "+registerPlant.getCategory().getCategoryName());
-        return plantRepository.save(registerPlant);
+        /*
+         * Plant registerPlant = Plant.builder()
+         * .name(plant.getName())
+         * .stock(plant.getStock())
+         * .available(disponible)
+         * .category(plant.getCategory())
+         * .build();
+         * System.out.println("Objeto creado");
+         * System.out.println("nombre: "+registerPlant.getName());
+         * System.out.println("disponible: "+registerPlant.isAvailable());
+         * System.out.println("CategoriaPlanta: "+registerPlant.getCategory().
+         * getCategoryName());
+         */
+        return plantRepository.save(plant);
     }
 
     public Plant updatePlant(Long id, Plant plant) {
@@ -64,27 +72,28 @@ public class PlantService {
             if (plant.getName() != null) {
                 toUpdate.setName(plant.getName());
             }
-            if (plant.getStock() != 0) {
+            if (plant.getStock() > 0) {
                 toUpdate.setStock(plant.getStock());
                 toUpdate.setAvailable(true);
             }
 
-            Optional<PlantCategory> existCategory = categoryRepository.getPlantCategory(plant.getCategory().getCategoryId());
+            Optional<PlantCategory> existCategory = categoryRepository
+                    .getPlantCategory(plant.getCategory().getCategoryId());
             if (existCategory.isPresent()) {
                 toUpdate.setCategory(existCategory.get());
-            } else{
+            } else {
                 throw new IllegalArgumentException("Error! la categoria no existe");
             }
             System.out.println("Planta actualizada");
-            System.out.println("nombre: "+toUpdate.getName());
-            System.out.println("categoria: "+toUpdate.getCategory().getCategoryName());
+            System.out.println("nombre: " + toUpdate.getName());
+            System.out.println("categoria: " + toUpdate.getCategory().getCategoryName());
             return plantRepository.save(toUpdate);
-        } else{
+        } else {
             return null;
         }
     }
 
-    public void deletePlant(Long id){
+    public void deletePlant(Long id) {
         plantRepository.deleteById(id);
     }
 }

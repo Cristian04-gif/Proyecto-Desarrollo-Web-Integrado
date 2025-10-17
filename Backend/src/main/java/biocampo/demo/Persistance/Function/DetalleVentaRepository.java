@@ -60,4 +60,11 @@ public class DetalleVentaRepository implements SaleDetailRepository {
         return detailMapper.toSaleDetails(detalleVentas);
     }
 
+    @Override
+    public List<SaleDetail> saveAll(List<SaleDetail> details) {
+        List<DetalleVenta> detalleVentas = detailMapper.toDetalleVentas(details);
+        List<DetalleVenta> detalleVentasGuardados = repoDetalleVenta.saveAll(detalleVentas);
+        return detailMapper.toSaleDetails(detalleVentasGuardados);
+    }
+
 }

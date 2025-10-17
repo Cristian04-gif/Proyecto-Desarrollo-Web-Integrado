@@ -40,7 +40,7 @@ public class ProductService {
         return productRepository.getByPriceLess(price);
     }
 
-    public List<Product> getActive(Boolean active){
+    public List<Product> getActive(Boolean active) {
         return productRepository.getActive(active);
     }
 
@@ -57,6 +57,8 @@ public class ProductService {
                 .getPlantCategory(product.getPlantCategory().getCategoryId());
         if (existeCat.isPresent()) {
             product.setPlantCategory(existeCat.get());
+        } else {
+            throw new IllegalArgumentException("Error! la categoria no existe");
         }
         return productRepository.save(product); // save() funciona igual
     }

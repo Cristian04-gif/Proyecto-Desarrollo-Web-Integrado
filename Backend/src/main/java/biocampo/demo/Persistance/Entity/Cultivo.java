@@ -34,10 +34,10 @@ public class Cultivo {
     @JoinColumn(name = "idPlanta")
     private Planta planta;
     // 1 hectarea = 10 000 m2
-    private int hectareas;
+    private double hectareas;
+    private double paquetesRequeridos;
     //private String fertilizante;
-    private BigDecimal costo;
-    
+   // private BigDecimal costo;
     @CreationTimestamp
     private LocalDate fechaCultivo;
     private int cadaRiego;

@@ -25,6 +25,11 @@ public class Planta {
     private Long idPlanta;
     private String nombre;
     private int stock;
+
+    private double densidadSiembra; // plantas por metro cuadrado
+    private double pesoSemillaPromedio; // en gramos
+    private double pesoPorPaquete; // en kilogramos
+
     private boolean disponible;
 
     @ManyToOne

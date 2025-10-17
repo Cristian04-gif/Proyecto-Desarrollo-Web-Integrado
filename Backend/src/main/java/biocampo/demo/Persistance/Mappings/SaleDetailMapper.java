@@ -19,7 +19,7 @@ public interface SaleDetailMapper {
         @Mapping(source = "producto", target = "product"),
         @Mapping(source = "cantidad", target = "quantity"),
         @Mapping(source = "subtotal", target = "subTotal"),
-        @Mapping(source = "pago", target = "paymentMethod"),
+        //@Mapping(source = "pago", target = "paymentMethod"),
     })
 
     SaleDetail toSaleDetail(DetalleVenta detalleVenta);
@@ -28,4 +28,5 @@ public interface SaleDetailMapper {
 
     @InheritInverseConfiguration
     DetalleVenta toDetalleVenta(SaleDetail saleDetail);
+    List<DetalleVenta> toDetalleVentas(List<SaleDetail> detalleVentas);
 }

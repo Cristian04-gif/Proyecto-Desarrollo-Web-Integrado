@@ -3,8 +3,6 @@ package biocampo.demo.Persistance.Entity;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,10 +32,5 @@ public class DetalleVenta {
 
     private BigDecimal subtotal;
 
-    @Enumerated(EnumType.STRING)
-    private Metodo pago;
-
-    public enum Metodo {
-        PAYPAL, TARJETA
-    }
+    
 }

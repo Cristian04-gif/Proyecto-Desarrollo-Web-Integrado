@@ -7,6 +7,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,6 +34,13 @@ public class Venta {
     @CreationTimestamp
     private LocalDateTime fechaVenta;
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    private Metodo pago;
+
+    public enum Metodo {
+        PAYPAL, TARJETA
+    }
 
     @OneToMany(mappedBy = "idDetalleVenta")
     private List<DetalleVenta> detalle;

@@ -2,6 +2,8 @@ package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class Harvest {
     private Long harvestId;
     private Cultivation cultivation;
+    @CreationTimestamp
     private LocalDate dateHarvested;
     private String season;
     private String collector;

@@ -17,7 +17,7 @@ public class SaleDetail {
     private Product product;
     private int quantity;
     private BigDecimal subTotal;
-    private String paymentMethod;
+    //private String paymentMethod;
     /*public enum PaymentMethod {
         PAYPAL, CARD
     }*/

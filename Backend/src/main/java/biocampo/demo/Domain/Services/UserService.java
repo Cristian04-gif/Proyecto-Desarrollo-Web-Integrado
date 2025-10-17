@@ -38,7 +38,7 @@ public class UserService {
         return userRepository.getByEmail(email);
     }
 
-    public User updateUser(Long id, User user) {
+    /*public User updateUser(Long id, User user) {
         Optional<User> existingUser = userRepository.getUser(id);
         if (existingUser.isPresent()) {
             User toUpdate = existingUser.get();
@@ -93,7 +93,7 @@ public class UserService {
         } else {
             return null;
         }
-    }
+    }*/
 
     public void deleteUser(Long userId) {
         userRepository.delete(userId);

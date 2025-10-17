@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import biocampo.demo.Domain.Model.Customer;
 import biocampo.demo.Domain.Model.Sale;
+import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Repository.CustomerRepository;
 import biocampo.demo.Domain.Repository.SaleRepository;
+import biocampo.demo.Persistance.Entity.Venta.Metodo;
 
 @Service
 public class SaleService {
@@ -32,12 +34,9 @@ public class SaleService {
 
     // Registrar nueva venta
     public Sale registerSale(Sale sale) {
-        Optional<Customer> existeCustomer = customerRepository.getByIdCustomer(sale.getCustomer().getCustomerId());
-        
-        if (existeCustomer.isPresent()) {
-            sale.setCustomer(existeCustomer.get());
-        }
-        
+        Customer customer = customerRepository.getByIdCustomer(sale.getCustomer().getCustomerId())
+                .orElseThrow(() -> new IllegalArgumentException("NO existe el cliente asignado"));
+        sale.setCustomer(customer);
         return saleRepository.save(sale);
     }
 
@@ -48,21 +47,35 @@ public class SaleService {
         if (existingSale.isPresent()) {
             Sale toUpdate = existingSale.get();
 
-            if (updatedSale.getCustomer() != null){
-                Optional<Customer> existe = customerRepository.getByIdCustomer(updatedSale.getCustomer().getCustomerId());
+            if (updatedSale.getCustomer() != null) {
+                Optional<Customer> existe = customerRepository
+                        .getByIdCustomer(updatedSale.getCustomer().getCustomerId());
                 if (existe.isPresent()) {
-                    updatedSale.setCustomer(existe.get());
-                }else{
+                    toUpdate.setCustomer(existe.get());
+                } else {
                     throw new IllegalArgumentException("Error! el cliente no existe");
                 }
             }
             if (updatedSale.getTotal() != null)
                 toUpdate.setTotal(updatedSale.getTotal());
 
+            if (updatedSale.getPaymentMethod() != null) {
+                boolean existPay = false;
+                for (Metodo metodo : Metodo.values()) {
+                    if (metodo.toString().equalsIgnoreCase(updatedSale.getPaymentMethod())) {
+                        updatedSale.setPaymentMethod(metodo.name());
+                        existPay = true;
+                        break;
+                    }
+                }
+                if (!existPay) {
+                    throw new IllegalArgumentException("EL metodo de pago no existe");
+                }
+                toUpdate.setPaymentMethod(updatedSale.getPaymentMethod());
+            }
             return saleRepository.save(toUpdate);
         } else {
-            // También podrías lanzar una excepción si no existe
-            return saleRepository.save(updatedSale);
+            return null;
         }
     }
 

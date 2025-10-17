@@ -11,6 +11,7 @@ public interface ProductRepository {
 
     List<Product> getAll();
     Optional<Product> getById(Long id);
+    //List<Product> getAllById(List<Product> products);
     Product save(Product product);
     void deleteById(Long id);
     List<Product> getCategory(PlantCategory category);
