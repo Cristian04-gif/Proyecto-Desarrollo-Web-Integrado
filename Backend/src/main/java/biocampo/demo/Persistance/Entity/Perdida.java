@@ -1,9 +1,14 @@
 package biocampo.demo.Persistance.Entity;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,9 +22,14 @@ public class Perdida {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPerdida;
     private String tipoPerdida;
-    private String accion;
+    private String descripcion;
+    private double porcentajeAfectacion;
+    @CreationTimestamp
+    private LocalDate fechaPerdida;
     @ManyToOne
+    @JoinColumn(name = "idCultivo")
     private Cultivo cultivo;
     @ManyToOne
+    @JoinColumn(name = "idCosecha")
     private Cosecha cosecha;
 }

@@ -1,0 +1,121 @@
+package biocampo.demo.Domain.Services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import biocampo.demo.Domain.Model.Cultivation;
+import biocampo.demo.Domain.Model.Plant;
+import biocampo.demo.Domain.Repository.CultivationRepository;
+import biocampo.demo.Domain.Repository.PlantRepository;
+import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+
+@Service
+public class CultivationService {
+
+    @Autowired
+    private CultivationRepository cultivationRepository;
+
+    @Autowired
+    private PlantRepository plantRepository;
+
+    public List<Cultivation> getAllCultivations() {
+        return cultivationRepository.getAll();
+    }
+
+    public Optional<Cultivation> getCultivationById(Long id) {
+        return cultivationRepository.getById(id);
+    }
+
+    public void calculo(Cultivation cultivation) {
+        Plant plant = plantRepository.getById(cultivation.getPlant().getPlantId())
+                .orElseThrow(() -> new IllegalArgumentException("La planta relacionada no existe"));
+
+        // calculo de paquete requeridos
+        double hectareas = cultivation.getHectares();
+        double densidad = plant.getSeedingDensity();
+        double pesoSemillaGramos = plant.getAverageSeedWeight();
+        double pesoPaquete = plant.getWeightPerPackage();
+
+        // calculo de semillas necesarias por kg
+        double semillasXHectarea = densidad * 10000;
+        double pesoTotalKg = (semillasXHectarea * pesoSemillaGramos) / 1000;
+        double paquetesXHectareas = pesoTotalKg / pesoPaquete;
+
+        double paquetesTotales = paquetesXHectareas * hectareas;
+
+        cultivation.setRequiredPackages(paquetesTotales);
+        cultivation.setPlant(plant);
+
+        if (cultivation.getRequiredPackages() < plant.getStock()) {
+            plant.setStock(plant.getStock() - (int) paquetesTotales);
+        } else {
+            System.out.println("no hay suficiente stock de la planta");
+            throw new IllegalArgumentException("no hay suficiente stock de la planta");
+        }
+        plantRepository.save(plant);
+        // return cultivation;
+    }
+
+    public Cultivation registerCultivation(Cultivation cultivation) {
+        calculo(cultivation);
+        boolean existTemp = false;
+        for (Temporada temp : Temporada.values()) {
+            if (temp.toString().equalsIgnoreCase(cultivation.getSeason())) {
+                cultivation.setSeason(temp.name());
+                existTemp = true;
+                break;
+            }
+        }
+
+        if (!existTemp) {
+            throw new IllegalArgumentException("La temporada no existe");
+        }
+        return cultivationRepository.save(cultivation);
+    }
+
+    public Cultivation updateCultivation(Long id, Cultivation cultivation) {
+        Optional<Cultivation> existing = cultivationRepository.getById(id);
+        if (existing.isPresent()) {
+            Cultivation toUpdate = existing.get();
+            toUpdate.setHectares(cultivation.getHectares());
+            // toUpdate.setCost(cultivation.getCost());
+            toUpdate.setStartDate(cultivation.getStartDate());
+            toUpdate.setEndDate(cultivation.getEndDate());
+            toUpdate.setEachIrrigation(cultivation.getEachIrrigation());
+
+            // temporada
+            boolean existTemp = false;
+            for (Temporada temp : Temporada.values()) {
+                if (temp.toString().equalsIgnoreCase(cultivation.getSeason())) {
+                    cultivation.setSeason(temp.name());
+                    existTemp = true;
+                    break;
+                }
+            }
+
+            if (!existTemp) {
+                throw new IllegalArgumentException("La temporada no existe");
+            }
+            toUpdate.setSeason(cultivation.getSeason());
+            //
+
+            Optional<Plant> plant = plantRepository.getById(cultivation.getPlant().getPlantId());
+            plant.ifPresent(toUpdate::setPlant);
+
+            return cultivationRepository.save(toUpdate);
+        } else {
+            return null;
+        }
+    }
+
+    public void deleteCultivation(Long id) {
+        cultivationRepository.deleteById(id);
+    }
+
+    public List<Cultivation> getBySeason(String season) {
+        return cultivationRepository.findBySeason(season);
+    }
+}
