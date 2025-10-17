@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import biocampo.demo.Domain.Model.Customer;
 import biocampo.demo.Domain.Model.Sale;
-import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Repository.CustomerRepository;
 import biocampo.demo.Domain.Repository.SaleRepository;
 import biocampo.demo.Persistance.Entity.Venta.Metodo;

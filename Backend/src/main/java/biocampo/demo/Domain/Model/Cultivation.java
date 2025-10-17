@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;

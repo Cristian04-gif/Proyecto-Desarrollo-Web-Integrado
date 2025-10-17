@@ -47,19 +47,6 @@ public class PlantService {
             throw new IllegalArgumentException("Error! la categoria no existe");
         }
 
-        /*
-         * Plant registerPlant = Plant.builder()
-         * .name(plant.getName())
-         * .stock(plant.getStock())
-         * .available(disponible)
-         * .category(plant.getCategory())
-         * .build();
-         * System.out.println("Objeto creado");
-         * System.out.println("nombre: "+registerPlant.getName());
-         * System.out.println("disponible: "+registerPlant.isAvailable());
-         * System.out.println("CategoriaPlanta: "+registerPlant.getCategory().
-         * getCategoryName());
-         */
         return plantRepository.save(plant);
     }
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.aspectj.apache.bcel.generic.RET;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.Product;
 import biocampo.demo.Domain.Repository.SaleDetailRepository;
 import biocampo.demo.Domain.Repository.SaleRepository;
-import biocampo.demo.Persistance.Entity.Producto;
+
 import biocampo.demo.Domain.Repository.ProductRepository;
 
 @Service
@@ -85,34 +85,7 @@ public class SaleDetailService {
         sale.setTotal(total);
         saleRepository.save(sale);
         return saleDetailRepository.saveAll(details);
-        /*
-         * BigDecimal subtotal = new BigDecimal("0");
-         * Optional<Sale> existSale =
-         * saleRepository.getById(details.getFirst().getSale().getSaleId());
-         * int i = 0;
-         * for (SaleDetail saleDetail : details) {
-         * 
-         * Optional<Product> existProduc =
-         * productRepository.getById(saleDetail.getProduct().getProductId());
-         * 
-         * if (existProduc.isPresent() && existSale.isPresent()) {
-         * saleDetail.setSale(existSale.get());
-         * saleDetail.setProduct(existProduc.get());
-         * } else {
-         * throw new IllegalArgumentException("La venta o productos no puede ser nulo");
-         * }
-         * 
-         * subtotal = subtotal.add(saleDetail.getSubTotal());
-         * System.out.println("subtotal del detalle " + (i + 1) + ": " + subtotal);
-         * i++;
-         * }
-         * 
-         * Sale sale = existSale.get();
-         * sale.setTotal(subtotal);
-         * saleRepository.save(sale);
-         * 
-         * return saleDetailRepository.saveAll(details);
-         */
+        
     }
 
     public SaleDetail updateSaleDetail(Long id, SaleDetail saleDetail) {
@@ -121,7 +94,6 @@ public class SaleDetailService {
             SaleDetail toUpdate = existing.get();
             toUpdate.setQuantity(saleDetail.getQuantity());
             toUpdate.setSubTotal(saleDetail.getSubTotal());
-            // toUpdate.setPaymentMethod(saleDetail.getPaymentMethod());
 
             Optional<Sale> sale = saleRepository.getById(saleDetail.getSale().getSaleId());
             sale.ifPresent(toUpdate::setSale);
