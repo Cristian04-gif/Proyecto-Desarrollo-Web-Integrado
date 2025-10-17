@@ -74,6 +74,9 @@ public class PlantService {
             System.out.println("Planta actualizada");
             System.out.println("nombre: " + toUpdate.getName());
             System.out.println("categoria: " + toUpdate.getCategory().getCategoryName());
+            toUpdate.setSeedingDensity(plant.getSeedingDensity());
+            toUpdate.setAverageSeedWeight(plant.getAverageSeedWeight());
+            toUpdate.setWeightPerPackage(plant.getWeightPerPackage());
             return plantRepository.save(toUpdate);
         } else {
             return null;
