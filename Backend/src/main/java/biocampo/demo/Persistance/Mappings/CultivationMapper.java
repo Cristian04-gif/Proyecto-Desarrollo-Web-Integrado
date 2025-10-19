@@ -18,7 +18,7 @@ public interface CultivationMapper {
         @Mapping(source = "planta", target = "plant"),
         @Mapping(source = "hectareas", target = "hectares"),
         @Mapping(source = "paquetesRequeridos",target= "requiredPackages"),
-        //@Mapping(source = "costo", target = "cost"),
+        @Mapping(source = "costo", target = "cost"),
         @Mapping(source = "fechaCultivo", target = "startDate"),
         @Mapping(source = "cadaRiego", target = "eachIrrigation"),
         @Mapping(source = "temporada", target = "season"),

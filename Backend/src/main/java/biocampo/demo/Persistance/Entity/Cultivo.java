@@ -1,5 +1,6 @@
 package biocampo.demo.Persistance.Entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,19 +29,19 @@ public class Cultivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCultivo;
-    
+
     @ManyToOne
     @JoinColumn(name = "idPlanta")
     private Planta planta;
     // 1 hectarea = 10 000 m2
     private double hectareas;
     private double paquetesRequeridos;
-    //private String fertilizante;
-   // private BigDecimal costo;
+    // private String fertilizante;
+    private double costo;
     @CreationTimestamp
     private LocalDate fechaCultivo;
     private int cadaRiego;
-    
+
     @Enumerated(EnumType.STRING)
     private Temporada temporada;
     private LocalDate fechaEstimadaCosecha;

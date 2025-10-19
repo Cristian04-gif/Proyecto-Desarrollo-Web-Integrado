@@ -19,8 +19,9 @@ public interface InputMapper {
         @Mapping(source = "tipo", target = "type"),
         @Mapping(source = "descripcion", target = "description"),
         @Mapping(source = "unidad", target = "unit"),
+        @Mapping(source = "precio", target = "price"),
         @Mapping(source = "planta", target = "plant"),
-        @Mapping(source = "cultivo", target = "cultivation"),
+        //@Mapping(source = "cultivo", target = "cultivation"),
     })
 
     Input toInput(Insumo insumo);

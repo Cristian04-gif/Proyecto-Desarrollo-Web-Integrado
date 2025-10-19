@@ -1,6 +1,8 @@
 package biocampo.demo.Domain.Model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,7 +20,7 @@ public class Cultivation {
     private Plant plant;
     private double hectares;
     private double requiredPackages;
-    //private BigDecimal cost;
+    private double cost;
     @CreationTimestamp
     private LocalDate startDate;
     private int eachIrrigation;
@@ -27,6 +29,6 @@ public class Cultivation {
     private LocalDate endDate;
     //private List<Loss> losses;
     //private List<InputCultivation> inputs;
-    //private List<Employee> employees;
+    private List<Employee> employees;
 
 }

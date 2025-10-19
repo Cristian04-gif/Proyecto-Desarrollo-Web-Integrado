@@ -15,9 +15,10 @@ public class Input {
     private String name;
     private String type;
     private String description;
-    private String unit;
+    private int unit;
+    private double price;
     private Plant plant;
-    private Cultivation cultivation;
+    //private Cultivation cultivation;
     //private List<InputSupplier> suppliers;
     //private List<InputCultivation> applications;
     /*public enum Type {

@@ -45,7 +45,7 @@ public class InputController {
     @PostMapping("/register")
     public ResponseEntity<Input> registerInput(@RequestBody Input input){
         try {
-            Input input2 = inputService.registerInput(input);
+            Input input2 = inputService.inputRegister(input);
             return new ResponseEntity<>(input2, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +55,7 @@ public class InputController {
     @PutMapping("/update/{id}")
     public ResponseEntity<Input> updateInput(@PathVariable Long id, @RequestBody Input input) {
         try {
-            Input input2 = inputService.updateInput(id, input);
+            Input input2 = inputService.inputUpdate(id, input);
             return new ResponseEntity<>(input2, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

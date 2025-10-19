@@ -1,6 +1,5 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ public class CultivoInsumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal cantidad;
+    private int cantidad;
 
     @ManyToOne
     @JoinColumn(name="idCultivo")

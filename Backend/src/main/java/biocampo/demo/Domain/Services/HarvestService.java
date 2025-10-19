@@ -31,12 +31,9 @@ public class HarvestService {
     }
 
     public Harvest registerHarvest(Harvest harvest) {
-        Optional<Cultivation> exist = cultivationRepository.getById(harvest.getCultivation().getCultivationId());
-        if (exist.isPresent()) {
-            harvest.setCultivation(exist.get());
-        } else {
-            throw new IllegalArgumentException("NO existe el cultivo relacionado");
-        }
+        Cultivation exist = cultivationRepository.getById(harvest.getCultivation().getCultivationId())
+                .orElseThrow(() -> new IllegalArgumentException("El cultivo relacionado no existe"));
+        harvest.setCultivation(exist);
 
         boolean existTemp = false;
         for (Temporada temp : Temporada.values()) {
@@ -65,47 +62,44 @@ public class HarvestService {
     }
 
     public Harvest updateHarvest(Long id, Harvest harvest) {
-        Optional<Harvest> existHarvest = harvestRepository.getByIdHarvest(id);
-        if (existHarvest.isPresent()) {
+        Harvest updateHarvest = harvestRepository.getByIdHarvest(id)
+                .orElseThrow(() -> new IllegalArgumentException("La cosecha no exixte"));
 
-            Optional<Cultivation> existCultivation = cultivationRepository
-                    .getById(harvest.getCultivation().getCultivationId());
-            if (existCultivation.isPresent()) {
-                harvest.setCultivation(existCultivation.get());
-            }
+        Cultivation existCultivation = cultivationRepository
+                .getById(harvest.getCultivation().getCultivationId())
+                .orElseThrow(() -> new IllegalArgumentException("El cultivo relacionado no existe"));
+        harvest.setCultivation(existCultivation);
 
-            boolean existTemp = false;
-            for (Temporada temp : Temporada.values()) {
-                if (temp.toString().equalsIgnoreCase(harvest.getSeason())) {
-                    harvest.setSeason(temp.name());
-                    existTemp = true;
-                    break;
-                }
+        boolean existTemp = false;
+        for (Temporada temp : Temporada.values()) {
+            if (temp.toString().equalsIgnoreCase(harvest.getSeason())) {
+                harvest.setSeason(temp.name());
+                existTemp = true;
+                break;
             }
-            if (!existTemp) {
-                throw new IllegalArgumentException("La temporada no existe");
-            }
-
-            boolean existCollector = false;
-            for (Recolector recolec : Recolector.values()) {
-                if (recolec.toString().equalsIgnoreCase(harvest.getCollector())) {
-                    harvest.setCollector(recolec.name());
-                    existCollector = true;
-                    break;
-                }
-            }
-            if (!existCollector) {
-                throw new IllegalArgumentException("La tipo de recolecion no existe");
-            }
-
-            Harvest updateHarvest = existHarvest.get();
-            updateHarvest.setCultivation(harvest.getCultivation());
-            updateHarvest.setSeason(harvest.getSeason());
-            updateHarvest.setCollector(harvest.getCollector());
-            return harvestRepository.save(updateHarvest);
-        } else {
-            return null;
         }
+        if (!existTemp) {
+            throw new IllegalArgumentException("La temporada no existe");
+        }
+
+        boolean existCollector = false;
+        for (Recolector recolec : Recolector.values()) {
+            if (recolec.toString().equalsIgnoreCase(harvest.getCollector())) {
+                harvest.setCollector(recolec.name());
+                existCollector = true;
+                break;
+            }
+        }
+        if (!existCollector) {
+            throw new IllegalArgumentException("La tipo de recolecion no existe");
+        }
+
+        // Harvest updateHarvest = existHarvest;
+        updateHarvest.setCultivation(harvest.getCultivation());
+        updateHarvest.setSeason(harvest.getSeason());
+        updateHarvest.setCollector(harvest.getCollector());
+        return harvestRepository.save(updateHarvest);
+
     }
 
     public void deleteHarvest(Long id) {

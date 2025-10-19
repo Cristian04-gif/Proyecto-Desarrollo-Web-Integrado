@@ -63,7 +63,9 @@ public class PlantService {
                 toUpdate.setStock(plant.getStock());
                 toUpdate.setAvailable(true);
             }
-
+            toUpdate.setSeedingDensity(plant.getSeedingDensity());
+            toUpdate.setAverageSeedWeight(plant.getAverageSeedWeight());
+            toUpdate.setWeightPerPackage(plant.getWeightPerPackage());
             Optional<PlantCategory> existCategory = categoryRepository
                     .getPlantCategory(plant.getCategory().getCategoryId());
             if (existCategory.isPresent()) {

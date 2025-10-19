@@ -34,34 +34,60 @@ public class InputCultivationService {
     }
 
     public InputCultivation registerInputApplication(InputCultivation inputCultivation) {
-        Optional<Input> input = inputRepository.getById(inputCultivation.getInput().getInputId());
-        Optional<Cultivation> cultivation = cultivationRepository.getById(inputCultivation.getCultivation().getCultivationId());
+        Input input = inputRepository.getById(inputCultivation.getInput().getInputId())
+                .orElseThrow(() -> new IllegalArgumentException("no existe el insumo"));
+        Cultivation cultivation = cultivationRepository.getById(inputCultivation.getCultivation().getCultivationId())
+                .orElseThrow(() -> new IllegalArgumentException("NO existe el cultivo relacionado"));
 
-        if (input.isPresent() && cultivation.isPresent()) {
-            inputCultivation.setInput(input.get());
-            inputCultivation.setCultivation(cultivation.get());
-            return inputCultivationRepository.save(inputCultivation);
+        inputCultivation.setInput(input);
+        inputCultivation.setCultivation(cultivation);
+
+        //
+        if (inputCultivation.getQuantity() > input.getUnit()) {
+            System.out.println("Error! no hay suficientes insumos");
+            throw new IllegalArgumentException("Error! no hay suficientes insumos");
         } else {
-            return null;
+            input.setUnit(input.getUnit() - inputCultivation.getQuantity());
+            inputRepository.save(input);
+            cultivation.setCost(cultivation.getCost() + (input.getPrice() * inputCultivation.getQuantity()));
+            cultivationRepository.save(cultivation);
+
         }
+        //
+        return inputCultivationRepository.save(inputCultivation);
+
     }
 
     public InputCultivation updateInputApplication(Long id, InputCultivation inputCultivation) {
-        Optional<InputCultivation> existing = inputCultivationRepository.getById(id);
-        if (existing.isPresent()) {
-            InputCultivation toUpdate = existing.get();
-            toUpdate.setQuantity(inputCultivation.getQuantity());
+        InputCultivation toUpdate = inputCultivationRepository.getById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No existe ese objeto"));
 
-            Optional<Input> input = inputRepository.getById(inputCultivation.getInput().getInputId());
-            input.ifPresent(toUpdate::setInput);
+        Input input = inputRepository.getById(inputCultivation.getInput().getInputId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe el insumo"));
 
-            Optional<Cultivation> cultivation = cultivationRepository.getById(inputCultivation.getCultivation().getCultivationId());
-            cultivation.ifPresent(toUpdate::setCultivation);
+        Cultivation cultivation = cultivationRepository
+                .getById(inputCultivation.getCultivation().getCultivationId())
+                .orElseThrow(() -> new IllegalArgumentException("El cultivo relacionado no existe"));
 
-            return inputCultivationRepository.save(toUpdate);
-        } else {
-            return null;
+        //
+        System.out.println("cantidad Insumo antes de actualizar: "+input.getUnit());
+        input.setUnit(input.getUnit() + toUpdate.getQuantity());
+        if (inputCultivation.getQuantity() < input.getUnit()) {
+            input.setUnit(input.getUnit() - inputCultivation.getQuantity());
         }
+        System.out.println("Cantidad de insumo despues de actualizar: "+input.getUnit());
+        inputRepository.save(input);
+
+        toUpdate.setInput(input);
+        toUpdate.setCultivation(cultivation);
+        cultivation.setCost(cultivation.getCost() - (toUpdate.getQuantity() * input.getPrice()));
+        
+        toUpdate.setQuantity(inputCultivation.getQuantity());
+        cultivation.setCost(cultivation.getCost() + (toUpdate.getQuantity() * input.getPrice()));
+        cultivationRepository.save(cultivation);
+        //
+
+        return inputCultivationRepository.save(toUpdate);
     }
 
     public void deleteInputApplication(Long id) {

@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InputCultivation {
     private Long inputCultivationId;
-    private BigDecimal quantity;
+    private int quantity;
     private Cultivation cultivation;
     private Input input;
     

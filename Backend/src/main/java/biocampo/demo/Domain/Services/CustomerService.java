@@ -30,12 +30,9 @@ public class CustomerService {
     }
 
     public Customer registerCustomer(Customer customer) {
-        Optional<User> existUser = userRepository.getByEmail(customer.getUser().getEmail());
-        if (existUser.isPresent()) {
-            customer.setUser(existUser.get());
-        } else {
-            throw new IllegalArgumentException("El usuario relacionado no existe");
-        }
+        User existUser = userRepository.getByEmail(customer.getUser().getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("No existe un usuario con ese correo"));
+        customer.setUser(existUser);
 
         boolean existType = false;
         for (Tipo tipo : Tipo.values()) {
@@ -52,39 +49,36 @@ public class CustomerService {
     }
 
     public Customer updateCustomer(Long id, Customer customer) {
-        Optional<Customer> existing = customerRepository.getByIdCustomer(id);
-        if (existing.isPresent()) {
-            Customer toUpdate = existing.get();
-            toUpdate.setAge(customer.getAge());
-            toUpdate.setPhone(customer.getPhone());
-            toUpdate.setAddress(customer.getAddress());
+        Customer toUpdate = customerRepository.getByIdCustomer(id)
+                .orElseThrow(() -> new IllegalArgumentException("El cliente no exciste"));
 
-            // tipo
-            boolean existType = false;
-            for (Tipo tipo : Tipo.values()) {
-                if (tipo.toString().equalsIgnoreCase(customer.getType())) {
-                    customer.setType(tipo.name());
-                    existType = true;
-                    break;
-                }
-            }
-            if (!existType) {
-                throw new IllegalArgumentException("El tipo no fue identificado");
-            }
-            toUpdate.setType(customer.getType());
+        // ustomer toUpdate = existing.get();
+        toUpdate.setAge(customer.getAge());
+        toUpdate.setPhone(customer.getPhone());
+        toUpdate.setAddress(customer.getAddress());
 
-            // user
-            Optional<User> existUser = userRepository.getByEmail(customer.getUser().getEmail());
-            if (existUser.isPresent()) {
-                customer.setUser(existUser.get());
-            } else {
-                throw new IllegalArgumentException("El usuario relacionado no existe");
+        // tipo
+        boolean existType = false;
+        for (Tipo tipo : Tipo.values()) {
+            if (tipo.toString().equalsIgnoreCase(customer.getType())) {
+                customer.setType(tipo.name());
+                existType = true;
+                break;
             }
-            toUpdate.setUser(customer.getUser());
-            return customerRepository.save(toUpdate);
-        } else {
-            return null;
         }
+        if (!existType) {
+            throw new IllegalArgumentException("El tipo no fue identificado");
+        }
+        toUpdate.setType(customer.getType());
+
+        // user
+        User existUser = userRepository.getByEmail(customer.getUser().getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("EL usuario relacionado no existe"));
+        customer.setUser(existUser);
+
+        toUpdate.setUser(customer.getUser());
+        return customerRepository.save(toUpdate);
+
     }
 
     public void deleteCustomer(Long id) {

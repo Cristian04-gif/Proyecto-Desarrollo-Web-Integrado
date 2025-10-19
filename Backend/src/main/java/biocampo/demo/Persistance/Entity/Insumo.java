@@ -30,17 +30,18 @@ public class Insumo {
     private String nombre;
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
-    private String descripcion;
     // kg, bolas, mallas, etc.
-    private String unidad;
+    private String descripcion;
+    private double precio;
+    private int unidad;
 
     @ManyToOne
     @JoinColumn(name = "idPlanta")
     private Planta planta;
     
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "idCultivo")
-    private Cultivo cultivo;
+    private Cultivo cultivo;*/
 
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.MERGE)
     private List<ProveedorInsumo> proveedorInsumos;
