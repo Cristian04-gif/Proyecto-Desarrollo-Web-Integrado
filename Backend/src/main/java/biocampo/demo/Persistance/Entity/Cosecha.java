@@ -40,7 +40,7 @@ public class Cosecha {
     @Enumerated(EnumType.STRING)
     private Recolector recolector;
     
-    @OneToMany(mappedBy = "idPerdida")
+    @OneToMany(mappedBy = "cosecha")
     private List<Perdida> idPerdida;
 
     @ManyToMany(mappedBy = "cosecha")

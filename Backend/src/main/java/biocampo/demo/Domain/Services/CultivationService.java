@@ -50,12 +50,7 @@ public class CultivationService {
         cultivation.setPlant(plant);
         //cultivation.setCost(0);
 
-        if (cultivation.getRequiredPackages() < plant.getStock()) {
-            plant.setStock(plant.getStock() - (int) paquetesTotales);
-        } else {
-            System.out.println("no hay suficiente stock de la planta");
-            throw new IllegalArgumentException("no hay suficiente stock de la planta");
-        }
+        
         plantRepository.save(plant);
         return cultivation;
     }
@@ -111,7 +106,7 @@ public class CultivationService {
         toUpdate.setPlant(plant);
 
         //
-        plant.setStock(plant.getStock() + (int) toUpdate.getRequiredPackages());
+        //plant.setStock(plant.getStock() + (int) toUpdate.getRequiredPackages());
         
         toUpdate.setHectares(cultivation.getHectares());
         

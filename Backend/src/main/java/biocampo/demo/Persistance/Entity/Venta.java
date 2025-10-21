@@ -42,6 +42,6 @@ public class Venta {
         PAYPAL, TARJETA
     }
 
-    @OneToMany(mappedBy = "idDetalleVenta")
+    @OneToMany(mappedBy = "venta")
     private List<DetalleVenta> detalle;
 }

@@ -14,10 +14,12 @@ public class Input {
     private Long inputId;
     private String name;
     private String type;
-    private String description;
-    private int unit;
-    private double price;
-    private Plant plant;
+    private String unitStatet;
+    private double stock;
+    private double priceUnit;
+    private double totalCost;
+    
+    private Supplier supplier;
     //private Cultivation cultivation;
     //private List<InputSupplier> suppliers;
     //private List<InputCultivation> applications;

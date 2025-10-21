@@ -1,19 +1,19 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class InputSupplier {
-    private Long inputSupplierId;
-    private Supplier supplier;
+public class OrderDetail {
+
+    private Long detailId;
+    private int amount;
+    private double priceUnit;
+    private Order order;
     private Input input;
-    private BigDecimal price;
 }

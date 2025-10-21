@@ -29,12 +29,7 @@ public class PlantService {
 
     public Plant registerPlant(Plant plant) {
 
-        if (plant.getStock() > 0) {
-            plant.setAvailable(true);
-            System.out.println("Se ingrese un stock positivo");
-        } else {
-            throw new IllegalArgumentException("NO se puede ingresar una numero menor a 0");
-        }
+        
         System.out.println("Commpureba si la categoria existe");
         Optional<PlantCategory> existCategory = categoryRepository
                 .getPlantCategory(plant.getCategory().getCategoryId());
@@ -59,13 +54,12 @@ public class PlantService {
             if (plant.getName() != null) {
                 toUpdate.setName(plant.getName());
             }
-            if (plant.getStock() > 0) {
-                toUpdate.setStock(plant.getStock());
-                toUpdate.setAvailable(true);
-            }
+            toUpdate.setDescription(plant.getDescription());
             toUpdate.setSeedingDensity(plant.getSeedingDensity());
             toUpdate.setAverageSeedWeight(plant.getAverageSeedWeight());
             toUpdate.setWeightPerPackage(plant.getWeightPerPackage());
+            toUpdate.setHarvestDays(plant.getHarvestDays());
+            toUpdate.setAvailable(plant.isAvailable());
             Optional<PlantCategory> existCategory = categoryRepository
                     .getPlantCategory(plant.getCategory().getCategoryId());
             if (existCategory.isPresent()) {

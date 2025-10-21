@@ -1,6 +1,5 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,10 +32,8 @@ public class Cultivo {
     @ManyToOne
     @JoinColumn(name = "idPlanta")
     private Planta planta;
-    // 1 hectarea = 10 000 m2
     private double hectareas;
     private double paquetesRequeridos;
-    // private String fertilizante;
     private double costo;
     @CreationTimestamp
     private LocalDate fechaCultivo;
@@ -46,11 +43,11 @@ public class Cultivo {
     private Temporada temporada;
     private LocalDate fechaEstimadaCosecha;
 
-    @OneToMany(mappedBy = "idPerdida")
-    private List<Perdida> perdida;
+    @OneToMany(mappedBy = "cultivo")
+    private List<Perdida> perdidas;
 
     @OneToMany(mappedBy = "cultivo", cascade = CascadeType.MERGE)
-    private List<CultivoInsumo> insumo;
+    private List<CultivoInsumo> insumos;
 
     @ManyToMany(mappedBy = "cultivo")
     private List<Empleado> empleados;

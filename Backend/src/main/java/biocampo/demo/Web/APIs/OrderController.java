@@ -3,14 +3,17 @@ package biocampo.demo.Web.APIs;
 import java.util.List;
 import java.util.Optional;
 
+import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import biocampo.demo.Domain.Model.InputSupplier;
-import biocampo.demo.Domain.Services.InputSupplierService;
+import biocampo.demo.Domain.DTO.Request.OrderRequest;
+import biocampo.demo.Domain.Model.Order;
+import biocampo.demo.Domain.Model.OrderDetail;
+import biocampo.demo.Domain.Services.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,29 +25,49 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/api/inputSuplier")
-public class InputSupplierController {
+@RequestMapping("/api/order")
+public class OrderController {
 
     @Autowired
-    private InputSupplierService inputSupplierService;
+    private OrderService orderService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<InputSupplier>> getAll() {
-        List<InputSupplier> inputSuppliers = inputSupplierService.getAll();
+    public ResponseEntity<List<Order>> getAll() {
+        List<Order> inputSuppliers = orderService.getAll();
         return new ResponseEntity<>(inputSuppliers, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<InputSupplier> getInputSupplier(@PathVariable Long id) {
-        Optional<InputSupplier> optional = inputSupplierService.getInputSupplier(id);
+    public ResponseEntity<Order> getInputSupplier(@PathVariable Long id) {
+        Optional<Order> optional = orderService.getInputSupplier(id);
         return optional.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<InputSupplier> registerInputSupplier(@RequestBody InputSupplier inputSupplier) {
+    public ResponseEntity<Order> registerOrder(@RequestBody OrderRequest orderRequest){
         try {
-            InputSupplier inputSupplier2 = inputSupplierService.registerInputSupplier(inputSupplier);
+            Order registerOrder = orderService.registerOrder(orderRequest.getOrder(), orderRequest.getDetails());
+            return new ResponseEntity<>(registerOrder, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    /*@DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteOrderAndDetails(@PathVariable Long id){
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
+
+    /*@PostMapping("/register")
+    public ResponseEntity<Order> registerInputSupplier(@RequestBody Order inputSupplier) {
+        try {
+            Order inputSupplier2 = inputSupplierService.registerInputSupplier(inputSupplier);
             return new ResponseEntity<>(inputSupplier2, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,9 +75,9 @@ public class InputSupplierController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<InputSupplier> updateInputSupplier(@PathVariable Long id, @RequestBody InputSupplier inputSupplier){
+    public ResponseEntity<Order> updateInputSupplier(@PathVariable Long id, @RequestBody Order inputSupplier){
         try {
-            InputSupplier inputSupplier2 = inputSupplierService.updataInputSupplier(id, inputSupplier);
+            Order inputSupplier2 = inputSupplierService.updataInputSupplier(id, inputSupplier);
             return new ResponseEntity<>(inputSupplier2, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -69,5 +92,5 @@ public class InputSupplierController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }

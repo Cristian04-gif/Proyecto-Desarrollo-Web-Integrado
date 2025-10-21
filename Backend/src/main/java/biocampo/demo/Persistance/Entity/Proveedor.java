@@ -31,5 +31,5 @@ public class Proveedor {
     private String direccion;
 
     @OneToMany(mappedBy = "proveedor", cascade = CascadeType.MERGE)
-    private List<ProveedorInsumo> proveedorInsumos;
+    private List<Pedido> pedidos;
 }

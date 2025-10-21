@@ -1,11 +1,9 @@
 package biocampo.demo.Domain.Model;
 
-
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import biocampo.demo.Persistance.Entity.CultivoInsumoId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class InputCultivation {
-    private CultivoInsumoId inputCultivationId;
-    private double quantity;
-    private String extent;
+public class Order {
+    private Long orderId;
     @CreationTimestamp
-    private LocalDate applicationDate;
-    private Cultivation cultivation;
-    private Input input;
-    
+    private LocalDate date;
+    private double total;
+    private Supplier supplier;
+    //private List<OrderDetail> orderDetails;
 }

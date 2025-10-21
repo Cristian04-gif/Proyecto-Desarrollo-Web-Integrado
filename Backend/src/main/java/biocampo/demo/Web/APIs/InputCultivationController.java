@@ -1,7 +1,6 @@
 package biocampo.demo.Web.APIs;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-
 
 @RestController
 @RequestMapping("/api/inputCultivation")
@@ -33,12 +30,16 @@ public class InputCultivationController {
         return new ResponseEntity<>(cultivations, HttpStatus.OK);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<InputCultivation> getInputCultivation(@PathVariable Long id) {
-        Optional<InputCultivation> optional = inputCultivationService.getInputApplicationById(id);
-        return optional.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
-    }
+    /*
+     * @GetMapping("/id/{id}")
+     * public ResponseEntity<InputCultivation> getInputCultivation(@PathVariable
+     * Long id) {
+     * Optional<InputCultivation> optional =
+     * inputCultivationService.getInputApplicationById(id);
+     * return optional.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+     * .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
+     * }
+     */
 
     @PostMapping("/register")
     public ResponseEntity<InputCultivation> registerInputCultivation(@RequestBody InputCultivation inputCultivation) {
@@ -50,20 +51,24 @@ public class InputCultivationController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<InputCultivation> updateInputCultivation(@PathVariable Long id, @RequestBody InputCultivation inputCultivation){
-        try {
-            InputCultivation cultivation = inputCultivationService.updateInputApplication(id, inputCultivation);
-            return new ResponseEntity<>(cultivation, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
-    }
+    /*
+     * @PutMapping("/update/{id}")
+     * public ResponseEntity<InputCultivation> updateInputCultivation(@PathVariable
+     * Long id, @RequestBody InputCultivation inputCultivation){
+     * try {
+     * InputCultivation cultivation =
+     * inputCultivationService.updateInputApplication(id, inputCultivation);
+     * return new ResponseEntity<>(cultivation, HttpStatus.ACCEPTED);
+     * } catch (Exception e) {
+     * return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+     * }
+     * }
+     */
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    @DeleteMapping("/delete/{idCultivo}/{idInsumo}")
+    public ResponseEntity<Void> delete(@PathVariable Long idCultivo, @PathVariable Long idInsumo) {
         try {
-            inputCultivationService.deleteInputApplication(id);
+            inputCultivationService.deleteInputApplication(idCultivo, idInsumo);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

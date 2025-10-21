@@ -23,14 +23,15 @@ public interface CultivationMapper {
         @Mapping(source = "cadaRiego", target = "eachIrrigation"),
         @Mapping(source = "temporada", target = "season"),
         @Mapping(source = "fechaEstimadaCosecha", target = "endDate"),
+        //@Mapping(source = "empleados", target = "employees")
     })
 
     Cultivation toCultivation(Cultivo cultivo);
     List<Cultivation> toCultivations(List<Cultivo> cultivos);
 
     @InheritInverseConfiguration
-    @Mapping(target = "perdida", ignore = true)
-    @Mapping(target = "insumo", ignore = true)
+    @Mapping(target = "perdidas", ignore = true)
+    @Mapping(target = "insumos", ignore = true)
     @Mapping(target = "empleados", ignore = true)
     Cultivo toCultivo(Cultivation cultivation);
 }

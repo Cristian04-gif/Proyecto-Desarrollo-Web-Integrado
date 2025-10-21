@@ -28,27 +28,26 @@ public class Insumo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idInsumo;
     private String nombre;
+
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
-    // kg, bolas, mallas, etc.
-    private String descripcion;
-    private double precio;
-    private int unidad;
+    
+    private String unidadMedida;
+    private double stock;
+    private double precioUnitario;
+    private double costoTotal;
+
+    
 
     @ManyToOne
-    @JoinColumn(name = "idPlanta")
-    private Planta planta;
-    
-    /*@ManyToOne
-    @JoinColumn(name = "idCultivo")
-    private Cultivo cultivo;*/
+    @JoinColumn(name = "idProveedor")
+    private Proveedor proveedor;
 
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.MERGE)
-    private List<ProveedorInsumo> proveedorInsumos;
+    private List<DetallePedido> detallePedidos;
 
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.MERGE)
     private List<CultivoInsumo> cultivoInsumos;
-
 
     public enum Tipo {
         SEMILLA, FERTILIZANTE, PESTICIDA, HERBICIDA

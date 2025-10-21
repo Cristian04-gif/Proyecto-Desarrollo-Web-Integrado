@@ -16,6 +16,8 @@ public interface InputCultivationMapper {
     @Mappings({
         @Mapping(source = "id", target = "inputCultivationId"),
         @Mapping(source = "cantidad", target = "quantity"),
+        @Mapping(source = "unidadMedida", target = "extent"),
+        @Mapping(source = "fechaAplicacion", target = "applicationDate"),
         @Mapping(source = "cultivo", target = "cultivation"),
         @Mapping(source = "insumo", target = "input"),
     })

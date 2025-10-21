@@ -8,7 +8,9 @@ import biocampo.demo.Domain.Model.InputCultivation;
 public interface INputCultivationRepository {
 
     List<InputCultivation> getAll();
-    Optional<InputCultivation> getById(Long id);
+    Optional<InputCultivation> getById(Long idCultivo, Long idInsumo);
+    List<InputCultivation> findByCultivoIdCultivo(Long idCultivo);
+    List<InputCultivation> findByInsumoIdInsumo(Long idInsumo);
     InputCultivation save(InputCultivation inputCultivation);
-    void deleteById(Long id);
+    void deleteById(Long idCultivo, Long idInsumo);
 }
