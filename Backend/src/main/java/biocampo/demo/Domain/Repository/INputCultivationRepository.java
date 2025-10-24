@@ -13,4 +13,6 @@ public interface INputCultivationRepository {
     List<InputCultivation> findByInsumoIdInsumo(Long idInsumo);
     InputCultivation save(InputCultivation inputCultivation);
     void deleteById(Long idCultivo, Long idInsumo);
+    void deleteByCultivoIdCultivo(Long idCultivo);
+    void deleteByInsumoIdInsumo(Long idInsumo);
 }

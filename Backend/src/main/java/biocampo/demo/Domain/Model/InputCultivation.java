@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InputCultivation {
     private CultivoInsumoId inputCultivationId;
-    private double quantity;
+    private Double quantity;
     private String extent;
     @CreationTimestamp
     private LocalDate applicationDate;

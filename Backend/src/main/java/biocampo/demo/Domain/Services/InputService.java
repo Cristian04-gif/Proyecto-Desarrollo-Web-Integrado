@@ -45,7 +45,9 @@ public class InputService {
             }
         }
         System.out.println("tipo: " + input.getType());
-
+        input.setStock(0.0);
+        input.setPriceUnit(0.0);
+        input.setTotalCost(0.0);
         Supplier supplier = supplierRepository.getById(input.getSupplier().getSupplierId())
                 .orElseThrow(() -> new IllegalArgumentException("NO existe el proveedor"));
         input.setSupplier(supplier);

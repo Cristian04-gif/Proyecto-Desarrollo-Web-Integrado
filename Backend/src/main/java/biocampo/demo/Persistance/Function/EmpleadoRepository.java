@@ -56,4 +56,10 @@ public class EmpleadoRepository implements EmployeeRepository {
         empleado.ifPresent(e -> repoEmpleado.delete(e));
     }
 
+    @Override
+    public List<Employee> getAvailable(boolean available) {
+        List<Empleado> empleados = repoEmpleado.findByDisponible(available);
+        return employeeMapper.toEmployees(empleados);
+    }
+
 }

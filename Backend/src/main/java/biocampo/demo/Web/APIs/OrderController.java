@@ -3,7 +3,6 @@ package biocampo.demo.Web.APIs;
 import java.util.List;
 import java.util.Optional;
 
-import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import biocampo.demo.Domain.DTO.Request.OrderRequest;
 import biocampo.demo.Domain.Model.Order;
-import biocampo.demo.Domain.Model.OrderDetail;
 import biocampo.demo.Domain.Services.OrderService;
-import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController

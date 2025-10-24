@@ -17,7 +17,7 @@ public class Loss {
     private Long lossId;
     private String typeLoss;
     private String description;
-    private double pocentageAffect;
+    private Double pocentageAffect;
     @CreationTimestamp
     private LocalDate lossDate;
     private Cultivation cultivation;

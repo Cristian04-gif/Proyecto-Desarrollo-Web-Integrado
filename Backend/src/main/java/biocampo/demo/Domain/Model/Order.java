@@ -17,7 +17,7 @@ public class Order {
     private Long orderId;
     @CreationTimestamp
     private LocalDate date;
-    private double total;
+    private Double total;
     private Supplier supplier;
     //private List<OrderDetail> orderDetails;
 }

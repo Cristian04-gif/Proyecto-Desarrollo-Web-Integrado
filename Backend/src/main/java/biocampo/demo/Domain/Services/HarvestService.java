@@ -1,17 +1,21 @@
 package biocampo.demo.Domain.Services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import biocampo.demo.Domain.Model.Cultivation;
+import biocampo.demo.Domain.Model.Employee;
 import biocampo.demo.Domain.Model.Harvest;
 import biocampo.demo.Domain.Repository.CultivationRepository;
 import biocampo.demo.Domain.Repository.HarvestRepository;
 import biocampo.demo.Persistance.Entity.Cosecha.Recolector;
 import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+import biocampo.demo.Persistance.Function.EmpleadoRepository;
 
 @Service
 public class HarvestService {
@@ -22,6 +26,9 @@ public class HarvestService {
     @Autowired
     private CultivationRepository cultivationRepository;
 
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
+
     public List<Harvest> getAll() {
         return harvestRepository.getAll();
     }
@@ -30,11 +37,20 @@ public class HarvestService {
         return harvestRepository.getByIdHarvest(id);
     }
 
+    @Transactional
     public Harvest registerHarvest(Harvest harvest) {
         Cultivation exist = cultivationRepository.getById(harvest.getCultivation().getCultivationId())
                 .orElseThrow(() -> new IllegalArgumentException("El cultivo relacionado no existe"));
-        harvest.setCultivation(exist);
 
+        exist.setEndDate(LocalDate.now());
+
+        for (Employee employee : exist.getEmployees()) {
+            employee.setAvailable(true);
+            empleadoRepository.save(employee);
+        }
+        exist.getEmployees().clear();
+        Cultivation cultivationUpdate = cultivationRepository.save(exist);
+        harvest.setCultivation(cultivationUpdate);
         boolean existTemp = false;
         for (Temporada temp : Temporada.values()) {
             if (temp.toString().equalsIgnoreCase(harvest.getSeason())) {
@@ -61,6 +77,7 @@ public class HarvestService {
         return harvestRepository.save(harvest);
     }
 
+    @Transactional
     public Harvest updateHarvest(Long id, Harvest harvest) {
         Harvest updateHarvest = harvestRepository.getByIdHarvest(id)
                 .orElseThrow(() -> new IllegalArgumentException("La cosecha no exixte"));
@@ -68,6 +85,13 @@ public class HarvestService {
         Cultivation existCultivation = cultivationRepository
                 .getById(harvest.getCultivation().getCultivationId())
                 .orElseThrow(() -> new IllegalArgumentException("El cultivo relacionado no existe"));
+
+        existCultivation.setEndDate(LocalDate.now());
+        for (Employee employee : existCultivation.getEmployees()) {
+            employee.setAvailable(true);
+            empleadoRepository.save(employee);
+        }
+        existCultivation.getEmployees().clear();
         harvest.setCultivation(existCultivation);
 
         boolean existTemp = false;

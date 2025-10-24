@@ -23,7 +23,7 @@ public class Perdida {
     private Long idPerdida;
     private String tipoPerdida;
     private String descripcion;
-    private double porcentajeAfectacion;
+    private Double porcentajeAfectacion;
     @CreationTimestamp
     private LocalDate fechaPerdida;
     @ManyToOne

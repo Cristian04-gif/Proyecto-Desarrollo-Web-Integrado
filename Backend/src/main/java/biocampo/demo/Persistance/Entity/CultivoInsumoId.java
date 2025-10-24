@@ -2,16 +2,21 @@ package biocampo.demo.Persistance.Entity;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CultivoInsumoId implements Serializable {
 
+    @Column(name = "id_cultivo")
     private Long idCultivo;
+    @Column(name = "id_insumo")
     private Long idInsumo;
 
     @Override
@@ -27,11 +32,6 @@ public class CultivoInsumoId implements Serializable {
     @Override
     public int hashCode() {
         return java.util.Objects.hash(idCultivo, idInsumo);
-    }
-
-    public CultivoInsumoId(Long idCultivo, Long idInsumo) {
-        this.idCultivo = idCultivo;
-        this.idInsumo = idInsumo;
     }
     
 }

@@ -12,4 +12,6 @@ import biocampo.demo.Persistance.Entity.CultivoInsumoId;
 public interface RepoCultivoInsumo extends JpaRepository<CultivoInsumo, CultivoInsumoId>{
     List<CultivoInsumo> findByCultivoIdCultivo(Long idCultivo);
     List<CultivoInsumo> findByInsumoIdInsumo(Long idInsumo);
+    void deleteByCultivoIdCultivo(Long idCultivo);
+    void deleteByInsumoIdInsumo(Long idInsumo);
 }

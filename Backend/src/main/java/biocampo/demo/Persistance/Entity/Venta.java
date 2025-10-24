@@ -1,6 +1,5 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class Venta {
 
     @CreationTimestamp
     private LocalDateTime fechaVenta;
-    private BigDecimal total;
+    private Double total;
 
     @Enumerated(EnumType.STRING)
     private Metodo pago;

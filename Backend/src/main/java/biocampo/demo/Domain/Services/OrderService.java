@@ -6,14 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import biocampo.demo.Domain.Model.Order;
 import biocampo.demo.Domain.Model.OrderDetail;
-import biocampo.demo.Domain.Repository.InputRepository;
-import biocampo.demo.Domain.Repository.OrderDetailRepository;
 import biocampo.demo.Domain.Repository.OrderRepository;
-import biocampo.demo.Domain.Repository.SupplierRepository;
 import biocampo.demo.Persistance.CRUD.RepoDetallePedido;
 import biocampo.demo.Persistance.CRUD.RepoInsumo;
 import biocampo.demo.Persistance.CRUD.RepoOrden;
@@ -31,14 +27,6 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private SupplierRepository supplierRepository;
-
-    @Autowired
-    private InputRepository inputRepository;
-
-    @Autowired
-    private OrderDetailRepository detailRepository;
 
     //
     @Autowired
@@ -107,58 +95,4 @@ public class OrderService {
         Pedido savedFinal = repoOrden.save(savedOrder);
         return orderMapper.toInputSupplier(savedFinal);
     }
-
-    
-
-    /*
-     * public Order registerInputSupplier(Order inputSupplier) {
-     * Optional<Supplier> existSupplier =
-     * supplierRepository.getById(inputSupplier.getSupplier().getSupplierId());
-     * //Optional<Input> existInput =
-     * inputRepository.getById(inputSupplier.getInput().getInputId());
-     * 
-     * /*if (existSupplier.isPresent() && existInput.isPresent()) {
-     * inputSupplier.setSupplier(existSupplier.get());
-     * inputSupplier.setInput(existInput.get());
-     * } else {
-     * throw new IllegalArgumentException("El proveedor o insumo no existe");
-     * }
-     * return inputSupplierRepository.save(inputSupplier);
-     * }
-     * 
-     * public Order updataInputSupplier(Long id, Order inputSupplier) {
-     * Optional<Order> exist = inputSupplierRepository.getById(id);
-     * if (exist.isPresent()) {
-     * Order update = exist.get();
-     * 
-     * if (inputSupplier.getSupplier() != null) {
-     * Optional<Supplier> existSupplier = supplierRepository
-     * .getById(inputSupplier.getSupplier().getSupplierId());
-     * if (existSupplier.isPresent()) {
-     * update.setSupplier(existSupplier.get());
-     * }
-     * }
-     * /*if (inputSupplier.getInput() != null) {
-     * Optional<Input> existInput =
-     * inputRepository.getById(inputSupplier.getInput().getInputId());
-     * if (existInput.isPresent()) {
-     * update.setInput(existInput.get());
-     * }
-     * }
-     */
-    /*
-     * if (inputSupplier.getPrice() != null) {
-     * update.setPrice(inputSupplier.getPrice());
-     * }
-     * 
-     * return inputSupplierRepository.save(update);
-     * }else{
-     * return null;
-     * }
-     * }
-     * 
-     * public void delete(Long id){
-     * inputSupplierRepository.deleteById(id);
-     * }
-     */
 }

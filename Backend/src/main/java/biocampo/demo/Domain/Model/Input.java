@@ -15,9 +15,9 @@ public class Input {
     private String name;
     private String type;
     private String unitStatet;
-    private double stock;
-    private double priceUnit;
-    private double totalCost;
+    private Double stock;
+    private Double priceUnit;
+    private Double totalCost;
     
     private Supplier supplier;
     //private Cultivation cultivation;

@@ -30,8 +30,13 @@ public class EmployeeService {
     @Autowired
     private UserService userService;
 
+
     public List<Employee> getAllEmployees() {
         return employeeRepository.getAll();
+    }
+
+    public List<Employee> getAvailable(boolean available){
+        return employeeRepository.getAvailable(available);
     }
 
     public Optional<Employee> getEmployeeById(Long employeeId) {
@@ -50,6 +55,7 @@ public class EmployeeService {
         // Employee emp;
 
         // JobPosition jp = jobPosition.get();
+        employee.setAvailable(true);
         employee.setJobPosition(jobPosition);
         System.out.println("puesto: " + jobPosition.getPositionName());
         Employee emp = employeeRepository.save(employee);
@@ -100,7 +106,6 @@ public class EmployeeService {
             toUpdate.setCountry(employee.getCountry());
         if (employee.getAddress() != null)
             toUpdate.setAddress(employee.getAddress());
-
         if (employee.getJobPosition() != null && employee.getJobPosition().getPositionId() != null) {
 
             JobPosition jobPosition = jobPositionRepository

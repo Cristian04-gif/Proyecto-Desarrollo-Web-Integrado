@@ -1,7 +1,7 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,7 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -46,19 +45,17 @@ public class Empleado {
     @JsonBackReference
     private PuestoEmpleado puesto;
 
-    private BigDecimal salario;
+    private Double salario;
     @CreationTimestamp
     private LocalDate fechaContratado;
+    private boolean disponible;
+    @ManyToMany(mappedBy = "empleados")
+    @JsonBackReference
+    private List<Cultivo> cultivo = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "cultivo_empleado", joinColumns = @JoinColumn(name = "idEmpleado"), inverseJoinColumns = @JoinColumn(name = "idCultivo"))
-    private List<Cultivo> cultivo;
-
-    @ManyToMany
-    @JoinTable(name = "cosecha_empleado", joinColumns = @JoinColumn(name = "idEmpleado"), inverseJoinColumns = @JoinColumn(name = "idCosecha"))
+    @ManyToMany(mappedBy = "empleados")
     private List<Cosecha> cosecha;
 
-    @ManyToMany
-    @JoinTable(name = "postCosecha_empleado", joinColumns = @JoinColumn(name = "idEmpleado"), inverseJoinColumns = @JoinColumn(name = "idPostCosecha"))
+    @ManyToMany(mappedBy = "empleados")
     private List<PostCosecha> postCosecha;
 }

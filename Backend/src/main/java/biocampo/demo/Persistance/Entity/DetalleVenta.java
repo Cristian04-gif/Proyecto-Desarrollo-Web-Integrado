@@ -1,6 +1,5 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +29,7 @@ public class DetalleVenta {
 
     private int cantidad;
 
-    private BigDecimal subtotal;
+    private Double subtotal;
 
     
 }

@@ -25,7 +25,8 @@ public class Employee {
     private String country;
     private String address;
     private JobPosition jobPosition;
-    private double salary;
+    private Double salary;
     @CreationTimestamp
     private LocalDate hireDate;
+    private boolean available;
 }

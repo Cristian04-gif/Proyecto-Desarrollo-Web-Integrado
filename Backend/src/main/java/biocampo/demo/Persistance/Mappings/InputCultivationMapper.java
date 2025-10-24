@@ -27,4 +27,5 @@ public interface InputCultivationMapper {
 
     @InheritInverseConfiguration
     CultivoInsumo toCultivoInsumo(InputCultivation inputCultivation);
+    List<CultivoInsumo> toCultivoInsumos(List<InputCultivation> inputCultivations);
 }

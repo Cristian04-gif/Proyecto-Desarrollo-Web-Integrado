@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Services;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +67,7 @@ public class SaleDetailService {
         Sale sale = saleRepository.getById(saleId)
                 .orElseThrow(() -> new IllegalArgumentException("la venta con id: " + saleId + " no existe"));
 
-        BigDecimal total = BigDecimal.ZERO;
+        Double total = 0.0;
         for (SaleDetail saleDetail : details) {
             Product product = productRepository.getById(saleDetail.getProduct().getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Prodcuto no encontrado"));
@@ -79,7 +78,7 @@ public class SaleDetailService {
 
             saleDetail.setSale(sale);
             saleDetail.setProduct(product);
-            total = total.add(saleDetail.getSubTotal());
+            total +=saleDetail.getSubTotal();
         }
 
         sale.setTotal(total);

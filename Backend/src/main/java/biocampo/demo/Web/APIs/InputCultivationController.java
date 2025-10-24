@@ -1,6 +1,7 @@
 package biocampo.demo.Web.APIs;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -30,40 +31,28 @@ public class InputCultivationController {
         return new ResponseEntity<>(cultivations, HttpStatus.OK);
     }
 
-    /*
-     * @GetMapping("/id/{id}")
-     * public ResponseEntity<InputCultivation> getInputCultivation(@PathVariable
-     * Long id) {
-     * Optional<InputCultivation> optional =
-     * inputCultivationService.getInputApplicationById(id);
-     * return optional.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-     * .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
-     * }
-     */
-
-    @PostMapping("/register")
-    public ResponseEntity<InputCultivation> registerInputCultivation(@RequestBody InputCultivation inputCultivation) {
-        try {
-            InputCultivation cultivation = inputCultivationService.registerInputApplication(inputCultivation);
-            return new ResponseEntity<>(cultivation, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/id/{idCultivo}/{idInsumo}")
+    public ResponseEntity<InputCultivation> getByID(@PathVariable Long idCultivo, @PathVariable Long idInsumo) {
+        Optional<InputCultivation> exist = inputCultivationService.getById(idCultivo, idInsumo);
+        return exist.map(values -> new ResponseEntity<>(values, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /*
-     * @PutMapping("/update/{id}")
-     * public ResponseEntity<InputCultivation> updateInputCultivation(@PathVariable
-     * Long id, @RequestBody InputCultivation inputCultivation){
-     * try {
-     * InputCultivation cultivation =
-     * inputCultivationService.updateInputApplication(id, inputCultivation);
-     * return new ResponseEntity<>(cultivation, HttpStatus.ACCEPTED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-     * }
-     * }
-     */
+    @GetMapping("/cultivation/{id}")
+    public ResponseEntity<List<InputCultivation>> getAllByCutivation(@PathVariable Long id) {
+        List<InputCultivation> inputCultivations = inputCultivationService.getInputCultivationsByCultivationId(id);
+        return new ResponseEntity<>(inputCultivations, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{idCultivo}/{idInsumo}")
+    public ResponseEntity<InputCultivation> updateInputCultivation(@PathVariable Long idCultivo, @PathVariable Long idInsumo, @RequestBody InputCultivation inputCultivation){
+        try {
+            InputCultivation cultivation = inputCultivationService.updateInputCultivation(idCultivo, idInsumo, inputCultivation);
+            return new ResponseEntity<>(cultivation, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 
     @DeleteMapping("/delete/{idCultivo}/{idInsumo}")
     public ResponseEntity<Void> delete(@PathVariable Long idCultivo, @PathVariable Long idInsumo) {

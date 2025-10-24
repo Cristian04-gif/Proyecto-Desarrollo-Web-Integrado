@@ -25,7 +25,8 @@ public interface EmployeeMapper {
             @Mapping(source = "direccion", target = "address"),
             @Mapping(source = "puesto", target = "jobPosition"),
             @Mapping(source = "salario", target = "salary"),
-            @Mapping(source = "fechaContratado", target = "hireDate")
+            @Mapping(source = "fechaContratado", target = "hireDate"),
+            @Mapping(source = "disponible", target = "available")
     })
 
     Employee toEmployee(Empleado empleado);
@@ -42,4 +43,5 @@ public interface EmployeeMapper {
     @Mapping(target = "cosecha", ignore = true)
     @Mapping(target = "postCosecha", ignore = true)
     Empleado toEmpleado(Employee employee);
+    List<Empleado> toEmpleados(List<Employee> employees);
 }

@@ -10,11 +10,12 @@ import org.mapstruct.Mappings;
 import biocampo.demo.Domain.Model.Cultivation;
 import biocampo.demo.Persistance.Entity.Cultivo;
 
-@Mapper(componentModel = "spring", uses = {PlantMapper.class})
+@Mapper(componentModel = "spring", uses = {PlantMapper.class, EmployeeMapper.class})
 public interface CultivationMapper {
 
     @Mappings({
         @Mapping(source = "idCultivo", target = "cultivationId"),
+        @Mapping(source = "nombreParcela", target = "plotName"),
         @Mapping(source = "planta", target = "plant"),
         @Mapping(source = "hectareas", target = "hectares"),
         @Mapping(source = "paquetesRequeridos",target= "requiredPackages"),
@@ -23,7 +24,7 @@ public interface CultivationMapper {
         @Mapping(source = "cadaRiego", target = "eachIrrigation"),
         @Mapping(source = "temporada", target = "season"),
         @Mapping(source = "fechaEstimadaCosecha", target = "endDate"),
-        //@Mapping(source = "empleados", target = "employees")
+        @Mapping(source = "empleados", target = "employees")
     })
 
     Cultivation toCultivation(Cultivo cultivo);
@@ -32,6 +33,6 @@ public interface CultivationMapper {
     @InheritInverseConfiguration
     @Mapping(target = "perdidas", ignore = true)
     @Mapping(target = "insumos", ignore = true)
-    @Mapping(target = "empleados", ignore = true)
+    //@Mapping(target = "empleados", ignore = true)
     Cultivo toCultivo(Cultivation cultivation);
 }

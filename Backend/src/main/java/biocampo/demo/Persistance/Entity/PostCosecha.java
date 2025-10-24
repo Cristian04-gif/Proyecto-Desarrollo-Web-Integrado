@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
@@ -41,7 +43,8 @@ public class PostCosecha {
 
     private int stock;
 
-    @ManyToMany(mappedBy = "postCosecha")
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "postCosecha_empleado", joinColumns = @JoinColumn(name = "idPostCosecha"), inverseJoinColumns = @JoinColumn(name = "idEmpleado"))
     private List<Empleado> empleados;
     
     public enum Empaque {

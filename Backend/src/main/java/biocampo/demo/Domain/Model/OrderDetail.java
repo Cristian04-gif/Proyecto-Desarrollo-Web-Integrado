@@ -13,7 +13,7 @@ public class OrderDetail {
 
     private Long detailId;
     private int amount;
-    private double priceUnit;
+    private Double priceUnit;
     private Order order;
     private Input input;
 }

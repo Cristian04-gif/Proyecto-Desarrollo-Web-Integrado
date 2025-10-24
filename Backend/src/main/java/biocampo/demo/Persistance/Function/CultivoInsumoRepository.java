@@ -68,6 +68,20 @@ public class CultivoInsumoRepository implements INputCultivationRepository{
         repoCultivoInsumo.deleteById(id);
     }
 
+
+
+    @Override
+    public void deleteByCultivoIdCultivo(Long idCultivo) {
+        repoCultivoInsumo.deleteByCultivoIdCultivo(idCultivo);
+    }
+
+
+
+    @Override
+    public void deleteByInsumoIdInsumo(Long idInsumo) {
+        repoCultivoInsumo.deleteByInsumoIdInsumo(idInsumo);
+    }
+
     
 
 }
