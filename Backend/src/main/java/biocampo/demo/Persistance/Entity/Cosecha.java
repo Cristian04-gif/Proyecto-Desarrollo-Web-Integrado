@@ -7,40 +7,43 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Cosecha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCosecha;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "idCultivo")
     private Cultivo cultivo;
 
     @CreationTimestamp
     private LocalDate fechaCosecha;
 
-    @Enumerated(EnumType.STRING)
-    private Temporada temporada;
+    private Double cantidadCosechada; //kilos, toneladas
+    private String unidadMedida; //kg, ton
+    private Double rendimietoXHectarea; //kg/ha cantidadCosechada/cultivo.heactareas
+    private Double costo;
 
-    @Enumerated(EnumType.STRING)
-    private Recolector recolector;
     
     @OneToMany(mappedBy = "cosecha")
     private List<Perdida> idPerdida;
@@ -49,11 +52,7 @@ public class Cosecha {
     @JoinTable(name = "cosecha_empleado", joinColumns = @JoinColumn(name = "idCosecha"), inverseJoinColumns = @JoinColumn(name = "idEmpleado"))
     private List<Empleado> empleados;
 
-    public enum Recolector {
-        MAQUINARIA, MANUAL
-    }
 
-    public enum Temporada {
-        PRIMAVERA, VERANO, OTONO, INVIERNO
-    }
+
+    
 }

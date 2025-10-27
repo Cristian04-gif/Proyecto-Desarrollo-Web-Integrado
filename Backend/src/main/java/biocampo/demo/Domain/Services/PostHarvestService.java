@@ -1,17 +1,23 @@
 package biocampo.demo.Domain.Services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import biocampo.demo.Domain.Model.Harvest;
+import biocampo.demo.Domain.Model.Employee;
 import biocampo.demo.Domain.Model.PostHarvest;
-import biocampo.demo.Domain.Repository.HarvestRepository;
 import biocampo.demo.Domain.Repository.PostHarvestRepository;
-import biocampo.demo.Persistance.Entity.PostCosecha.Almacenamiento;
-import biocampo.demo.Persistance.Entity.PostCosecha.Empaque;
+import biocampo.demo.Persistance.CRUD.RepoCosecha;
+import biocampo.demo.Persistance.CRUD.RepoEmpleado;
+import biocampo.demo.Persistance.CRUD.RepoPostCosecha;
+import biocampo.demo.Persistance.Entity.Cosecha;
+import biocampo.demo.Persistance.Entity.Empleado;
+import biocampo.demo.Persistance.Entity.PostCosecha;
+import biocampo.demo.Persistance.Mappings.EmployeeMapper;
+import biocampo.demo.Persistance.Mappings.PostHarvestMapper;
 
 @Service
 public class PostHarvestService {
@@ -20,7 +26,15 @@ public class PostHarvestService {
     private PostHarvestRepository postHarvestRepository;
 
     @Autowired
-    private HarvestRepository harvestRepository;
+    private PostHarvestMapper postHarvestMapper;
+    @Autowired
+    private RepoPostCosecha repoPostCosecha;
+    @Autowired
+    private RepoCosecha repoCosecha;
+    @Autowired
+    private RepoEmpleado repoEmpleado;
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     // Obtener todas las postcosechas
     public List<PostHarvest> getAllPostHarvests() {
@@ -32,95 +46,97 @@ public class PostHarvestService {
         return postHarvestRepository.getById(postHarvestId);
     }
 
-    // Registrar nueva postcosecha
-    public PostHarvest registerPostHarvest(PostHarvest postHarvest) {
-        Optional<Harvest> exiiste = harvestRepository.getByIdHarvest(postHarvest.getHarvest().getHarvestId());
-        if (exiiste.isPresent()) {
-            postHarvest.setHarvest(exiiste.get());
+    public PostCosecha calculoPrecioUnitario(double convertirKg, Cosecha cosecha, PostCosecha postCosecha) {
+        System.out.println("convertirkg: " + convertirKg);
+        double costoCultivo = cosecha.getCultivo().getCosto();
+        double costoCosecha = cosecha.getCosto();
+        double costoPostCosecha = postCosecha.getCostoAlmacenamiento();
+        double perdida = postCosecha.getUnidadPerdida() != null ? postCosecha.getUnidadPerdida() : 0.0;
+        double costoEmpleado = postCosecha.getCostoEmpleado();
+        double sumaCostos = costoCosecha + costoCultivo + costoPostCosecha + costoEmpleado;
+        if (perdida > 0) {
+            sumaCostos += (perdida * (sumaCostos / convertirKg));
         }
-
-        boolean packingExit = false;
-        for (Empaque empaque : Empaque.values()) {
-
-            if (empaque.toString().equalsIgnoreCase(postHarvest.getPacking())) {
-                postHarvest.setPacking(empaque.name());
-                packingExit = true;
-                break;
-            }
-        }
-        if (!packingExit) {
-            throw new IllegalArgumentException("Error! el empaque no existe");
-        }
-
-        boolean storageExist = false;
-        for (Almacenamiento almacenamiento : Almacenamiento.values()) {
-            if (almacenamiento.toString().equalsIgnoreCase(postHarvest.getStorage())) {
-                postHarvest.setStorage(almacenamiento.name());
-                storageExist = true;
-                break;
-            }
-        }
-        if (!storageExist) {
-            throw new IllegalArgumentException("Error! no existe el tipo de almacenamiento");
-        }
-
-        return postHarvestRepository.save(postHarvest);
+        System.out.println("suma de costos: " + sumaCostos);
+        double precioUnitario = (sumaCostos / convertirKg) * 1.5;
+        System.out.println("precio unitario: " + precioUnitario);
+        precioUnitario = (double) Math.round(precioUnitario * 100) / 100;
+        System.out.println("precio rendondeado: " + precioUnitario);
+        postCosecha.setPrecioUnidad(precioUnitario);
+        System.out.println("precio unitario dentro del metodo double: " + postCosecha.getPrecioUnidad());
+        postCosecha.setIngresoTotal(precioUnitario * convertirKg);
+        postCosecha.setGanancia(postCosecha.getIngresoTotal() - sumaCostos);
+        return postCosecha;
     }
 
-    // Actualizar postcosecha existente
-    public PostHarvest updatePostHarvest(Long postHarvestId, PostHarvest updatedData) {
-        Optional<PostHarvest> existingPostHarvest = postHarvestRepository.getById(postHarvestId);
-
-        if (existingPostHarvest.isPresent()) {
-            PostHarvest toUpdate = existingPostHarvest.get();
-
-            if (updatedData.getHarvest() != null)
-                toUpdate.setHarvest(updatedData.getHarvest());
-            if (updatedData.getDateProcessed() != null)
-                toUpdate.setDateProcessed(updatedData.getDateProcessed());
-            if (updatedData.getCleaningMethod() != null)
-                toUpdate.setCleaningMethod(updatedData.getCleaningMethod());
-            if (updatedData.getTreatmentMethod() != null)
-                toUpdate.setTreatmentMethod(updatedData.getTreatmentMethod());
-
-            if (updatedData.getPacking() != null) {
-                boolean packingExit = false;
-                for (Empaque empaque : Empaque.values()) {
-                    if (empaque.toString().equalsIgnoreCase(updatedData.getPacking())) {
-                        updatedData.setPacking(empaque.name());
-                        packingExit = true;
-                        break;
-                    }
-                }
-                if (!packingExit) {
-                    throw new IllegalArgumentException("Error! el empaque no existe");
-                }
-            }
-            if (updatedData.getStorage() != null) {
-                boolean storageExist = false;
-                for (Almacenamiento almacenamiento : Almacenamiento.values()) {
-                    if (almacenamiento.toString().equalsIgnoreCase(updatedData.getStorage())) {
-                        updatedData.setStorage(almacenamiento.name());
-                        storageExist = true;
-                        break;
-                    }
-                }
-                if (!storageExist) {
-                    throw new IllegalArgumentException("Error! no existe el tipo de almacenamiento");
-                }
-            }
-            if (updatedData.getStock() > 0) {
-                toUpdate.setStock(updatedData.getStock());
-            }
-
-            return postHarvestRepository.save(toUpdate);
-        } else {
-            return null;
+    // Registrar nueva postcosecha
+    public PostHarvest registerPostharvest(PostHarvest postHarvest, List<Employee> employees) {
+        System.out.println("Entro al registro de la postcosecha");
+        System.out.println("COsecha: " + postHarvest.getHarvest().getHarvestId());
+        PostCosecha postCosechaEntity = postHarvestMapper.toPostCosecha(postHarvest);
+        Cosecha cosechaEntity = repoCosecha.findById(postCosechaEntity.getCosecha().getIdCosecha()).orElseThrow();
+        System.out.println("la cosecha repacionada existe");
+        for (Empleado emp : cosechaEntity.getEmpleados()) {
+            System.out.println("Empleado: " + emp.getNombres());
+            emp.setDisponible(true);
+            // emp.getCosecha().remove(cosechaEntity);
+            repoEmpleado.save(emp);
+            System.out.println("Empleado: " + emp.getNombres() + " actualizado");
         }
+        cosechaEntity.getEmpleados().clear();
+        Cosecha cosechaActualizada = repoCosecha.save(cosechaEntity);
+        postCosechaEntity.setCosecha(cosechaActualizada);
+
+        //
+        double convertirKg = 0.0;
+        if (cosechaActualizada.getUnidadMedida().equalsIgnoreCase("ton")) {
+            convertirKg = cosechaActualizada.getCantidadCosechada() * 1000;
+        } else {
+            convertirKg = cosechaActualizada.getCantidadCosechada();
+        }
+
+        System.out.println("cnatidad de cosecha: " + cosechaActualizada.getCantidadCosechada());
+        System.out.println(convertirKg);
+
+        PostCosecha postCosechaGuardado = repoPostCosecha.save(postCosechaEntity);
+
+        double sumaSalario = 0.0;
+        for (Employee emp : employees) {
+            Empleado empleadoEntity = employeeMapper.toEmpleado(emp);
+            Empleado existEmpleado = repoEmpleado.findById(empleadoEntity.getIdEmpleado()).orElseThrow();
+            if (existEmpleado.isDisponible()) {
+                existEmpleado.setDisponible(false);
+                sumaSalario += existEmpleado.getSalario();
+                if (existEmpleado.getPostCosecha() == null) {
+                    existEmpleado.setPostCosecha(new ArrayList<>());
+                }
+                if (postCosechaGuardado.getEmpleados() == null) {
+                    postCosechaGuardado.setEmpleados(new ArrayList<>());
+                }
+                existEmpleado.getPostCosecha().add(postCosechaGuardado);
+                postCosechaGuardado.getEmpleados().add(existEmpleado);
+            }
+        }
+        postCosechaGuardado.setCostoEmpleado(sumaSalario);
+        PostCosecha calculoPrecioUnitario = calculoPrecioUnitario(convertirKg, cosechaActualizada, postCosechaEntity);
+
+        postCosechaGuardado.setPrecioUnidad(calculoPrecioUnitario.getPrecioUnidad());
+        postCosechaGuardado.setIngresoTotal(calculoPrecioUnitario.getIngresoTotal());
+        postCosechaGuardado.setGanancia(calculoPrecioUnitario.getGanancia());
+        PostCosecha postCosechaFinal = repoPostCosecha.save(postCosechaGuardado);
+        return postHarvestMapper.toPostHarvest(postCosechaFinal);
     }
 
     // Eliminar postcosecha
     public void deletePostHarvest(Long postHarvestId) {
+        PostHarvest postHarvest = postHarvestRepository.getById(postHarvestId).orElseThrow();
+        PostCosecha postCosecha = postHarvestMapper.toPostCosecha(postHarvest);
+        for (Empleado emp : postCosecha.getEmpleados()) {
+            Empleado empleado = repoEmpleado.findById(emp.getIdEmpleado()).orElseThrow();
+            empleado.setDisponible(true);
+            empleado.getPostCosecha().remove(postCosecha);
+            repoEmpleado.save(empleado);
+        }
         postHarvestRepository.deleteById(postHarvestId);
 
     }

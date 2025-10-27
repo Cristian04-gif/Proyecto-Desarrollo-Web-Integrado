@@ -6,14 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import biocampo.demo.Domain.Model.Order;
 import biocampo.demo.Domain.Model.OrderDetail;
 import biocampo.demo.Domain.Repository.OrderDetailRepository;
 import biocampo.demo.Persistance.CRUD.RepoDetallePedido;
 import biocampo.demo.Persistance.Entity.DetallePedido;
-import biocampo.demo.Persistance.Entity.Pedido;
 import biocampo.demo.Persistance.Mappings.OrderDetailMapper;
-import biocampo.demo.Persistance.Mappings.OrderMapper;
 
 @Repository
 public class DetallePedidoRepository implements OrderDetailRepository {
@@ -22,8 +19,6 @@ public class DetallePedidoRepository implements OrderDetailRepository {
     private RepoDetallePedido repoDetallePedido;
     @Autowired
     private OrderDetailMapper detailMapper;
-    @Autowired
-    private OrderMapper orderMapper;
 
     @Override
     public List<OrderDetail> getAll() {
@@ -49,9 +44,8 @@ public class DetallePedidoRepository implements OrderDetailRepository {
     }
 
     @Override
-    public List<OrderDetail> getByOrder(Order order) {
-        Pedido pedido = orderMapper.toProveedorInsumo(order);
-        List<DetallePedido> detallePedidos = repoDetallePedido.findByPedido(pedido);
+    public List<OrderDetail> getByOrder(Long orderId) {
+        List<DetallePedido> detallePedidos = repoDetallePedido.findByPedidoIdPedido(orderId);
         return detailMapper.toOrderDetails(detallePedidos);
     }
 

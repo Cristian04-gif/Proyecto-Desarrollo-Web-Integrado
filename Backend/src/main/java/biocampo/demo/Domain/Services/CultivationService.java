@@ -17,7 +17,7 @@ import biocampo.demo.Persistance.CRUD.RepoCultivoInsumo;
 import biocampo.demo.Persistance.CRUD.RepoEmpleado;
 import biocampo.demo.Persistance.CRUD.RepoInsumo;
 import biocampo.demo.Persistance.CRUD.RepoPlanta;
-import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+import biocampo.demo.Persistance.Entity.Cultivo.Temporada;
 import biocampo.demo.Persistance.Entity.Cultivo;
 import biocampo.demo.Persistance.Entity.CultivoInsumo;
 import biocampo.demo.Persistance.Entity.CultivoInsumoId;
@@ -33,6 +33,7 @@ public class CultivationService {
 
     @Autowired
     private CultivationRepository cultivationRepository;
+
 
     //
     @Autowired
@@ -84,10 +85,7 @@ public class CultivationService {
         double pesoTotalKg = (semillasXHectarea * pesoSemillaGramos) / 1000;
         double paquetesXHectareas = pesoTotalKg / pesoPaquete;
         return paquetesXHectareas * hectareas;
-        // cultivation.setCost(0);
 
-        // plantRepository.save(plant);
-        // return cultivation;
     }
 
     @Transactional
@@ -98,13 +96,6 @@ public class CultivationService {
         System.out.println("ID planta: " + cultivation.getPlant().getPlantId());
         boolean exis = repoPlanta.existsById(cultivation.getPlant().getPlantId());
         System.out.println("Existe: " + exis);
-
-        Long idPlanta = cultivation.getPlant() != null ? cultivation.getPlant().getPlantId() : null;
-        if (idPlanta == null) {
-            throw new IllegalArgumentException("El ID de planta es nulo o inválido");
-        }
-        Planta p = repoPlanta.findById(1L).orElse(null);
-        System.out.println("Planta encontrada: " + (p != null ? p.getNombre() : "NO se encontro"));
 
         Planta plantaEntity = repoPlanta.findById(cultivation.getPlant().getPlantId())
                 .orElseThrow(() -> new IllegalArgumentException("NO existe la planta"));
@@ -253,7 +244,17 @@ public class CultivationService {
         return cultivationMapper.toCultivation(cultivoEntity);
     }
 
+    @Transactional
     public void deleteCultivation(Long id) {
+        Cultivation cultivation = cultivationRepository.getById(id).orElseThrow();
+        Cultivo cultivo = cultivationMapper.toCultivo(cultivation);
+        for (Empleado emp : cultivo.getEmpleados()) {
+            Empleado empleado = repoEmpleado.findById(emp.getIdEmpleado()).orElseThrow();
+            empleado.setDisponible(true);
+            empleado.getCultivo().remove(cultivo);
+            repoEmpleado.save(empleado);
+            
+        }
         cultivationRepository.deleteById(id);
     }
 

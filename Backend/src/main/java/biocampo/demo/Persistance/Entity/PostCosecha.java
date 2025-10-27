@@ -7,8 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,31 +27,21 @@ public class PostCosecha {
 
     @OneToOne
     @JoinColumn(name = "idCosecha")
-    private Cosecha plantaCosechada;
+    private Cosecha cosecha;
+
     @CreationTimestamp
     private LocalDate fecha;
-    private String limpieza;
-    private String tratamiento;
 
-    @Enumerated(EnumType.STRING)
-    private Empaque empaque;
-    
-    @Enumerated(EnumType.STRING)
-    private Almacenamiento almacenamiento;
+    private Double costoAlmacenamiento;
+    private Double costoEmpleado;
+    private Double precioUnidad; // precio por kilo: ((suma de costos de cultivo, cosecha, postcosecha, (precioUnidad*unidadPerdida))/cosecha.cantidadCosecha)
+    private Double unidadPerdida; //kg de posible cantidad de cosecha perdida//calcular (precioUnidad*unidadPerdida) para calcular el precio unitario
+    private Double ingresoTotal; // cosecha.cantidadCosecha *precioUnidad;
+    private Double ganancia; // ingresototal-(costos de cultivo, cosecha y postcosecha)
+    private String observaciones;
 
-    private int stock;
-
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(name = "postCosecha_empleado", joinColumns = @JoinColumn(name = "idPostCosecha"), inverseJoinColumns = @JoinColumn(name = "idEmpleado"))
     private List<Empleado> empleados;
-    
-    public enum Empaque {
-        SACO, CAJA, BANDEJA
-    }
-
-    public enum Almacenamiento {
-        SILO, BODEGA, CAMARA_FRIA;
-    }
-
 
 }

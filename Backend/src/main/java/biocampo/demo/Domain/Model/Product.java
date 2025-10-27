@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,7 @@ public class Product {
     private String name;
     private String description;
     private float weight;
-    private BigDecimal price;
+    private Double price;
     private int stock;
     private boolean active;
     private PlantCategory plantCategory;

@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -61,4 +60,8 @@ public class Cultivo {
     @JoinTable(name = "cultivo_empleado", joinColumns = @JoinColumn(name = "idCultivo"), inverseJoinColumns = @JoinColumn(name = "idEmpleado"))
     @JsonManagedReference
     private List<Empleado> empleados = new ArrayList<>();
+
+    public enum Temporada {
+        PRIMAVERA, VERANO, OTONO, INVIERNO
+    }
 }

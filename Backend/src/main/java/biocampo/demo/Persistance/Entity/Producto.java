@@ -1,6 +1,5 @@
 package biocampo.demo.Persistance.Entity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -31,7 +30,7 @@ public class Producto {
     private String etiqueta;
     private String descripcion;
     private float peso;
-    private BigDecimal precio;
+    private Double precio;
     private int cantidad;
     private boolean disponible;
     @ManyToOne

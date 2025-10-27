@@ -50,7 +50,7 @@ public class ProductService {
         if (exist.isPresent()) {
             PostHarvest postHarvest = exist.get();
             product.setPostHarvest(postHarvest);
-            product.setStock(postHarvest.getStock());
+            //product.setStock(postHarvest.getStock());
         }
 
         Optional<PlantCategory> existeCat = plantCategoryRepository

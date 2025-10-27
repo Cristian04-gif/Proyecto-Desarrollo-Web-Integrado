@@ -10,15 +10,18 @@ import org.mapstruct.Mappings;
 import biocampo.demo.Domain.Model.Harvest;
 import biocampo.demo.Persistance.Entity.Cosecha;
 
-@Mapper(componentModel = "spring", uses = {CultivationMapper.class})
+@Mapper(componentModel = "spring", uses = {CultivationMapper.class, EmployeeMapper.class})
 public interface HarvestMapper {
 
     @Mappings({
         @Mapping(source = "idCosecha", target = "harvestId"),
         @Mapping(source = "cultivo", target = "cultivation"),
         @Mapping(source = "fechaCosecha", target = "dateHarvested"),
-        @Mapping(source = "temporada", target = "season"),
-        @Mapping(source = "recolector", target = "collector")
+        @Mapping(source = "cantidadCosechada", target = "harvestQuantity"),
+        @Mapping(source = "unidadMedida", target = "unitMeasure"),
+        @Mapping(source = "rendimietoXHectarea", target = "yeilfHectare"),
+        @Mapping(source = "costo", target = "cost"),
+        @Mapping(source = "empleados", target = "employees")
 
     })
 
@@ -27,7 +30,7 @@ public interface HarvestMapper {
 
     @InheritInverseConfiguration
     @Mapping(target = "idPerdida", ignore = true)
-    @Mapping(target = "empleados", ignore = true)
+    //@Mapping(target = "empleados", ignore = true)
     Cosecha toCosecha(Harvest harvest);
     
 }
