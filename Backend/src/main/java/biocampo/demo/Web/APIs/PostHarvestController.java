@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/postHarvest")
@@ -43,14 +44,25 @@ public class PostHarvestController {
     @PostMapping("/register")
     public ResponseEntity<PostHarvest> registerPostHarvest(@RequestBody PostHarvestRequest postHarvestRequest) {
         try {
-            PostHarvest postHarvest = postHarvestService.registerPostharvest(postHarvestRequest.getPostHarvest(), postHarvestRequest.getEmployees());
+            PostHarvest postHarvest = postHarvestService.registerPostharvest(postHarvestRequest.getPostHarvest(),
+                    postHarvestRequest.getEmployees());
             return new ResponseEntity<>(postHarvest, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println("error: "+e);
+            System.out.println("error: " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<PostHarvest> updatePostHarvest(@PathVariable Long id, @RequestBody PostHarvest postHarvest) {
+        try {
+            PostHarvest harvest = postHarvestService.updatePostHarvest(id, postHarvest);
+            return new ResponseEntity<>(harvest, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            System.out.println("error: "+e);
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
     /*
      * @PostMapping("/register")
      * public ResponseEntity<PostHarvest> register(@RequestBody PostHarvest
@@ -83,6 +95,7 @@ public class PostHarvestController {
             postHarvestService.deletePostHarvest(id);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
+            System.out.println("error: "+e);
             return ResponseEntity.notFound().build();
         }
     }

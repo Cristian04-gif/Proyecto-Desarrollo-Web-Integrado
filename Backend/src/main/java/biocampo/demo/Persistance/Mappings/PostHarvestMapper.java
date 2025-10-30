@@ -19,10 +19,13 @@ public interface PostHarvestMapper {
         @Mapping(source = "fecha", target = "dateProcessed"),
         @Mapping(source = "costoAlmacenamiento", target = "storageCost"),
         @Mapping(source = "costoEmpleado", target = "costEmployee"),
-        @Mapping(source = "precioUnidad", target = "unitPrice"),
-        @Mapping(source = "unidadPerdida", target = "lossUnit"),
+        @Mapping(source = "kgComerciables", target = "kgComerciables"),
+        @Mapping(source = "precioKg", target = "priceKg"),
+        @Mapping(source = "kgPerdidos", target = "lossKg"),
         @Mapping(source = "ingresoTotal", target = "totalReveneu"),
         @Mapping(source = "ganancia", target = "profit"),
+        @Mapping(source = "estado", target = "status"),
+        @Mapping(source = "fechaConversion", target = "conversionDate"),
         @Mapping(source = "observaciones", target = "observations"),
         @Mapping(source = "empleados", target = "employees")
     })

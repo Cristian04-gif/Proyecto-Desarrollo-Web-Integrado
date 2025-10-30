@@ -14,14 +14,19 @@ import biocampo.demo.Persistance.Entity.Producto;
 public interface ProductMapper {
     @Mappings({
             @Mapping(source = "idProducto", target = "productId"),
-            @Mapping(source = "plantaPostCosecha", target = "postHarvest"),
+            @Mapping(source = "postCosecha", target = "postHarvest"),
             @Mapping(source = "imgProducto", target = "imageUrl"),
             @Mapping(source = "etiqueta", target = "name"),
             @Mapping(source = "descripcion", target = "description"),
             @Mapping(source = "peso", target = "weight"),
+            @Mapping(source = "unidadMedida", target = "unitMeasure"),
             @Mapping(source = "precio", target = "price"),
-            @Mapping(source = "cantidad", target = "stock"),
+            @Mapping(source = "cantidad", target = "quantity"),
+            @Mapping(source = "stock", target = "stock"),
             @Mapping(source = "disponible", target = "active"),
+            @Mapping(source = "codigoLote", target = "lotCode"),
+            @Mapping(source = "fechaRegistro", target = "registrationDate"),
+            @Mapping(source = "fechaActualizacion", target = "updateDate"),
             @Mapping(source = "categoriaPlanta", target = "plantCategory")
     })
 
