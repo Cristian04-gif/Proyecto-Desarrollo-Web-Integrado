@@ -1,6 +1,8 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class InputSupplier {
-    private Long inputSupplierId;
+public class Order {
+    private Long orderId;
+    @CreationTimestamp
+    private LocalDate date;
+    private Double total;
     private Supplier supplier;
-    private Input input;
-    private BigDecimal price;
 }

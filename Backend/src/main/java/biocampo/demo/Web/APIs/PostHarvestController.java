@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import biocampo.demo.Domain.DTO.Request.PostHarvestRequest;
 import biocampo.demo.Domain.Model.PostHarvest;
 import biocampo.demo.Domain.Services.PostHarvestService;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,31 +42,35 @@ public class PostHarvestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<PostHarvest> register(@RequestBody PostHarvest postHarvest) {
+    public ResponseEntity<PostHarvest> registerPostHarvest(@RequestBody PostHarvestRequest postHarvestRequest) {
         try {
-            PostHarvest postHarvest2 = postHarvestService.registerPostHarvest(postHarvest);
-            return new ResponseEntity<>(postHarvest2, HttpStatus.CREATED);
+            PostHarvest postHarvest = postHarvestService.registerPostharvest(postHarvestRequest.getPostHarvest(),
+                    postHarvestRequest.getEmployees());
+            return new ResponseEntity<>(postHarvest, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println("error: " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<PostHarvest> update(@PathVariable Long id, @RequestBody PostHarvest postHarvest) {
+    public ResponseEntity<PostHarvest> updatePostHarvest(@PathVariable Long id, @RequestBody PostHarvest postHarvest) {
         try {
-            PostHarvest postHarvest2 = postHarvestService.updatePostHarvest(id, postHarvest);
-            return new ResponseEntity<>(postHarvest2, HttpStatus.ACCEPTED);
+            PostHarvest harvest = postHarvestService.updatePostHarvest(id, postHarvest);
+            return new ResponseEntity<>(harvest, HttpStatus.ACCEPTED);
         } catch (Exception e) {
+            System.out.println("error: "+e);
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         try {
             postHarvestService.deletePostHarvest(id);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
+            System.out.println("error: "+e);
             return ResponseEntity.notFound().build();
         }
     }

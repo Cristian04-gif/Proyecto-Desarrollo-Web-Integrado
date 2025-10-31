@@ -1,6 +1,8 @@
 package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,18 +20,17 @@ public class PostHarvest {
     private Harvest harvest;
     @CreationTimestamp
     private LocalDate dateProcessed;
-    private String cleaningMethod;
-    private String treatmentMethod;
-    private String packing;
-    private String storage;
-    private int stock;
-    //private List<Employee> employees;
+    
+    private Double storageCost;
+    private Double costEmployee;
+    private Double kgComerciables;
+    private Double priceKg;
+    private Double lossKg;
+    private Double totalReveneu;
+    private Double profit;
+    private String status;
+    private LocalDateTime conversionDate;
+    private String observations;
+    private List<Employee> employees;
 
-    /*public enum Packing {
-        BAG, BOX, CRATE
-    }
-
-    public enum Storage {
-        SILO, WAREHOUSE, REFRIGERATED_STORAGE;
-    }*/
 }

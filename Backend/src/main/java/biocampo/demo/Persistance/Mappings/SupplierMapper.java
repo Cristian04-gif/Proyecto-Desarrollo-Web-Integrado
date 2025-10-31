@@ -26,6 +26,6 @@ public interface SupplierMapper {
     List<Supplier> toSuppliers(List<Proveedor> proveedors);
 
     @InheritInverseConfiguration
-    @Mapping(target = "proveedorInsumos", ignore = true)
+    @Mapping(target = "pedidos", ignore = true)
     Proveedor toProveedor(Supplier supplier);
 }

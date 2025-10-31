@@ -47,6 +47,11 @@ public class AuthServices {
 
     public AuthResponse register(RegisterRequest request) {
         System.out.println("Entro al register de usuario");
+        Optional<Usuario> usuarioExistente = repoUsuario.findByEmail(request.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("El correo ya está registrado");
+        }
+
         Usuario user = new Usuario();
         user.setNombre(request.getNombre());
         user.setApellido(request.getApellido());

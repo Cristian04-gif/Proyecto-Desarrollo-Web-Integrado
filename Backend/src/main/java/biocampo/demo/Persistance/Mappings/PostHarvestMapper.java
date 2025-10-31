@@ -10,18 +10,24 @@ import org.mapstruct.Mappings;
 import biocampo.demo.Domain.Model.PostHarvest;
 import biocampo.demo.Persistance.Entity.PostCosecha;
 
-@Mapper(componentModel = "spring", uses = {HarvestMapper.class})
+@Mapper(componentModel = "spring", uses = {HarvestMapper.class, EmployeeMapper.class})
 public interface PostHarvestMapper {
 
     @Mappings({
         @Mapping(source = "idPostCosecha", target = "postHarvestId"),
-        @Mapping(source = "plantaCosechada", target = "harvest"),
+        @Mapping(source = "cosecha", target = "harvest"),
         @Mapping(source = "fecha", target = "dateProcessed"),
-        @Mapping(source = "limpieza", target = "cleaningMethod"),
-        @Mapping(source = "tratamiento", target = "treatmentMethod"),
-        @Mapping(source = "empaque", target = "packing"),
-        @Mapping(source = "almacenamiento", target = "storage"),
-        @Mapping(source = "stock", target = "stock")
+        @Mapping(source = "costoAlmacenamiento", target = "storageCost"),
+        @Mapping(source = "costoEmpleado", target = "costEmployee"),
+        @Mapping(source = "kgComerciables", target = "kgComerciables"),
+        @Mapping(source = "precioKg", target = "priceKg"),
+        @Mapping(source = "kgPerdidos", target = "lossKg"),
+        @Mapping(source = "ingresoTotal", target = "totalReveneu"),
+        @Mapping(source = "ganancia", target = "profit"),
+        @Mapping(source = "estado", target = "status"),
+        @Mapping(source = "fechaConversion", target = "conversionDate"),
+        @Mapping(source = "observaciones", target = "observations"),
+        @Mapping(source = "empleados", target = "employees")
     })
 
     PostHarvest toPostHarvest(PostCosecha postCosecha);
@@ -29,6 +35,5 @@ public interface PostHarvestMapper {
     List<PostHarvest> toPostHarvests(List<PostCosecha> postCosechas);
 
     @InheritInverseConfiguration
-    @Mapping(target = "empleados", ignore = true)
     PostCosecha toPostCosecha(PostHarvest postHarvest);
 }

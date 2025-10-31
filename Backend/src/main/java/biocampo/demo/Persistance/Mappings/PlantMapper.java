@@ -16,10 +16,11 @@ public interface PlantMapper {
     @Mappings({
         @Mapping(source = "idPlanta", target = "plantId"),
         @Mapping(source = "nombre", target = "name"),
-        @Mapping(source = "stock", target = "stock"),
+        @Mapping(source = "descripcion", target = "description"),
         @Mapping(source = "densidadSiembra", target = "seedingDensity"),
         @Mapping(source = "pesoSemillaPromedio", target = "averageSeedWeight"),
         @Mapping(source = "pesoPorPaquete", target = "weightPerPackage"),
+        @Mapping(source = "diasCosecha", target = "harvestDays"),
         @Mapping(source = "disponible", target = "available"),
         @Mapping(source = "categoria", target = "category"),
     })
@@ -29,5 +30,6 @@ public interface PlantMapper {
     List<Plant> toPlants(List<Planta> plantas);
 
     @InheritInverseConfiguration
+    @Mapping(target = "cultivos", ignore = true)
     Planta toPlanta(Plant plant);
 }

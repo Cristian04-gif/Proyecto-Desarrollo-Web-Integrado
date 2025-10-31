@@ -1,6 +1,7 @@
 package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,14 +19,11 @@ public class Harvest {
     private Cultivation cultivation;
     @CreationTimestamp
     private LocalDate dateHarvested;
-    private String season;
-    private String collector;
-    //private List<Loss> losses;
-    //private List<Employee> employees;
-    /*public enum Season {
-        SPRING, SUMMER, AUTUMN, WINTER
-    }
-    public enum Colector {
-        MACHINERY, MANUAL
-    }*/
+
+    private Double harvestQuantity;
+    private String unitMeasure;
+    private Double yeilfHectare;
+    private Double cost;
+
+    private List<Employee> employees;
 }

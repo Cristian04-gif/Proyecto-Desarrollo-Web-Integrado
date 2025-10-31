@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,7 +18,8 @@ public class Sale {
     private Customer customer;
     @CreationTimestamp
     private LocalDateTime saleDate;
-    private BigDecimal total;
+    private Double subTotal;
+    private Double totalTaxes;
+    private Double total;
     private String paymentMethod;
-    //private List<SaleDetail> details;
 }

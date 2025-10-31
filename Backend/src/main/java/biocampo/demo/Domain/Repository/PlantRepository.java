@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import biocampo.demo.Domain.Model.Plant;
-import biocampo.demo.Domain.Model.PlantCategory;
 
 public interface PlantRepository {
 
@@ -13,5 +12,5 @@ public interface PlantRepository {
     Plant save(Plant plant);
     void deleteById(Long id);
     List<Plant> getAvailable(boolean disponible);
-    List<Plant> getByCategory(PlantCategory category);
+    List<Plant> getByCategory(Long  idCategory);
 }

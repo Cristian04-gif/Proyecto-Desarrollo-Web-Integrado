@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import biocampo.demo.Domain.DTO.Request.SaleRequest;
 import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Services.SaleService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-
 
 @RestController
 @RequestMapping("/api/sale")
@@ -42,31 +41,25 @@ public class SaleController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Sale> registerSale(@RequestBody Sale sale) {
+    public ResponseEntity<Sale> registerSale(@RequestBody SaleRequest saleRequest) {
         try {
-            Sale sale2 = saleService.registerSale(sale);
-            return new ResponseEntity<>(sale2, HttpStatus.CREATED);
+            Sale sale = saleService.registerSale(saleRequest.getSale(), saleRequest.getDetails());
+            return new ResponseEntity<>(sale, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println("error: "+e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Sale> updateSale(@PathVariable Long id, @RequestBody Sale sale){
-        try {
-            Sale sale2 = saleService.updateSale(id, sale);
-            return new ResponseEntity<>(sale2, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        System.out.println("controlador delete de venta");
         try {
             saleService.deleteSale(id);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
+            System.out.println("error: "+e);
             return ResponseEntity.notFound().build();
         }
     }

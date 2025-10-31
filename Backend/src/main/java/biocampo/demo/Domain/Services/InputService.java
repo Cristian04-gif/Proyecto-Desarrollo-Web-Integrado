@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import biocampo.demo.Domain.Model.Input;
-import biocampo.demo.Domain.Model.Plant;
-import biocampo.demo.Domain.Model.Cultivation;
+import biocampo.demo.Domain.Model.Supplier;
 import biocampo.demo.Domain.Repository.InputRepository;
-import biocampo.demo.Domain.Repository.PlantRepository;
+import biocampo.demo.Domain.Repository.SupplierRepository;
 import biocampo.demo.Persistance.Entity.Insumo.Tipo;
-import biocampo.demo.Domain.Repository.CultivationRepository;
 
 @Service
 public class InputService {
@@ -20,11 +18,10 @@ public class InputService {
     @Autowired
     private InputRepository inputRepository;
 
-    @Autowired
-    private PlantRepository plantRepository;
+    
 
     @Autowired
-    private CultivationRepository cultivationRepository;
+    private SupplierRepository supplierRepository;
 
     public List<Input> getAllInputs() {
         return inputRepository.getAll();
@@ -34,73 +31,48 @@ public class InputService {
         return inputRepository.getById(id);
     }
 
-    public Input registerInput(Input input) {
-        Optional<Plant> plant = plantRepository.getById(input.getPlant().getPlantId());
-        Optional<Cultivation> cultivation = cultivationRepository.getById(input.getCultivation().getCultivationId());
+    //////////
+    public Input inputRegister(Input input) {
 
-        boolean existType = false;
+        System.out.println("Se ingreso al registro");
+        System.out.println("nombre: " + input.getName());
+
         for (Tipo tipo : Tipo.values()) {
             if (tipo.toString().equalsIgnoreCase(input.getType())) {
+
                 input.setType(tipo.name());
-                existType = true;
                 break;
             }
         }
-        if (!existType) {
-            throw new IllegalArgumentException("el tipo de invalido");
-        }
-
-        if (plant.isPresent() && cultivation.isPresent()) {
-            String[] unidadSeparada = input.getUnit().split(" ");
-            int convetir = Integer.parseInt(unidadSeparada[0]);
-
-            Plant actualizar = plant.get();
-            actualizar.setStock(actualizar.getStock() + convetir);
-            plantRepository.save(actualizar);
-
-            input.setPlant(plant.get());
-            input.setCultivation(cultivation.get());
-        } else {
-            throw new IllegalArgumentException("La planta o cultivo no existe");
-        }
+        System.out.println("tipo: " + input.getType());
+        input.setStock(0.0);
+        input.setPriceUnit(0.0);
+        input.setTotalCost(0.0);
+        Supplier supplier = supplierRepository.getById(input.getSupplier().getSupplierId())
+                .orElseThrow(() -> new IllegalArgumentException("NO existe el proveedor"));
+        input.setSupplier(supplier);
         return inputRepository.save(input);
     }
 
-    public Input updateInput(Long id, Input input) {
-        Optional<Input> existing = inputRepository.getById(id);
-        if (existing.isPresent()) {
-            Input toUpdate = existing.get();
-            toUpdate.setName(input.getName());
+    public Input inputUpdate(Long id, Input input) {
+        System.out.println("Actualizando insumo");
+        Input update = inputRepository.getById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El insumo no existe"));
 
-            // type
-            boolean existType = false;
-            for (Tipo tipo : Tipo.values()) {
-                if (tipo.toString().equalsIgnoreCase(input.getType())) {
-                    input.setType(tipo.name());
-                    existType = true;
-                    break;
-                }
+        update.setName(input.getName());
+        for (Tipo tipo : Tipo.values()) {
+            if (tipo.toString().equalsIgnoreCase(input.getType())) {
+                input.setType(tipo.name());
+                break;
             }
-            if (!existType) {
-                throw new IllegalArgumentException("el tipo de invalido");
-            }
-            toUpdate.setType(input.getType());
-            //
-
-            toUpdate.setDescription(input.getDescription());
-            toUpdate.setUnit(input.getUnit());
-
-            Optional<Plant> plant = plantRepository.getById(input.getPlant().getPlantId());
-            plant.ifPresent(toUpdate::setPlant);
-
-            Optional<Cultivation> cultivation = cultivationRepository
-                    .getById(input.getCultivation().getCultivationId());
-            cultivation.ifPresent(toUpdate::setCultivation);
-
-            return inputRepository.save(toUpdate);
-        } else {
-            return null;
         }
+        update.setUnitStatet(input.getUnitStatet());
+        Supplier supplier = supplierRepository.getById(input.getSupplier().getSupplierId())
+                .orElseThrow(() -> new IllegalArgumentException("NO existe el proveedor"));
+        input.setSupplier(supplier);
+        
+
+        return inputRepository.save(update);
     }
 
     public void deleteInput(Long id) {

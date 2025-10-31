@@ -57,21 +57,23 @@ public class ProductController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Product> register(@RequestBody Product product){
+    public ResponseEntity<Product> registerProduct(@RequestBody Product product){
         try {
-            Product product2 = productService.registerProduct(product);
-            return new ResponseEntity<>(product2, HttpStatus.CREATED);
+            Product register = productService.registerProduct(product);
+            return new ResponseEntity<>(register, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println("Error: "+e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }    
+    }     
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product){
         try {
-            Product product2 = productService.updateProduct(id, product);
-            return new ResponseEntity<>(product2, HttpStatus.ACCEPTED);
+            Product update = productService.updateProduct(id, product);
+            return new ResponseEntity<>(update, HttpStatus.ACCEPTED);
         } catch (Exception e) {
+            System.out.println("Error: "+e);
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }

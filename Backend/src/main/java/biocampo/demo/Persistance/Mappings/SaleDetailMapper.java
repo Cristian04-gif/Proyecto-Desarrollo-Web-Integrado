@@ -19,7 +19,8 @@ public interface SaleDetailMapper {
         @Mapping(source = "producto", target = "product"),
         @Mapping(source = "cantidad", target = "quantity"),
         @Mapping(source = "subtotal", target = "subTotal"),
-        //@Mapping(source = "pago", target = "paymentMethod"),
+        @Mapping(source = "impuestos", target = "taxes"),
+        @Mapping(source = "porcentajeImpuestos", target = "taxPercentage")
     })
 
     SaleDetail toSaleDetail(DetalleVenta detalleVenta);

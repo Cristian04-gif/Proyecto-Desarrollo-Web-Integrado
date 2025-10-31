@@ -1,19 +1,24 @@
 package biocampo.demo.Persistance.Entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -28,29 +33,35 @@ public class Cultivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCultivo;
-    
+
+    private String nombreParcela;
     @ManyToOne
     @JoinColumn(name = "idPlanta")
     private Planta planta;
-    // 1 hectarea = 10 000 m2
-    private double hectareas;
-    private double paquetesRequeridos;
-    //private String fertilizante;
-   // private BigDecimal costo;
+    private Double hectareas;
+    private Double paquetesRequeridos;
+    private Double costo;
     @CreationTimestamp
     private LocalDate fechaCultivo;
     private int cadaRiego;
-    
+
     @Enumerated(EnumType.STRING)
     private Temporada temporada;
     private LocalDate fechaEstimadaCosecha;
 
-    @OneToMany(mappedBy = "idPerdida")
-    private List<Perdida> perdida;
+    @OneToMany(mappedBy = "cultivo")
+    private List<Perdida> perdidas;
 
-    @OneToMany(mappedBy = "cultivo", cascade = CascadeType.MERGE)
-    private List<CultivoInsumo> insumo;
+    @OneToMany(mappedBy = "cultivo", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private List<CultivoInsumo> insumos;
 
-    @ManyToMany(mappedBy = "cultivo")
-    private List<Empleado> empleados;
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "cultivo_empleado", joinColumns = @JoinColumn(name = "idCultivo"), inverseJoinColumns = @JoinColumn(name = "idEmpleado"))
+    @JsonManagedReference
+    private List<Empleado> empleados = new ArrayList<>();
+
+    public enum Temporada {
+        PRIMAVERA, VERANO, OTONO, INVIERNO
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import biocampo.demo.Domain.DTO.Request.HarvestRequest;
 import biocampo.demo.Domain.Model.Harvest;
 import biocampo.demo.Domain.Services.HarvestService;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,9 +42,9 @@ public class HarvestControler {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Harvest> registerHarvest(@RequestBody Harvest harvest) {
+    public ResponseEntity<Harvest> registerHarvest(@RequestBody HarvestRequest harvestRequest) {
         try {
-            Harvest harvest2 = harvestService.registerHarvest(harvest);
+            Harvest harvest2 = harvestService.registerHarvest(harvestRequest.getHarvest(), harvestRequest.getEmployees());
             return new ResponseEntity<>(harvest2, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,7 +52,7 @@ public class HarvestControler {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Harvest> updateHarvest(@PathVariable Long id, @RequestBody Harvest harvest) {
+    public ResponseEntity<Harvest> updateHarvest(@PathVariable Long id, @RequestBody Harvest harvest){
         try {
             Harvest harvest2 = harvestService.updateHarvest(id, harvest);
             return new ResponseEntity<>(harvest2, HttpStatus.ACCEPTED);

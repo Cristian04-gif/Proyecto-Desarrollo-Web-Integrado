@@ -10,7 +10,7 @@ import biocampo.demo.Domain.Model.Cultivation;
 import biocampo.demo.Domain.Repository.CultivationRepository;
 import biocampo.demo.Persistance.CRUD.RepoCultivo;
 import biocampo.demo.Persistance.Entity.Cultivo;
-import biocampo.demo.Persistance.Entity.Cosecha.Temporada;
+import biocampo.demo.Persistance.Entity.Cultivo.Temporada;
 import biocampo.demo.Persistance.Mappings.CultivationMapper;
 
 @Repository

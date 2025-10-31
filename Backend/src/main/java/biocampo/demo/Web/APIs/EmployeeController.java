@@ -55,6 +55,7 @@ public class EmployeeController {
             Employee newEmployee = employeeService.registerEmployee(employee);
             return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println("error: "+e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

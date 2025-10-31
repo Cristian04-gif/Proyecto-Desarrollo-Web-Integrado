@@ -1,6 +1,5 @@
 package biocampo.demo.Domain.Model;
 
-import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +15,8 @@ public class SaleDetail {
     private Sale sale;
     private Product product;
     private int quantity;
-    private BigDecimal subTotal;
-    //private String paymentMethod;
-    /*public enum PaymentMethod {
-        PAYPAL, CARD
-    }*/
+    private Double subTotal;
+    private Double taxes;
+    private Double taxPercentage;
+
 }

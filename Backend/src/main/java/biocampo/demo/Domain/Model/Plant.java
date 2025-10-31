@@ -13,10 +13,11 @@ public class Plant {
 
     private Long plantId;
     private String name;
-    private int stock;
-    private double seedingDensity;
-    private double averageSeedWeight;
-    private double weightPerPackage;
+    private String description;
+    private Double seedingDensity;
+    private Double averageSeedWeight;
+    private Double weightPerPackage;
+    private int harvestDays;
     private boolean available;
     private PlantCategory category;
 }

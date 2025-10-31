@@ -14,4 +14,6 @@ public interface EmployeeRepository {
     //Employee getByNames(String names);
     Optional<Employee> getByBusinessEmail(String email);
     void deleteByBusinessEmail(String email);
+    List<Employee> getAvailable(boolean available);
+    Optional<Employee> getByDni(String dni);
 }
