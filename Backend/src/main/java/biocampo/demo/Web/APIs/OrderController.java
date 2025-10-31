@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import biocampo.demo.Domain.DTO.Request.OrderRequest;
 import biocampo.demo.Domain.Model.Order;
 import biocampo.demo.Domain.Services.OrderService;
+import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +51,7 @@ public class OrderController {
         }
     }
     
-    /*@DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteOrderAndDetails(@PathVariable Long id){
         try {
             orderService.deleteOrder(id);
@@ -57,35 +59,5 @@ public class OrderController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-    }*/
-
-    /*@PostMapping("/register")
-    public ResponseEntity<Order> registerInputSupplier(@RequestBody Order inputSupplier) {
-        try {
-            Order inputSupplier2 = inputSupplierService.registerInputSupplier(inputSupplier);
-            return new ResponseEntity<>(inputSupplier2, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Order> updateInputSupplier(@PathVariable Long id, @RequestBody Order inputSupplier){
-        try {
-            Order inputSupplier2 = inputSupplierService.updataInputSupplier(id, inputSupplier);
-            return new ResponseEntity<>(inputSupplier2, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        try {
-            inputSupplierService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
 }

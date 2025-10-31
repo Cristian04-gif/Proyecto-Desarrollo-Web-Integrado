@@ -37,18 +37,8 @@ public class SaleDatailsController {
     }
 
     @GetMapping("/sale")
-    public ResponseEntity<List<SaleDetail>> getDetailsBySale(@RequestBody Sale sale){
-        List<SaleDetail> details = detailService.getSaleDetailsBySale(sale);
+    public ResponseEntity<List<SaleDetail>> getDetailsBySale(@PathVariable Long idSale){
+        List<SaleDetail> details = detailService.getSaleDetailBySale(idSale);
         return new ResponseEntity<>(details, HttpStatus.OK);
-    }
-
-    @PostMapping("/registerAll")
-    public ResponseEntity<List<SaleDetail>> registerAllDetails(@RequestBody List<SaleDetail> details) {
-        try {
-            List<SaleDetail> saleDetails = detailService.registerAllDetails(details);
-            return new ResponseEntity<>(saleDetails, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

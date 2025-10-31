@@ -18,6 +18,8 @@ public class Sale {
     private Customer customer;
     @CreationTimestamp
     private LocalDateTime saleDate;
+    private Double subTotal;
+    private Double totalTaxes;
     private Double total;
     private String paymentMethod;
     //private List<SaleDetail> details;

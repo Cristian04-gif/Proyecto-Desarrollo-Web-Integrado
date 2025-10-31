@@ -22,12 +22,6 @@ public class SaleDetailService {
     @Autowired
     private SaleDetailRepository saleDetailRepository;
 
-    @Autowired
-    private SaleRepository saleRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
     public List<SaleDetail> getAllSaleDetails() {
         return saleDetailRepository.getAll();
     }
@@ -36,75 +30,10 @@ public class SaleDetailService {
         return saleDetailRepository.getById(id);
     }
 
-    public List<SaleDetail> getSaleDetailsBySale(Sale sale) {
-        Sale optionalSale = saleRepository.getById(sale.getSaleId())
-                .orElseThrow(() -> new IllegalArgumentException("NO existe la venta"));
-        return saleDetailRepository.findBySale(optionalSale);
+    public List<SaleDetail> getSaleDetailBySale(Long idSale){
+        return saleDetailRepository.findBySaleId(idSale);
     }
 
-    public SaleDetail registerSaleDetail(SaleDetail saleDetail) {
-        Optional<Sale> sale = saleRepository.getById(saleDetail.getSale().getSaleId());
-        Optional<Product> product = productRepository.getById(saleDetail.getProduct().getProductId());
-
-        if (sale.isPresent() && product.isPresent()) {
-            saleDetail.setSale(sale.get());
-            saleDetail.setProduct(product.get());
-            // return saleDetailRepository.save(saleDetail);
-        } else {
-            throw new IllegalArgumentException("La venta o producto relacionado no existe");
-        }
-
-        return saleDetailRepository.save(saleDetail);
-    }
-
-    @Transactional
-    public List<SaleDetail> registerAllDetails(List<SaleDetail> details) {
-        if (details == null || details.isEmpty()) {
-            throw new IllegalArgumentException("NO se proporcionod etalles");
-        }
-
-        Long saleId = details.getFirst().getSale().getSaleId();
-        Sale sale = saleRepository.getById(saleId)
-                .orElseThrow(() -> new IllegalArgumentException("la venta con id: " + saleId + " no existe"));
-
-        Double total = 0.0;
-        for (SaleDetail saleDetail : details) {
-            Product product = productRepository.getById(saleDetail.getProduct().getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("Prodcuto no encontrado"));
-
-            if (product.getStock() < saleDetail.getQuantity()) {
-                throw new IllegalArgumentException("Stock insuficiente del producto: " + product.getName());
-            }
-
-            saleDetail.setSale(sale);
-            saleDetail.setProduct(product);
-            total +=saleDetail.getSubTotal();
-        }
-
-        sale.setTotal(total);
-        saleRepository.save(sale);
-        return saleDetailRepository.saveAll(details);
-        
-    }
-
-    public SaleDetail updateSaleDetail(Long id, SaleDetail saleDetail) {
-        Optional<SaleDetail> existing = saleDetailRepository.getById(id);
-        if (existing.isPresent()) {
-            SaleDetail toUpdate = existing.get();
-            toUpdate.setQuantity(saleDetail.getQuantity());
-            toUpdate.setSubTotal(saleDetail.getSubTotal());
-
-            Optional<Sale> sale = saleRepository.getById(saleDetail.getSale().getSaleId());
-            sale.ifPresent(toUpdate::setSale);
-
-            Optional<Product> product = productRepository.getById(saleDetail.getProduct().getProductId());
-            product.ifPresent(toUpdate::setProduct);
-
-            return saleDetailRepository.save(toUpdate);
-        } else {
-            return null;
-        }
-    }
 
     public void deleteSaleDetail(Long id) {
         saleDetailRepository.deleteById(id);

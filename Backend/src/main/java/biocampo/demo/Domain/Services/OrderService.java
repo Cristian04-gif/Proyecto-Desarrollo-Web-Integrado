@@ -95,4 +95,12 @@ public class OrderService {
         Pedido savedFinal = repoOrden.save(savedOrder);
         return orderMapper.toInputSupplier(savedFinal);
     }
+
+    public void deleteOrder(Long id){
+        Pedido pedido = repoOrden.findById(id).orElseThrow();
+        for (DetallePedido detalle : pedido.getDetallePedidos()) {
+            repoDetallePedido.deleteById(detalle.getIdDetalle());
+        }
+        repoOrden.deleteById(id);
+    }
 }

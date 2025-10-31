@@ -23,8 +23,7 @@ public class DetalleVentaRepository implements SaleDetailRepository {
     private RepoDetalleVenta repoDetalleVenta;
     @Autowired
     private SaleDetailMapper detailMapper;
-    @Autowired
-    private RepoVenta repoVenta;
+
 
     @Override
     public List<SaleDetail> getAll() {
@@ -50,21 +49,9 @@ public class DetalleVentaRepository implements SaleDetailRepository {
     }
 
     @Override
-    public List<SaleDetail> findBySale(Sale sale) {
-        if (sale.getSaleId() == null) {
-            throw new IllegalArgumentException("error, no puede ser nulo");
-        }
-
-        Venta venta = repoVenta.findById(sale.getSaleId()).orElseThrow(() -> new EntityNotFoundException("Error, no se encontro la venta"));
-        List<DetalleVenta> detalleVentas = repoDetalleVenta.findByVenta(venta);
+    public List<SaleDetail> findBySaleId(Long idSale) {
+        List<DetalleVenta> detalleVentas = repoDetalleVenta.findByVentaIdVenta(idSale);
         return detailMapper.toSaleDetails(detalleVentas);
-    }
-
-    @Override
-    public List<SaleDetail> saveAll(List<SaleDetail> details) {
-        List<DetalleVenta> detalleVentas = detailMapper.toDetalleVentas(details);
-        List<DetalleVenta> detalleVentasGuardados = repoDetalleVenta.saveAll(detalleVentas);
-        return detailMapper.toSaleDetails(detalleVentasGuardados);
     }
 
 }

@@ -26,10 +26,10 @@ public class DetalleVenta {
     @ManyToOne
     @JoinColumn(name = "idProducto")
     private Producto producto;
-
+    
     private int cantidad;
-
     private Double subtotal;
-
+    private Double impuestos;
+    private Double porcentajeImpuestos;
     
 }

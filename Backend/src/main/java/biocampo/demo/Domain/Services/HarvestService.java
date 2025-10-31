@@ -116,6 +116,7 @@ public class HarvestService {
         return harvestMapper.toHarvest(cosechaFinal);
     }
 
+    @Transactional
     public Harvest updateHarvest(Long id, Harvest harvest) {
         System.out.println("Entro a la actualizacion");
         Harvest updateHarvest = harvestRepository.getByIdHarvest(id).orElseThrow();

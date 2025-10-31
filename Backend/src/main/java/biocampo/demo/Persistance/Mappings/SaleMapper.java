@@ -16,8 +16,10 @@ public interface SaleMapper {
         @Mapping(source = "idVenta", target = "saleId"),
         @Mapping(source = "cliente", target = "customer"),
         @Mapping(source = "fechaVenta", target = "saleDate"),
+        @Mapping(source = "subTotal", target = "subTotal"),
+        @Mapping(source = "impuestoTotal", target = "totalTaxes"),
         @Mapping(source = "total", target = "total"),
-        @Mapping(source = "pago", target = "paymentMethod")
+        @Mapping(source = "pago", target = "paymentMethod"),
     })
 
     Sale toSale(Venta venta);

@@ -1,10 +1,12 @@
 package biocampo.demo.Persistance.Entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,8 +34,9 @@ public class Venta {
 
     @CreationTimestamp
     private LocalDateTime fechaVenta;
+    private Double subTotal;
+    private Double impuestoTotal;
     private Double total;
-
     @Enumerated(EnumType.STRING)
     private Metodo pago;
 
@@ -41,6 +44,6 @@ public class Venta {
         PAYPAL, TARJETA
     }
 
-    @OneToMany(mappedBy = "venta")
-    private List<DetalleVenta> detalle;
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.MERGE)
+    private List<DetalleVenta> detalle = new ArrayList<>();
 }
