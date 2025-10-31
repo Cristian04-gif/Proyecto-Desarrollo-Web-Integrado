@@ -61,16 +61,6 @@ public class HarvestControler {
         }
     }
 
-    /*@PutMapping("/update/{id}")
-    public ResponseEntity<Harvest> updateHarvest(@PathVariable Long id, @RequestBody Harvest harvest) {
-        try {
-            Harvest harvest2 = harvestService.updateHarvest(id, harvest);
-            return new ResponseEntity<>(harvest2, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
-    }*/
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteHarvest(@PathVariable Long id) {
         try {

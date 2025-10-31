@@ -24,14 +24,6 @@ public class Harvest {
     private String unitMeasure;
     private Double yeilfHectare;
     private Double cost;
-    //private String season;
-    //private String collector;
-    //private List<Loss> losses;
+
     private List<Employee> employees;
-    /*public enum Season {
-        SPRING, SUMMER, AUTUMN, WINTER
-    }
-    public enum Colector {
-        MACHINERY, MANUAL
-    }*/
 }

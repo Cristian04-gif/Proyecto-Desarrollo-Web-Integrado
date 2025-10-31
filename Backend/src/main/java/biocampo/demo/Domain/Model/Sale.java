@@ -22,5 +22,4 @@ public class Sale {
     private Double totalTaxes;
     private Double total;
     private String paymentMethod;
-    //private List<SaleDetail> details;
 }

@@ -9,13 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Services.SaleDetailService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 @RestController
 @RequestMapping("/api/saleDetails")

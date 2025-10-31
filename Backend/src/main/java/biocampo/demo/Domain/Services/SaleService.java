@@ -62,7 +62,7 @@ public class SaleService {
         Venta ventaGuardada = repoVenta.save(ventaEntity);
 
         double subTotal = 0.0, totalImpuestos = 0.0;
-        ;
+        
         for (SaleDetail saleDetail : details) {
             DetalleVenta detalleVenta = saleDetailMapper.toDetalleVenta(saleDetail);
             Producto productoEntity = repoProducto.findById(detalleVenta.getProducto().getIdProducto()).orElseThrow();

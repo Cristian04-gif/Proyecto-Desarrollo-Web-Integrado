@@ -25,10 +25,7 @@ public class Cultivation {
     private LocalDate startDate;
     private int eachIrrigation;
     private String season;
-    //@CreationTimestamp
     private LocalDate endDate;
-    //private List<Loss> losses;
-    //private List<InputCultivation> inputs;
     private List<Employee> employees;
 
 }

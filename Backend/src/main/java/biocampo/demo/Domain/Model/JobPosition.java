@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class JobPosition {
     private Long positionId;
     private String positionName;
-    //private List<Employee> employee;
 }

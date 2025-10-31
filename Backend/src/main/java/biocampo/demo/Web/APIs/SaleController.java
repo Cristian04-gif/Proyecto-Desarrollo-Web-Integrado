@@ -52,29 +52,6 @@ public class SaleController {
 
     }
 
-    /*
-     * @PostMapping("/register")
-     * public ResponseEntity<Sale> registerSale(@RequestBody Sale sale) {
-     * try {
-     * Sale sale2 = saleService.registerSale(sale);
-     * return new ResponseEntity<>(sale2, HttpStatus.CREATED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-     * }
-     * }
-     * 
-     * @PutMapping("/update/{id}")
-     * public ResponseEntity<Sale> updateSale(@PathVariable Long id, @RequestBody
-     * Sale sale){
-     * try {
-     * Sale sale2 = saleService.updateSale(id, sale);
-     * return new ResponseEntity<>(sale2, HttpStatus.ACCEPTED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-     * }
-     * }
-     */
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         System.out.println("controlador delete de venta");

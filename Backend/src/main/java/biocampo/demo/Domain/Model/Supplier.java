@@ -18,5 +18,4 @@ public class Supplier {
     private String email;
     private String address;
 
-    //private List<InputSupplier> suppliedInputs;
 }

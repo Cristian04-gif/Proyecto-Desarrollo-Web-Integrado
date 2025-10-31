@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class PlantCategory {
     private Long categoryId;
     private String categoryName;
-    //private List<Plant> plant;
 }

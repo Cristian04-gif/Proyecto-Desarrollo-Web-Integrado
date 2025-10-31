@@ -19,5 +19,4 @@ public class Order {
     private LocalDate date;
     private Double total;
     private Supplier supplier;
-    //private List<OrderDetail> orderDetails;
 }

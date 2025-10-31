@@ -6,15 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Repository.SaleDetailRepository;
 import biocampo.demo.Persistance.CRUD.RepoDetalleVenta;
-import biocampo.demo.Persistance.CRUD.RepoVenta;
 import biocampo.demo.Persistance.Entity.DetalleVenta;
-import biocampo.demo.Persistance.Entity.Venta;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
-import jakarta.persistence.EntityNotFoundException;
 
 @Repository
 public class DetalleVentaRepository implements SaleDetailRepository {

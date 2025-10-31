@@ -23,8 +23,6 @@ public class User {
     @CreationTimestamp
     private LocalDate dateRegistered;
     private String role;
-    /*public enum Role {
-        ADMIN, CUSTOMER, AGRONOMIST, BUYER, SUPERVISOR, WAREHOUSE, SALESPERSON
-    }*/
+
 
 }

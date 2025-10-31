@@ -6,15 +6,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import biocampo.demo.Domain.Model.SaleDetail;
-import biocampo.demo.Domain.Model.Sale;
-import biocampo.demo.Domain.Model.Product;
-import biocampo.demo.Domain.Repository.SaleDetailRepository;
-import biocampo.demo.Domain.Repository.SaleRepository;
 
-import biocampo.demo.Domain.Repository.ProductRepository;
+import biocampo.demo.Domain.Repository.SaleDetailRepository;
+
 
 @Service
 public class SaleDetailService {
@@ -35,7 +31,4 @@ public class SaleDetailService {
     }
 
 
-    public void deleteSaleDetail(Long id) {
-        saleDetailRepository.deleteById(id);
-    }
 }

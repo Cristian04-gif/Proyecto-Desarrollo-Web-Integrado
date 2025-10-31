@@ -63,31 +63,6 @@ public class PostHarvestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    /*
-     * @PostMapping("/register")
-     * public ResponseEntity<PostHarvest> register(@RequestBody PostHarvest
-     * postHarvest) {
-     * try {
-     * PostHarvest postHarvest2 =
-     * postHarvestService.registerPostHarvest(postHarvest);
-     * return new ResponseEntity<>(postHarvest2, HttpStatus.CREATED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-     * }
-     * }
-     * 
-     * @PutMapping("/update/{id}")
-     * public ResponseEntity<PostHarvest> update(@PathVariable Long id, @RequestBody
-     * PostHarvest postHarvest) {
-     * try {
-     * PostHarvest postHarvest2 = postHarvestService.updatePostHarvest(id,
-     * postHarvest);
-     * return new ResponseEntity<>(postHarvest2, HttpStatus.ACCEPTED);
-     * } catch (Exception e) {
-     * return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-     * }
-     * }
-     */
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

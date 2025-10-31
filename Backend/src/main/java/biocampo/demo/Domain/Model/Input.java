@@ -20,10 +20,5 @@ public class Input {
     private Double totalCost;
     
     private Supplier supplier;
-    //private Cultivation cultivation;
-    //private List<InputSupplier> suppliers;
-    //private List<InputCultivation> applications;
-    /*public enum Type {
-        SEED, FERTILIZER, PESTICIDE, HERBICIDE
-    }*/
+    
 }

@@ -18,8 +18,5 @@ public class SaleDetail {
     private Double subTotal;
     private Double taxes;
     private Double taxPercentage;
-    //private String paymentMethod;
-    /*public enum PaymentMethod {
-        PAYPAL, CARD
-    }*/
+
 }

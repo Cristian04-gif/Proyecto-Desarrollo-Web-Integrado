@@ -21,7 +21,4 @@ public class Image {
     @CreationTimestamp
     private LocalDate uploadDate;
 
-    /*public enum EntityType {
-        CULTIVARION, HARVEST, POSTHARVEST
-    }*/
 }
