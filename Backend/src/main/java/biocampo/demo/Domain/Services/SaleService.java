@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import biocampo.demo.Domain.Model.Customer;
 import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.SaleDetail;
+import biocampo.demo.Domain.Repository.CustomerRepository;
 import biocampo.demo.Domain.Repository.SaleRepository;
 import biocampo.demo.Persistance.CRUD.RepoCliente;
 import biocampo.demo.Persistance.CRUD.RepoDetalleVenta;
@@ -28,6 +30,8 @@ public class SaleService {
 
     @Autowired
     private SaleRepository saleRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private SaleMapper saleMapper;
@@ -45,6 +49,11 @@ public class SaleService {
     // Obtener todas las ventas
     public List<Sale> getAllSales() {
         return saleRepository.getAll();
+    }
+
+    public List<Sale> getSaleByCustomerId(String emailuser){
+        Customer customer = customerRepository.findByUsuarioEmail(emailuser).orElseThrow();
+        return saleRepository.getSaleByCustomerId(customer.getCustomerId());
     }
 
     // Obtener venta por ID

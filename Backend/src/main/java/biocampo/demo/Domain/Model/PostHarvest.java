@@ -31,6 +31,6 @@ public class PostHarvest {
     private String status;
     private LocalDateTime conversionDate;
     private String observations;
-    private List<Employee> employees;
+    //private List<Employee> employees;
 
 }

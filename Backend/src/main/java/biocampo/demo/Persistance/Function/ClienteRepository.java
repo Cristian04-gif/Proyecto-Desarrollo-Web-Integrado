@@ -14,7 +14,7 @@ import biocampo.demo.Persistance.Entity.Cliente.Tipo;
 import biocampo.demo.Persistance.Mappings.CustomerMapper;
 
 @Repository
-public class ClienteRepository implements CustomerRepository{
+public class ClienteRepository implements CustomerRepository {
 
     @Autowired
     private RepoCliente repoCliente;
@@ -54,7 +54,12 @@ public class ClienteRepository implements CustomerRepository{
             }
         }
         return null;
-        
+
+    }
+
+    @Override
+    public Optional<Customer> findByUsuarioEmail(String emailUser) {
+        return repoCliente.findByUsuarioEmail(emailUser).map(cliente -> customerMapper.toCustomer(cliente));
     }
 
 }

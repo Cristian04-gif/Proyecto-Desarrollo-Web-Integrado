@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
 @RestController
 @RequestMapping("/api/sale")
 public class SaleController {
@@ -32,6 +33,12 @@ public class SaleController {
         List<Sale> all = saleService.getAllSales();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
+
+    @GetMapping("/customer/{emailUser}")
+    public ResponseEntity<List<Sale>> getSaleByCustomerId(@PathVariable String emailUser){
+        List<Sale> sales = saleService.getSaleByCustomerId(emailUser);
+        return new ResponseEntity<>(sales, HttpStatus.OK);
+    }    
 
     @GetMapping("/id/{id}")
     public ResponseEntity<Sale> getSale(@PathVariable Long id) {

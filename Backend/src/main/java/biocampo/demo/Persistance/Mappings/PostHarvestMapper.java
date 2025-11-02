@@ -10,7 +10,7 @@ import org.mapstruct.Mappings;
 import biocampo.demo.Domain.Model.PostHarvest;
 import biocampo.demo.Persistance.Entity.PostCosecha;
 
-@Mapper(componentModel = "spring", uses = {HarvestMapper.class, EmployeeMapper.class})
+@Mapper(componentModel = "spring", uses = {HarvestMapper.class/* , EmployeeMapper.class*/})
 public interface PostHarvestMapper {
 
     @Mappings({
@@ -27,7 +27,7 @@ public interface PostHarvestMapper {
         @Mapping(source = "estado", target = "status"),
         @Mapping(source = "fechaConversion", target = "conversionDate"),
         @Mapping(source = "observaciones", target = "observations"),
-        @Mapping(source = "empleados", target = "employees")
+        //@Mapping(source = "empleados", target = "employees")
     })
 
     PostHarvest toPostHarvest(PostCosecha postCosecha);
@@ -35,5 +35,6 @@ public interface PostHarvestMapper {
     List<PostHarvest> toPostHarvests(List<PostCosecha> postCosechas);
 
     @InheritInverseConfiguration
+    @Mapping(target = "empleados", ignore = true)
     PostCosecha toPostCosecha(PostHarvest postHarvest);
 }
