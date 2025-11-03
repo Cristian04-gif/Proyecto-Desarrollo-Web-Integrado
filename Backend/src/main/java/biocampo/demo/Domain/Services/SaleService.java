@@ -1,7 +1,10 @@
 package biocampo.demo.Domain.Services;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,15 @@ import biocampo.demo.Persistance.Entity.Venta;
 import biocampo.demo.Persistance.Entity.Venta.Metodo;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
 import biocampo.demo.Persistance.Mappings.SaleMapper;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
 public class SaleService {
@@ -51,7 +63,7 @@ public class SaleService {
         return saleRepository.getAll();
     }
 
-    public List<Sale> getSaleByCustomerId(String emailuser){
+    public List<Sale> getSaleByCustomerId(String emailuser) {
         Customer customer = customerRepository.findByUsuarioEmail(emailuser).orElseThrow();
         return saleRepository.getSaleByCustomerId(customer.getCustomerId());
     }
@@ -71,7 +83,7 @@ public class SaleService {
         Venta ventaGuardada = repoVenta.save(ventaEntity);
 
         double subTotal = 0.0, totalImpuestos = 0.0;
-        
+
         for (SaleDetail saleDetail : details) {
             DetalleVenta detalleVenta = saleDetailMapper.toDetalleVenta(saleDetail);
             Producto productoEntity = repoProducto.findById(detalleVenta.getProducto().getIdProducto()).orElseThrow();
@@ -127,5 +139,49 @@ public class SaleService {
             repoDetalleVenta.deleteById(detalle.getIdDetalleVenta());
         }
         repoVenta.deleteById(id);
+    }
+
+    // comprobante de venta
+    public byte[] generarComprobanteVenta(String emailUser) throws JRException {
+        Cliente cliente = repoCliente.findByUsuarioEmail(emailUser).orElseThrow();
+        List<Venta> venta = repoVenta.findByClienteIdCliente(cliente.getIdCliente());
+
+        int ultimoIncice = venta.size() - 1;
+        Venta ventaReciente = venta.get(ultimoIncice);
+
+        List<DetalleVenta> detalleVentas = ventaReciente.getDetalle();
+        InputStream reporteStream = getClass().getResourceAsStream("/Reports/comprobante_venta.jasper");
+
+        JasperReport jasperReport;
+        if (reporteStream == null) {
+            System.out.println("se intenta compilar el jrxml");
+            // compila el jrxml si el jasper no existe
+            InputStream jrxmlStream = getClass().getResourceAsStream("/Reports/comprobante_venta.jrxml");
+            jasperReport = JasperCompileManager.compileReport(jrxmlStream);
+        } else {
+            System.out.println("se carga el jasper ya compilado");
+            jasperReport = (JasperReport) JRLoader.loadObject(reporteStream);
+            System.out.println("jasper cargado correctamente");
+        }
+
+        System.out.println("Inicia el mapa de parametros");
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("nombreCompleto", ventaReciente.getCliente().getNombreCompleto());
+        parametros.put("clienteEmail", ventaReciente.getCliente().getEmail());
+        parametros.put("fechaVenta", ventaReciente.getFechaVenta().toString());
+        parametros.put("pago", ventaReciente.getPago().toString());
+        parametros.put("total", ventaReciente.getTotal());
+
+
+        parametros.put("detalles", new JRBeanCollectionDataSource(detalleVentas));
+        for (DetalleVenta d : detalleVentas) {
+            System.out.println("Detalle: " + d.getIdDetalleVenta() +
+                    " -> Producto: " + (d.getProducto() != null ? d.getProducto().getEtiqueta() : "NULL"));
+        }
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 }
