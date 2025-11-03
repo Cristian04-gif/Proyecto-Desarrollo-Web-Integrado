@@ -242,12 +242,6 @@ de impresion:]]></text>
 				</textElement>
 				<text><![CDATA[Peso unidad]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="316" y="0" width="100" height="30" uuid="7c9f0ce2-dba3-4447-87a8-ccdb2474f268">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5c5b2c7e-29b2-4d21-b541-bba9372a1347"/>
-				</reportElement>
-				<text><![CDATA[producto.peso]]></text>
-			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
