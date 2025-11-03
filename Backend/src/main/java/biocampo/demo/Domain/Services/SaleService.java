@@ -27,7 +27,6 @@ import biocampo.demo.Persistance.Entity.Venta;
 import biocampo.demo.Persistance.Entity.Venta.Metodo;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
 import biocampo.demo.Persistance.Mappings.SaleMapper;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -150,21 +149,15 @@ public class SaleService {
         Venta ventaReciente = venta.get(ultimoIncice);
 
         List<DetalleVenta> detalleVentas = ventaReciente.getDetalle();
-        InputStream reporteStream = getClass().getResourceAsStream("/Reports/comprobante_venta.jasper");
-
+        
+        InputStream reporteStream = getClass().getResourceAsStream("/Reports/comprobante_ventaV2.jasper");
         JasperReport jasperReport;
         if (reporteStream == null) {
-            System.out.println("se intenta compilar el jrxml");
-            // compila el jrxml si el jasper no existe
-            InputStream jrxmlStream = getClass().getResourceAsStream("/Reports/comprobante_venta.jrxml");
+            InputStream jrxmlStream = getClass().getResourceAsStream("/Reports/comprobante_ventaV2.jrxml");
             jasperReport = JasperCompileManager.compileReport(jrxmlStream);
         } else {
-            System.out.println("se carga el jasper ya compilado");
             jasperReport = (JasperReport) JRLoader.loadObject(reporteStream);
-            System.out.println("jasper cargado correctamente");
         }
-
-        System.out.println("Inicia el mapa de parametros");
 
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("nombreCompleto", ventaReciente.getCliente().getNombreCompleto());
@@ -174,13 +167,8 @@ public class SaleService {
         parametros.put("total", ventaReciente.getTotal());
 
 
-        parametros.put("detalles", new JRBeanCollectionDataSource(detalleVentas));
-        for (DetalleVenta d : detalleVentas) {
-            System.out.println("Detalle: " + d.getIdDetalleVenta() +
-                    " -> Producto: " + (d.getProducto() != null ? d.getProducto().getEtiqueta() : "NULL"));
-        }
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(detalleVentas);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
 
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
