@@ -75,7 +75,7 @@ public class SaleService {
     @Transactional
     public Sale registerSale(Sale sale, List<SaleDetail> details) {
         Venta ventaEntity = saleMapper.toVenta(sale);
-        Cliente clienteEntity = repoCliente.findById(ventaEntity.getCliente().getIdCliente())
+        Cliente clienteEntity = repoCliente.findByUsuarioEmail(ventaEntity.getCliente().getUsuario().getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("El cliente no existe"));
         ventaEntity.setCliente(clienteEntity);
 
