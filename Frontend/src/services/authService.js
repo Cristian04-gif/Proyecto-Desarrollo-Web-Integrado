@@ -10,8 +10,9 @@ export async function login(correo, contraseña) {
   });
   if (!res.ok) throw new Error('Credenciales inválidas');
   return await res.json().then(data => {
-    if (data.token) {
+    if (data.token && data.email) {
       localStorage.setItem('token', data.token);
+      localStorage.setItem("user", data.email)
       window.location.href = 'http://localhost:5173/';
     }
   });
