@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -9,7 +10,9 @@ import DSS from './pages/tecnologia/DSS';
 import Exploracion from './pages/tecnologia/Exploracion';
 import Sensores from './pages/tecnologia/Sensores';
 import Precision from './pages/tecnologia/Precision';
-
+import Nosotros from './pages/Nosotros';
+import Servicios from './pages/Servicios';
+import Cultivos from './pages/Cultivos';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/nosotros" element={<Nosotros />} />
+      <Route path="/servicios" element={<Servicios />} />
+      <Route path="/cultivos" element={<Cultivos />} />
       <Route path="/tecnologia/mapeo" element={<Mapeo />} />
       <Route path="/tecnologia/seguimiento" element={<Seguimiento />} />
       <Route path="/tecnologia/defensa" element={<Defensa />} />

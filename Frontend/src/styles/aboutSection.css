@@ -1,0 +1,245 @@
+/* Banner institucional */
+.about-banner {
+  position: relative;
+  height: 60vh;
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(47, 133, 90, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.banner-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.banner-subtitle {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Introducción */
+.about-intro {
+  font-size: 1.05rem;
+  color: #000000;
+  margin-bottom: 30px;
+  text-align: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Misión, visión y valores */
+.about-values h3 {
+  color: #2f855a;
+  margin-top: 30px;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.about-values-list {
+  list-style: none;
+  padding: 0;
+  max-width: 700px;
+  margin: 20px auto;
+}
+
+.about-values-list li {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #2d3748;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 20px;
+}
+
+.about-values-list li::before {
+  content: '✔';
+  position: absolute;
+  left: 0;
+  color: #2f855a;
+}
+
+/* Carrusel de plantíos */
+.carousel-image {
+  height: 400px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* Cartas del equipo con imagen */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  padding: 20px 40px;
+}
+
+.team-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+}
+
+.team-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.team-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2f855a;
+  margin-bottom: 5px;
+}
+
+.team-role {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.team-desc {
+  font-size: 0.9rem;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+/* Animación suave */
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Historia */
+.history-block {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  font-size: 1.05rem;
+  color: #4a5568;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.highlight {
+  color: #2f855a;
+  font-weight: 600;
+}
+
+/* Valores */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.value-card {
+  background-color: #f0fff4;
+  border: 1px solid #c6f6d5;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-5px);
+}
+
+.value-card h3 {
+  color: #2f855a;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.value-card p {
+  font-size: 0.95rem;
+  color: #2d3748;
+  line-height: 1.6;
+}
+
+.value-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.value-card ul li {
+  font-size: 0.95rem;
+  color: #2d3748;
+  margin-bottom: 6px;
+  position: relative;
+  padding-left: 20px;
+}
+
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .banner-title {
+    font-size: 2rem;
+  }
+
+  .banner-subtitle {
+    font-size: 1rem;
+  }
+
+  .carousel-image {
+    height: 250px;
+  }
+
+  .card-grid {
+    padding: 20px;
+  }
+}

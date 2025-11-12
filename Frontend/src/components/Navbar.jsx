@@ -14,10 +14,11 @@ export default function Navbar() {
         </div>
       </Link>
       <div className="nav-links">
-        <a href="#inicio">Inicio</a>
-        <a href="#nosotros">Sobre Nosotros</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#contacto">Contáctanos</a>
+        <Link to="/">Inicio</Link>
+        <Link to="/nosotros">Nosotros</Link>
+        <Link to="/servicios">Servicios</Link>
+        <Link to="/cultivos">Cultivos</Link>
+        <Link to="/contacto">Contáctanos</Link>
         <div className="auth-buttons">
           <Link to="/login" className="btn-login">Iniciar sesión</Link>
           <Link to="/register" className="btn-register">Registrarse</Link>

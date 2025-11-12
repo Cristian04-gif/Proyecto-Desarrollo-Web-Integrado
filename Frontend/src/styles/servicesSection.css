@@ -1,0 +1,145 @@
+/* Banner institucional */
+.services-banner {
+  position: relative;
+  height: 60vh;
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(47, 133, 90, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.banner-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.banner-subtitle {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Encabezados y texto institucional */
+.section-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2f855a;
+  text-align: center;
+  margin: 40px 0 20px;
+}
+
+.services-intro {
+  font-size: 1.05rem;
+  color: #4a5568;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  text-align: center;
+  line-height: 1.7;
+}
+
+/* Cards de servicios */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  padding: 0 40px 40px;
+}
+
+.process-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.process-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  color: #2f855a;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-desc {
+  font-size: 0.95rem;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+/* Bloque de experiencia */
+.experience-section {
+  padding: 40px 20px;
+  background-color: #f0fff4;
+  text-align: center;
+}
+
+.experience-text {
+  font-size: 1.05rem;
+  color: #2d3748;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Animación suave */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .banner-title {
+    font-size: 2rem;
+  }
+
+  .banner-subtitle {
+    font-size: 1rem;
+  }
+
+  .card-grid {
+    padding: 0 20px 40px;
+  }
+
+  .process-card {
+    padding: 20px;
+  }
+}
