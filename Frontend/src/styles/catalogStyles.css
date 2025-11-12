@@ -1,0 +1,39 @@
+.catalog-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.catalog-hero {
+  background: linear-gradient(135deg, #2e7d32 0%, #81c784 100%);
+  color: white;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.catalog-hero h1 {
+  margin: 0 0 .5rem;
+  font-weight: 700;
+}
+
+.catalog-controls {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.catalog-grid {
+  max-width: 1100px;
+  margin: 0 auto 4rem;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.catalog-loading,
+.catalog-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #555;
+}

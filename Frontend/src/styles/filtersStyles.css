@@ -1,0 +1,36 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  background: #f8faf9;
+  border: 1px solid #e2e8e2;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.filters-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.filters-label {
+  font-size: .9rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.filters-select,
+.filters-input {
+  height: 38px;
+  border: 1px solid #cdd9ce;
+  border-radius: 6px;
+  padding: 0 .6rem;
+  outline: none;
+}
+
+.filters-select:focus,
+.filters-input:focus {
+  border-color: #81c784;
+  box-shadow: 0 0 0 3px rgba(129, 199, 132, 0.25);
+}
