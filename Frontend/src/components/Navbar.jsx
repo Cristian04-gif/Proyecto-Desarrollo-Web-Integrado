@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { Link } from 'react-router-dom';
 
 export default function Navbar() {
@@ -14,10 +13,13 @@ export default function Navbar() {
         </div>
       </Link>
       <div className="nav-links">
-        <a href="#inicio">Inicio</a>
-        <a href="#nosotros">Sobre Nosotros</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#contacto">Contáctanos</a>
+        <Link to="/">Inicio</Link>
+        <Link to="/nosotros">Sobre Nosotros</Link>
+        <Link to="/servicios">Servicios</Link>
+        <Link to="/contacto">Contáctanos</Link>
+        <Link to="/catalogo">Catálogo</Link>   
+        <Link to="/carrito">🛒 Carrito</Link>
+        <Link to="/noticias">Noticias</Link>
         <div className="auth-buttons">
           <Link to="/login" className="btn-login">Iniciar sesión</Link>
           <Link to="/register" className="btn-register">Registrarse</Link>
