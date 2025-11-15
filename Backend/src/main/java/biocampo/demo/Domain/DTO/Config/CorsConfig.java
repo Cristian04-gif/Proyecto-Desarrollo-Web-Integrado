@@ -1,27 +1,14 @@
 package biocampo.demo.Domain.DTO.Config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * CORS está configurado centralmente en SecurityConfig.java
+ * Esta clase está aquí por referencia histórica pero CORS se maneja desde
+ * SecurityConfig
+ */
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
-
-    @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:5173", "http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
-
-        registry.addMapping("/auth/**")
-                .allowedOrigins("http://localhost:5173", "http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
-    }
+@Deprecated
+public class CorsConfig {
+    // CORS configuration moved to SecurityConfig.java
 }
