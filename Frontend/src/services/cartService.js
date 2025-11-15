@@ -55,3 +55,19 @@ export async function completeCart(idVenta, payload) {
   if (!res.ok) throw new Error("Error al finalizar compra");
   return res.json();
 }
+// 🔹 Añadir producto al carrito (detalleVenta)
+export async function addToCart(idVenta, idProducto, cantidad, token) {
+  const res = await fetch(`${API_BASE}/api/detalleVenta/update/${idProducto}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      venta: { idVenta },
+      cantidad,
+    }),
+  });
+  if (!res.ok) throw new Error("Error al añadir producto al carrito");
+  return res.json();
+}

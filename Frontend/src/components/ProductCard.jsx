@@ -18,8 +18,8 @@ export default function ProductCard({ product }) {
     }
 
     try {
-      await addToCart(orderId, product.idProducto, qty, token);
-      alert(`Se añadió ${qty} x ${product.nombre} al carrito`);
+      await addToCart(orderId, product.id_producto, qty, token);
+      alert(`Se añadió ${qty} x ${product.etiqueta} al carrito`);
     } catch (err) {
       console.error("Error al añadir al carrito:", err);
       alert("No se pudo añadir al carrito");
@@ -31,34 +31,32 @@ export default function ProductCard({ product }) {
       <div className="product-image-wrap">
         <img
           className="product-image"
-          src={product.imagen || '/placeholder.png'}
-          alt={product.nombre}
+          src={product.img_producto || '/placeholder.png'}
+          alt={product.descripcion}
         />
-        {!product.activo && <span className="badge badge-out">Sin stock</span>}
-        {product.enTemporada && <span className="badge badge-season">En temporada</span>}
+        {!product.disponible && <span className="badge badge-out">Sin stock</span>}
       </div>
 
       <div className="product-content">
-        <h3 className="product-title">{product.nombre}</h3>
+        <h3 className="product-title">{product.etiqueta}</h3>
         <p className="product-details">{product.descripcion}</p>
 
         <div className="product-meta">
-          <span className="product-category">{product.categoria}</span>
+          <span className="product-unit">{product.unidad_medida}</span>
           <span className="product-price">S/ {product.precio?.toFixed(2)}</span>
         </div>
 
         <div className="product-actions">
           <div className="qty-control">
-            <button className="qty-btn" onClick={decrement} aria-label="Disminuir cantidad">-</button>
+            <button className="qty-btn" onClick={decrement}>-</button>
             <span className="qty-value">{qty}</span>
-            <button className="qty-btn" onClick={increment} aria-label="Aumentar cantidad">+</button>
+            <button className="qty-btn" onClick={increment}>+</button>
           </div>
 
           <button
             className="add-btn"
             onClick={handleAdd}
-            disabled={!product.activo}
-            aria-disabled={!product.activo}
+            disabled={!product.disponible}
           >
             Añadir al carrito
           </button>
