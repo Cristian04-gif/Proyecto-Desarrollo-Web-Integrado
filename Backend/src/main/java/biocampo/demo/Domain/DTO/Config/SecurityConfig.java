@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import biocampo.demo.Domain.DTO.JWT.JwtAutenticationFilter;
 
@@ -20,23 +21,27 @@ public class SecurityConfig {
 
     private final JwtAutenticationFilter jwtAutenticationFilter;
     private final AuthenticationProvider authProvider;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authRequest -> authRequest
-                        // Endpoints públicos
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/venta/**").hasAuthority("CLIENTE")
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionManager -> sessionManager
+                .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authProvider)
-                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // ✅ Aplica la configuración CORS definida en ApplicationConfig
+        http.setSharedObject(CorsConfigurationSource.class, corsConfigurationSource);
+
+        return http.build();
     }
 }
