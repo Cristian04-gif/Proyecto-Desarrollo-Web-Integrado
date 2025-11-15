@@ -1,48 +1,57 @@
-const CART_KEY = 'biocampo_cart';
+const API_BASE = "http://localhost:8080";
 
-export function getCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+// Obtener token desde localStorage
+function getToken() {
+  return localStorage.getItem("token");
 }
 
-export function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+// 🔹 Obtener todos los detalles de la venta (carrito)
+export async function getCartItems(idVenta) {
+  const res = await fetch(`${API_BASE}/api/detalleVenta/venta/${idVenta}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+  if (!res.ok) throw new Error("Error al cargar carrito");
+  return res.json();
 }
 
-export function addToCart(product, quantity = 1) {
-  const cart = getCart();
-  const idx = cart.findIndex(item => item.id === product.id);
-  if (idx > -1) {
-    cart[idx].quantity += quantity;
-  } else {
-    cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity });
-  }
-  saveCart(cart);
-  return cart;
+// 🔹 Obtener cantidad de productos en el carrito
+export async function getCount(idVenta) {
+  const res = await fetch(`${API_BASE}/api/detalleVenta/venta/${idVenta}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+  if (!res.ok) throw new Error("Error al obtener cantidad");
+  const detalles = await res.json();
+  return detalles.length; // cada detalle = un producto en el carrito
 }
 
-export function updateQuantity(productId, quantity) {
-  const cart = getCart().map(item =>
-    item.id === productId ? { ...item, quantity: Math.max(0, quantity) } : item
-  ).filter(item => item.quantity > 0);
-  saveCart(cart);
-  return cart;
+// 🔹 Eliminar producto del carrito (ajustar cantidad a 0)
+export async function removeFromCart(idDetalleVenta) {
+  const res = await fetch(`${API_BASE}/api/detalleVenta/update/${idDetalleVenta}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cantidad: 0 }), // ⚠️ tu backend debe interpretar esto como eliminar
+  });
+  if (!res.ok) throw new Error("Error al eliminar producto");
+  return res.json();
 }
 
-export function removeFromCart(productId) {
-  const cart = getCart().filter(item => item.id !== productId);
-  saveCart(cart);
-  return cart;
-}
-
-export function getCount() {
-  return getCart().reduce((sum, item) => sum + item.quantity, 0);
-}
-
-export function clearCart() {
-  saveCart([]);
+// 🔹 Finalizar compra (actualizar venta con método de pago)
+export async function completeCart(idVenta, payload) {
+  const res = await fetch(`${API_BASE}/api/venta/update/${idVenta}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload), // ej: { metodoPago: "EFECTIVO" }
+  });
+  if (!res.ok) throw new Error("Error al finalizar compra");
+  return res.json();
 }

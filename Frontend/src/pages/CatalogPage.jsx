@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchMockProducts } from '../services/productService';
-import Filters from '../components/Filters';
+import { fetchProducts } from '../services/productService'; 
 import ProductCard from '../components/ProductCard';
 import FloatingCartButton from '../components/FloatingCartButton';
+import Filters from '../components/Filters';
 import '../styles/catalogStyles.css';
 
 export default function CatalogPage() {
@@ -12,32 +12,44 @@ export default function CatalogPage() {
 
   useEffect(() => {
     let mounted = true;
-    fetchMockProducts().then(data => {
-      if (mounted) {
-        setProducts(data);
+    fetchProducts()
+      .then(data => {
+        if (mounted) {
+          console.log("Productos desde backend:", data);
+          setProducts(data);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error("Error cargando productos:", err);
         setLoading(false);
-      }
-    });
+      });
     return () => { mounted = false; };
   }, []);
 
   const filtered = useMemo(() => {
     let result = [...products];
 
+    // Filtrar por categoría
     if (filters.category !== 'all') {
-      result = result.filter(p => p.category === filters.category);
+      result = result.filter(p => p.categoria?.toLowerCase() === filters.category);
     }
+
+    // Filtrar por disponibilidad
     if (filters.availability === 'inSeason') {
-      result = result.filter(p => p.inSeason);
+      result = result.filter(p => p.enTemporada); 
     } else if (filters.availability === 'inStock') {
-      result = result.filter(p => p.inStock);
+      result = result.filter(p => p.activo); 
     }
+
+    // Filtrar por búsqueda
     if (filters.search.trim()) {
       const q = filters.search.toLowerCase();
       result = result.filter(p =>
-        p.name.toLowerCase().includes(q) || p.details.toLowerCase().includes(q)
+        p.nombre?.toLowerCase().includes(q) || p.descripcion?.toLowerCase().includes(q)
       );
     }
+
     return result;
   }, [products, filters]);
 
@@ -60,7 +72,7 @@ export default function CatalogPage() {
         ) : filtered.length === 0 ? (
           <div className="catalog-empty">No se encontraron productos con esos filtros.</div>
         ) : (
-          filtered.map(p => <ProductCard key={p.id} product={p} />)
+          filtered.map(p => <ProductCard key={p.productId} product={p} />)
         )}
       </section>
 

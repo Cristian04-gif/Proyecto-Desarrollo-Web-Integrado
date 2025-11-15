@@ -1,54 +1,65 @@
-import { useEffect, useState } from 'react';
-import { getCart, updateQuantity, removeFromCart, clearCart } from '../services/cartService';
-import '../styles/cartStyles.css';
+import { useEffect, useState } from "react";
+import {
+  getCartItems,
+  removeFromCart,
+  completeCart,
+} from "../services/cartService";
 
 export default function CartPage() {
-  const [cart, setCart] = useState(getCart());
+  const [items, setItems] = useState([]);
+  const orderId = localStorage.getItem("orderId"); // ID de la venta
+  const token = localStorage.getItem("token"); // Token JWT
 
+  // Cargar carrito al montar
   useEffect(() => {
-    const interval = setInterval(() => setCart(getCart()), 800);
-    return () => clearInterval(interval);
-  }, []);
+    if (orderId && token) {
+      getCartItems(orderId, token).then(setItems).catch(console.error);
+    }
+  }, [orderId, token]);
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Eliminar un producto del carrito
+  const handleRemove = async (detalleId) => {
+    try {
+      await removeFromCart(detalleId, token);
+      const updated = await getCartItems(orderId, token);
+      setItems(updated);
+    } catch (err) {
+      console.error("Error al eliminar producto:", err);
+    }
+  };
 
-  const inc = (id) => setCart(updateQuantity(id, (cart.find(i => i.id === id)?.quantity || 0) + 1));
-  const dec = (id) => setCart(updateQuantity(id, (cart.find(i => i.id === id)?.quantity || 0) - 1));
-  const remove = (id) => setCart(removeFromCart(id));
-  const clear = () => { clearCart(); setCart([]); };
+  // Finalizar compra
+  const handleCheckout = async () => {
+    try {
+      await completeCart(orderId, { metodoPago: "EFECTIVO" }, token);
+      alert("Compra finalizada");
+      setItems([]);
+      localStorage.removeItem("orderId");
+    } catch (err) {
+      console.error("Error al finalizar compra:", err);
+    }
+  };
 
   return (
     <div className="cart-page">
-      <h1>Carrito</h1>
-
-      {cart.length === 0 ? (
-        <p className="cart-empty">Tu carrito está vacío.</p>
+      <h2>Tu carrito</h2>
+      {items.length === 0 ? (
+        <p>Carrito vacío</p>
       ) : (
-        <div className="cart-list">
-          {cart.map(item => (
-            <div className="cart-item" key={item.id}>
-              <img className="cart-item-image" src={item.image} alt={item.name} />
-              <div className="cart-item-info">
-                <h3 className="cart-item-title">{item.name}</h3>
-                <p className="cart-item-price">S/ {item.price.toFixed(2)}</p>
-                <div className="cart-item-actions">
-                  <button className="cart-btn" onClick={() => dec(item.id)}>-</button>
-                  <span className="cart-qty">{item.quantity}</span>
-                  <button className="cart-btn" onClick={() => inc(item.id)}>+</button>
-                  <button className="cart-remove-btn" onClick={() => remove(item.id)}>Eliminar</button>
-                </div>
-              </div>
-            </div>
+        <ul>
+          {items.map((item) => (
+            <li key={item.idDetalleVenta}>
+              {item.input?.nombre} x {item.cantidad}
+              <button onClick={() => handleRemove(item.idDetalleVenta)}>
+                Eliminar
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-
-      <div className="cart-summary">
-        <span className="cart-total-label">Total:</span>
-        <span className="cart-total-value">S/ {total.toFixed(2)}</span>
-        <button className="cart-clear-btn" onClick={clear}>Vaciar carrito</button>
-        <button className="cart-checkout-btn" disabled={cart.length === 0}>Continuar compra</button>
-      </div>
+      {items.length > 0 && (
+        <button onClick={handleCheckout}>Finalizar compra</button>
+      )}
     </div>
   );
 }

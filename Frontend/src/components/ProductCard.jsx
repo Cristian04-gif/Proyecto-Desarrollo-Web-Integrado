@@ -8,25 +8,43 @@ export default function ProductCard({ product }) {
   const increment = () => setQty(q => q + 1);
   const decrement = () => setQty(q => Math.max(1, q - 1));
 
-  const handleAdd = () => {
-    addToCart(product, qty);
+  const handleAdd = async () => {
+    const orderId = localStorage.getItem("orderId");
+    const token = localStorage.getItem("token");
+
+    if (!orderId || !token) {
+      alert("Debes iniciar sesión y tener un carrito activo");
+      return;
+    }
+
+    try {
+      await addToCart(orderId, product.idProducto, qty, token);
+      alert(`Se añadió ${qty} x ${product.nombre} al carrito`);
+    } catch (err) {
+      console.error("Error al añadir al carrito:", err);
+      alert("No se pudo añadir al carrito");
+    }
   };
 
   return (
     <div className="product-card">
       <div className="product-image-wrap">
-        <img className="product-image" src={product.image} alt={product.name} />
-        {!product.inStock && <span className="badge badge-out">Sin stock</span>}
-        {product.inSeason && <span className="badge badge-season">En temporada</span>}
+        <img
+          className="product-image"
+          src={product.imagen || '/placeholder.png'}
+          alt={product.nombre}
+        />
+        {!product.activo && <span className="badge badge-out">Sin stock</span>}
+        {product.enTemporada && <span className="badge badge-season">En temporada</span>}
       </div>
 
       <div className="product-content">
-        <h3 className="product-title">{product.name}</h3>
-        <p className="product-details">{product.details}</p>
+        <h3 className="product-title">{product.nombre}</h3>
+        <p className="product-details">{product.descripcion}</p>
 
         <div className="product-meta">
-          <span className="product-category">{product.category}</span>
-          <span className="product-price">S/ {product.price.toFixed(2)}</span>
+          <span className="product-category">{product.categoria}</span>
+          <span className="product-price">S/ {product.precio?.toFixed(2)}</span>
         </div>
 
         <div className="product-actions">
@@ -39,8 +57,8 @@ export default function ProductCard({ product }) {
           <button
             className="add-btn"
             onClick={handleAdd}
-            disabled={!product.inStock}
-            aria-disabled={!product.inStock}
+            disabled={!product.activo}
+            aria-disabled={!product.activo}
           >
             Añadir al carrito
           </button>
