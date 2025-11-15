@@ -18,22 +18,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private final JwtAutenticationFilter jwtAutenticationFilter;
-        private final AuthenticationProvider authProvider;
+    private final JwtAutenticationFilter jwtAutenticationFilter;
+    private final AuthenticationProvider authProvider;
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                return http
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(
-                                                authRequest -> authRequest.requestMatchers("/auth/**").permitAll()
-                                                                .anyRequest().authenticated())
-                                .sessionManagement(
-                                                sessionManager -> sessionManager
-                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .authenticationProvider(authProvider)
-                                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                                .build();
-        }
-
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authRequest -> authRequest
+                        // Endpoints públicos
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/api/venta/**").hasAuthority("CLIENTE")
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManager -> sessionManager
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 }
