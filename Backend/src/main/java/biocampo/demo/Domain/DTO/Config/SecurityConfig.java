@@ -12,6 +12,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import biocampo.demo.Domain.DTO.JWT.JwtAutenticationFilter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,17 +28,36 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                return http
+                http
+                                .cors() // <- activa CORS en Spring Security
+                                .and()
                                 .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(
-                                                authRequest -> authRequest.requestMatchers("/auth/**").permitAll()
-                                                                .anyRequest().authenticated())
-                                .sessionManagement(
-                                                sessionManager -> sessionManager
-                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // permitir
+                                                                                                        // preflight
+                                                .requestMatchers("/auth/**").permitAll() // login y register públicos
+                                                .requestMatchers("/api/**").authenticated() // TODOS los /api/**
+                                                                                            // requieren JWT
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authenticationProvider(authProvider)
-                                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                                .build();
+                                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+                return http.build();
         }
 
+        // Opcional: CorsConfigurationSource bean (si quieres centralizar aquí)
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of("http://localhost:5173"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));
+                config.setAllowCredentials(true);
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", config);
+                return source;
+        }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { login } from '../services/authService';
+import { login, getUsuarios } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../styles/loginStyles.css';
 
@@ -8,13 +9,53 @@ export default function LoginPage() {
   const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
   const [usuario, setUsuario] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const user = await login(email, contraseña);
-      setUsuario(user);
+      const data = await login(email, contraseña);
       setError('');
+      // token saved by service
+      const token = data?.token || localStorage.getItem('token');
+      // decode token to get email
+      let emailFromToken = email;
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        emailFromToken = payload?.sub || payload?.username || emailFromToken;
+      } catch (err) {
+        // ignore
+      }
+
+      // try to find full user info
+      let foundUserName = emailFromToken; // fallback: usa el email si no encuentra el usuario
+      try {
+        const list = await getUsuarios();
+        const user = list.find(u => u.email && u.email.toLowerCase() === emailFromToken.toLowerCase());
+        if (user) {
+          setUsuario(user);
+          foundUserName = (user.firstName || user.nombre || '') + ' ' + (user.lastName || user.apellido || '');
+        }
+      } catch (err) {
+        console.warn('Error obtaining user info:', err);
+      }
+      // guarda el nombre en localStorage (aunque sea email como fallback)
+      localStorage.setItem('userName', foundUserName);
+      // notifica a la UI que la autenticación cambió
+      try { window.dispatchEvent(new Event('authChanged')); } catch(e){}
+
+      // redirect based on email domain
+      const lower = (emailFromToken || '').toLowerCase();
+      if (lower.endsWith('@utp.edu.pe') || lower.includes('@biocampo')) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.message);
       setUsuario(null);
@@ -46,7 +87,7 @@ export default function LoginPage() {
         </form>
 
         {error && <div className="login-alert alert-danger">{error}</div>}
-        {usuario && <div className="login-alert alert-success">Bienvenido, {usuario.nombre}</div>}
+        {usuario && <div className="login-alert alert-success">Bienvenido, {usuario.firstName || usuario.nombre}</div>}
 
         <div className="login-links">
           <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
