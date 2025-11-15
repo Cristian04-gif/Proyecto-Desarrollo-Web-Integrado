@@ -7,8 +7,7 @@ export default function FloatingCartButton() {
   const [count, setCount] = useState(0); 
   const navigate = useNavigate();
   const orderId = localStorage.getItem("orderId"); 
-  const token = localStorage.getItem("token"); // ✅ leer token JWT
-
+  const token = localStorage.getItem("token"); 
   useEffect(() => {
     const updateCount = async () => {
       if (orderId && token) {

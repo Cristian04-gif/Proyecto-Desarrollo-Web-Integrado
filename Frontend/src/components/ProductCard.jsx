@@ -18,8 +18,8 @@ export default function ProductCard({ product }) {
     }
 
     try {
-      await addToCart(orderId, product.id_producto, qty, token);
-      alert(`Se añadió ${qty} x ${product.etiqueta} al carrito`);
+      await addToCart(orderId, product.productId, qty, token);
+      alert(`Se añadió ${qty} x ${product.name || "Producto"} al carrito`);
     } catch (err) {
       console.error("Error al añadir al carrito:", err);
       alert("No se pudo añadir al carrito");
@@ -31,19 +31,25 @@ export default function ProductCard({ product }) {
       <div className="product-image-wrap">
         <img
           className="product-image"
-          src={product.img_producto || '/placeholder.png'}
-          alt={product.descripcion}
+          src={product.img || '/placeholder.png'}
+          alt={product.description || "Producto sin descripción"}
         />
-        {!product.disponible && <span className="badge badge-out">Sin stock</span>}
+        {product.stock === 0 && (
+          <span className="badge badge-out">Sin stock</span>
+        )}
       </div>
 
       <div className="product-content">
-        <h3 className="product-title">{product.etiqueta}</h3>
-        <p className="product-details">{product.descripcion}</p>
+        <h3 className="product-title">{product.name || "Sin nombre"}</h3>
+        <p className="product-details">{product.description || "Sin descripción"}</p>
 
         <div className="product-meta">
-          <span className="product-unit">{product.unidad_medida}</span>
-          <span className="product-price">S/ {product.precio?.toFixed(2)}</span>
+          <span className="product-unit">{product.unit || "Sin unidad"}</span>
+          <span className="product-price">
+            {product.price != null
+              ? `S/ ${product.price.toFixed(2)}`
+              : "Precio no disponible"}
+          </span>
         </div>
 
         <div className="product-actions">
@@ -56,7 +62,7 @@ export default function ProductCard({ product }) {
           <button
             className="add-btn"
             onClick={handleAdd}
-            disabled={!product.disponible}
+            disabled={product.stock === 0}
           >
             Añadir al carrito
           </button>
