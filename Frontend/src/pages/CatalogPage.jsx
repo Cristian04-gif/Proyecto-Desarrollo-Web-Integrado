@@ -30,21 +30,24 @@ export default function CatalogPage() {
   const filtered = useMemo(() => {
     let result = [...products];
 
-    // Filtrar por categoría (usa id_categoria_planta)
+    // Filtrar por categoría
     if (filters.category !== 'all') {
-      result = result.filter(p => String(p.id_categoria_planta) === filters.category);
+      result = result.filter(p => p.plantCategory?.categoryId === filters.category);
     }
 
-    // Filtrar por disponibilidad
+    // Filtrar por disponibilidad según stock
     if (filters.availability === 'inStock') {
-      result = result.filter(p => p.disponible); 
+      result = result.filter(p => p.stock > 0);
+    } else if (filters.availability === 'noStock') {
+      result = result.filter(p => p.stock === 0);
     }
 
-    // Filtrar por búsqueda (usa etiqueta y descripcion)
+    // Filtrar por búsqueda
     if (filters.search.trim()) {
       const q = filters.search.toLowerCase();
       result = result.filter(p =>
-        p.etiqueta?.toLowerCase().includes(q) || p.descripcion?.toLowerCase().includes(q)
+        p.name?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
       );
     }
 
@@ -70,7 +73,7 @@ export default function CatalogPage() {
         ) : filtered.length === 0 ? (
           <div className="catalog-empty">No se encontraron productos con esos filtros.</div>
         ) : (
-          filtered.map(p => <ProductCard key={p.id_producto} product={p} />)
+          filtered.map(p => <ProductCard key={p.productId} product={p} />)
         )}
       </section>
 

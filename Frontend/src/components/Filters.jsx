@@ -5,9 +5,24 @@ export default function Filters({ onChange }) {
   const [category, setCategory] = useState('all');
   const [availability, setAvailability] = useState('all');
   const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    onChange({ category, availability, search });
+    fetch('http://localhost:8080/api/plantCategory/all')
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Categorías recibidas:', data);
+        setCategories(data);
+      })
+      .catch((err) => console.error('Error al cargar categorías:', err));
+  }, []);
+
+  useEffect(() => {
+    const parsedCategory = category === 'all' ? 'all' : parseInt(category);
+    onChange({ category: parsedCategory, availability, search });
   }, [category, availability, search, onChange]);
 
   return (
@@ -20,8 +35,11 @@ export default function Filters({ onChange }) {
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value="all">Todas</option>
-          <option value="frutas">Frutas</option>
-          <option value="verduras">Verduras</option>
+          {categories.map((cat) => (
+            <option key={cat.categoryId} value={cat.categoryId}>
+              {cat.categoryName || `Categoría ${cat.categoryId}`}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -33,8 +51,8 @@ export default function Filters({ onChange }) {
           onChange={(e) => setAvailability(e.target.value)}
         >
           <option value="all">Todas</option>
-          <option value="inSeason">En temporada</option>
           <option value="inStock">En stock</option>
+          <option value="noStock">Sin stock</option>
         </select>
       </div>
 
