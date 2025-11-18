@@ -14,7 +14,7 @@ import Sensores from './pages/tecnologia/Sensores';
 import Precision from './pages/tecnologia/Precision';
 import NewsPage from './pages/NewsPage';
 
-import { useCart, CartProvider } from './services/cartContext';
+import { CartProvider } from './pages/cartContext';
 
 function App() {
   return (
