@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useCart, CartProvider } from '../services/cartContext';
+import { useCart } from '../services/useCart';
 import '../styles/cartStyles.css';
 
 export default function FloatingCartButton() {
-  const { totalQty } = useCart(); // viene del contexto
+  const { totalQty } = useCart(); 
   const navigate = useNavigate();
 
   return (
