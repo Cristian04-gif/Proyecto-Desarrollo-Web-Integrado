@@ -542,3 +542,19 @@ export async function getImagenesPorEntidad(entityType, referenceId) {
   if (!res.ok) throw new Error('Error al obtener imágenes por entidad');
   return await res.json();
 }
+// ==================== HELPERS ====================
+
+// Recuperar token actual
+export function getToken() {
+  return localStorage.getItem('token');
+}
+
+// Saber si el usuario está logeado
+export function isLoggedIn() {
+  return !!getToken();
+}
+
+// Cerrar sesión
+export function logout() {
+  localStorage.removeItem('token');
+}
