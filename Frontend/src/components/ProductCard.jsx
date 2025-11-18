@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { addToCart, createCart } from '../services/cartService';
-import { useCart } from '../services/cartContext';
+import { useCart } from '../services/useCart';
+import { isLoggedIn } from '../services/authService';
 import '../styles/productCardStyles.css';
 
 export default function ProductCard({ product }) {
@@ -8,48 +8,23 @@ export default function ProductCard({ product }) {
   const { addItem } = useCart();
 
   const increment = () => {
-    if (qty < product.stock) {
-      setQty(q => q + 1);
-    }
+    if (qty < product.stock) setQty(q => q + 1);
   };
 
   const decrement = () => setQty(q => Math.max(1, q - 1));
 
-const handleAdd = async () => {
-  let orderId = localStorage.getItem("orderId");
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    alert("Debes iniciar sesión");
-    return;
-  }
-console.log("Token:", token);
-  const clienteId = localStorage.getItem("clienteId");
-
-if (!orderId) {
-  try {
-    const nuevaVenta = await createCart(token, clienteId);
-    orderId = nuevaVenta.idVenta;
-    localStorage.setItem("orderId", orderId);
-  } catch (err) {
-    console.error("Error al crear carrito:", err);
-    alert("No se pudo crear el carrito");
-    return;
-  }
-}
-
-  try {
-    await addToCart(orderId, product.productId, qty, token);
+  const handleAdd = () => {
+    if (!isLoggedIn()) {
+      alert("Debes iniciar sesión para agregar productos al carrito");
+      return;
+    }
     addItem(product, qty);
-    alert(`Se añadió ${qty} x ${product.name || "Producto"} al carrito`);
-  } catch (err) {
-    console.error("Error al añadir al carrito:", err);
-    alert("No se pudo añadir al carrito");
-  }
-};
+    alert(`Se añadió ${qty} x ${product.name} al carrito`);
+  };
 
   return (
     <div className="product-card">
+      {/* Imagen */}
       <div className="product-image-wrap">
         <img
           className="product-image"
@@ -61,6 +36,7 @@ if (!orderId) {
         )}
       </div>
 
+      {/* Contenido */}
       <div className="product-content">
         <h3 className="product-title">{product.name || "Sin nombre"}</h3>
         <p className="product-details">{product.description || "Sin descripción"}</p>
@@ -76,6 +52,7 @@ if (!orderId) {
           </span>
         </div>
 
+        {/* Acciones */}
         <div className="product-actions">
           <div className="qty-control">
             <button className="qty-btn" onClick={decrement}>-</button>
