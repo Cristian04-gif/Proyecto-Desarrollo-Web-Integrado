@@ -3,10 +3,13 @@ package biocampo.demo.Domain.Services;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -45,7 +48,8 @@ public class PagoService {
     @Autowired
     private RepoCliente repoCliente;
 
-    public Preference crearPago(Sale sale, List<SaleDetail> details) throws MPException, MPApiException {
+    public Preference crearPago(Sale sale, List<SaleDetail> details)
+            throws MPException, MPApiException, JsonProcessingException {
         // calcular el costo total
         double total = 0.0;
         for (SaleDetail saleDetail : details) {
@@ -65,7 +69,7 @@ public class PagoService {
         // descripciones
         Venta venta = saleMapper.toVenta(sale);
         Cliente cliente = repoCliente.findByUsuarioEmail(venta.getCliente().getUsuario().getEmail()).orElseThrow();
-        String idParameter = cliente.getIdCliente().toString();
+        String idParameter = venta.getIdVenta().toString();
         String titulo = "Productos agrucolas";
         String descripcion = details.size() + " productos agricolas comprados";
 
@@ -89,22 +93,32 @@ public class PagoService {
                 .failure("https://www.tu-sitio/failure")
                 .build();
 
+        ObjectMapper mapper = new ObjectMapper();
+        String additionalInfoJson = mapper.writeValueAsString(
+                Map.of(
+                        "sale", sale,
+                        "details", details));
+
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .items(items)
                 .backUrls(backUrls)
                 .notificationUrl("")
+                .additionalInfo(additionalInfoJson)
                 .build();
         PreferenceClient client = new PreferenceClient();
         Preference preference = client.create(preferenceRequest);
         return preference;
     }
 
-    /*public Payment getPayment(String paymentId) throws MPException {
-        MercadoPagoConfig.setAccessToken(configuration.getAccessToken()); // si no está global
-
-        // Consulta a la API de Mercado Pago
-        Payment payment = Payment.findById(paymentId);
-        return payment;
-    }*/
+    /*
+     * public Payment getPayment(String paymentId) throws MPException {
+     * MercadoPagoConfig.setAccessToken(configuration.getAccessToken()); // si no
+     * está global
+     * 
+     * // Consulta a la API de Mercado Pago
+     * Payment payment = Payment.findById(paymentId);
+     * return payment;
+     * }
+     */
 
 }

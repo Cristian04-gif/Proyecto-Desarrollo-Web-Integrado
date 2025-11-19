@@ -11,15 +11,15 @@ const App = () => {
         async function loadPreference() {
             try {
                 const sale = {
-                    "customer": { "user": { "email": "E654654251@biocampo.com" } },
-                    "paymentMethod": "TARJETA"
+                    "customer": { "user": { "email": "U22240847@utp.edu.pe" } },
+                    "paymentMethod": "MERCADO_PAGO"
                 };
                 const details = [{
-                    "product": { "productId": 7 },
-                    "quantity": 35
+                    "product": { "productId": 1 },
+                    "quantity": 1
                 }, {
-                    "product": { "productId": 9 },
-                    "quantity": 64
+                    "product": { "productId": 2 },
+                    "quantity": 1
                 }];
 
                 const res = await crearPago(sale, details);

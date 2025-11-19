@@ -3,13 +3,24 @@ package biocampo.demo.Web.APIs;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 
 import biocampo.demo.Domain.DTO.Request.SaleRequest;
+import biocampo.demo.Domain.Model.Sale;
+import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Services.PagoService;
 import biocampo.demo.Domain.Services.SaleService;
+import biocampo.demo.Persistance.Entity.DetalleVenta;
+import biocampo.demo.Persistance.Entity.Venta;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,24 +52,47 @@ public class PagoController {
         }
     }
 
-    /*@PostMapping("/webhook/mercadopago")
-    public ResponseEntity<String> webhook(@RequestBody Map<String, Object> payload) {
-        try {
-            // 1. Obtienes el payment_id enviado por Mercado Pago
-            String paymentId = (String) payload.get("data_id");
+    @PostMapping("/webhook")
+public ResponseEntity<String> recibirWebhook(@RequestBody String body) {
+    try {
+        JsonObject json = JsonParser.parseString(body).getAsJsonObject();
 
-            // 2. Consultas a Mercado Pago para verificar el pago
-            Payment payment = pagoService.getPayment(paymentId); // llamas al SDK
+        String type = json.get("type").getAsString();
+        Long paymentId = json.getAsJsonObject("data").get("id").getAsLong();
 
-            if (payment.getStatus().equals("approved")) {
-                // 3. Llamas al método que registra la venta
-                saleService.registerSale(saleRequest.getSale(), saleRequest.getDetails());
-            }
-
-            return ResponseEntity.ok("OK");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        if (!type.equals("payment")) {
+            return ResponseEntity.ok("Ignored");
         }
-    }*/
+
+        // 1. Obtener pago
+        PaymentClient client = new PaymentClient()
+        Payment payment = client.get(paymentId);
+
+        if (!payment.getStatus().equals("approved")) {
+            return ResponseEntity.ok("Payment not approved");
+        }
+
+        // 2. Obtener additional_info como JSON crudo
+        JsonObject raw = payment.getJsonObject();
+        JsonObject additionalInfo = raw.getAsJsonObject("additional_info");
+
+        // 3. Convertir adicionales
+        Gson gson = new Gson();
+
+        Sale sale = gson.fromJson(additionalInfo.get("sale"), Sale.class);
+        List<SaleDetail> details = gson.fromJson(
+                additionalInfo.get("details").getAsJsonArray(),
+                new TypeToken<List<SaleDetail>>(){}.getType()
+        );
+
+        // 4. Registrar la venta automáticamente
+        saleService.registerSale(sale, details);
+        return ResponseEntity.ok("Venta registrada");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).body("Error: " + e.getMessage());
+    }
+}
 
 }

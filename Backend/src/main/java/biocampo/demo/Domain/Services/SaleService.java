@@ -24,6 +24,7 @@ import biocampo.demo.Persistance.Entity.Cliente;
 import biocampo.demo.Persistance.Entity.DetalleVenta;
 import biocampo.demo.Persistance.Entity.Producto;
 import biocampo.demo.Persistance.Entity.Venta;
+import biocampo.demo.Persistance.Entity.Venta.Estado;
 import biocampo.demo.Persistance.Entity.Venta.Metodo;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
 import biocampo.demo.Persistance.Mappings.SaleMapper;
@@ -118,6 +119,7 @@ public class SaleService {
         ventaGuardada.setSubTotal(subTotal);
         ventaGuardada.setImpuestoTotal(totalImpuestos);
         ventaGuardada.setTotal(subTotal + totalImpuestos);
+        ventaGuardada.setEstado(Estado.PENDIENTE);
         try {
             ventaGuardada.setPago(Metodo.valueOf(sale.getPaymentMethod().toUpperCase()));
         } catch (IllegalArgumentException e) {

@@ -39,9 +39,14 @@ public class Venta {
     private Double total;
     @Enumerated(EnumType.STRING)
     private Metodo pago;
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
 
     public enum Metodo {
-        PAYPAL, TARJETA
+        PAYPAL, MERCADO_PAGO
+    }
+    public enum Estado{
+        PENDIENTE, PAGADO
     }
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.MERGE)
