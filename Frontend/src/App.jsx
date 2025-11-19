@@ -13,6 +13,8 @@ import Precision from './pages/tecnologia/Precision';
 import Nosotros from './pages/Nosotros';
 import Servicios from './pages/Servicios';
 import Cultivos from './pages/Cultivos';
+import AdminPanel from './pages/AdminPanel';
+import ProtectedAdmin from './components/ProtectedAdmin';
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
       <Route path="/tecnologia/exploracion" element={<Exploracion />} />
       <Route path="/tecnologia/sensores" element={<Sensores />} />
       <Route path="/tecnologia/precision" element={<Precision />} />
+      <Route path="/admin"element={<ProtectedAdmin><AdminPanel /></ProtectedAdmin>}/>
     </Routes>
   );
 }

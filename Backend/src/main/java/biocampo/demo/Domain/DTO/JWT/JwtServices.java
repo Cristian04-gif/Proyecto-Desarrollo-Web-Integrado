@@ -19,21 +19,23 @@ import io.jsonwebtoken.security.Keys;
 public class JwtServices {
 
     private static final String SECRET_KEY = "586E3272357538782F413F442847284862506553685668597033733676397924";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 horas
 
     public String getToken(UserDetails user) {
         return getToken(new HashMap<>(), user);
     }
 
-    private String getToken(Map<String, Object> extreaClaims, UserDetails user) {
+    public String getToken(Map<String, Object> extraClaims, UserDetails user) {
         return Jwts.builder()
-                .setClaims(extreaClaims)
+                .setClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getkey(), SignatureAlgorithm.HS256).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    private Key getkey() {
+    private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -48,7 +50,11 @@ public class JwtServices {
     }
 
     private Claims getAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getkey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
@@ -56,12 +62,11 @@ public class JwtServices {
         return claimsResolver.apply(claims);
     }
 
-    private Date getExperation(String token) {
+    private Date getExpiration(String token) {
         return getClaim(token, Claims::getExpiration);
     }
 
     private boolean isTokenExpired(String token) {
-        return getExperation(token).before(new Date());
+        return getExpiration(token).before(new Date());
     }
-
 }

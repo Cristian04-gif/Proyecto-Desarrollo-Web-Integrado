@@ -1,0 +1,314 @@
+/* src/components/admin/admin.css */
+
+/* --- Variables de color para consistencia --- */
+:root {
+  --primary: #0b3d2e;
+  --primary-light: #145c44;
+  --secondary: #e6f2ed;
+  --accent: #2ecc71;
+  --danger: #e74c3c;
+  --background: #f4f6f5;
+  --text: #333;
+  --white: #fff;
+}
+
+/* --- Layout general --- */
+.admin-shell {
+  display: grid;
+  grid-template-rows: 64px 1fr;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+/* --- Navbar --- */
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  padding: 0 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  animation: fadeInDown 0.6s ease;
+}
+
+.admin-logo {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: var(--white);
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.admin-logo:hover {
+  transform: scale(1.05);
+}
+
+.admin-title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.admin-user {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* --- Body & Sidebar --- */
+.admin-body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: calc(100vh - 64px);
+}
+
+.admin-sidebar {
+  background-color: var(--white);
+  border-right: 1px solid #e2e6e3;
+  padding: 12px;
+  overflow-y: auto;
+  animation: fadeInLeft 0.8s ease;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+  background-color: var(--secondary);
+  transform: translateX(4px);
+}
+
+.sidebar-item.active {
+  background-color: #cfe5dc;
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  margin-right: 8px;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+/* --- Formularios --- */
+.form-item {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInUp 0.6s ease;
+}
+
+.form-item label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--primary);
+}
+
+.form-item input,
+.form-item select,
+.form-item textarea {
+  padding: 8px;
+  border: 1px solid #ccd5d2;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: var(--white);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-item input:focus,
+.form-item select:focus,
+.form-item textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 6px rgba(11,61,46,0.3);
+  outline: none;
+}
+
+.form-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* --- Tablas --- */
+.admin-table-wrapper {
+  overflow-x: auto;
+  padding: 16px;
+  animation: fadeInUp 0.8s ease;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #e2e6e3;
+}
+
+.admin-table th {
+  background-color: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.admin-table tr {
+  transition: background-color 0.3s ease;
+}
+
+.admin-table tr:hover {
+  background-color: #f4faf7;
+}
+
+.admin-table td {
+  color: var(--text);
+}
+
+/* Columnas numéricas */
+.admin-table td.number {
+  text-align: right;
+}
+
+/* Columnas de estado */
+.admin-table td.status {
+  font-weight: 600;
+}
+
+.admin-table td.status.active {
+  color: var(--accent);
+}
+
+.admin-table td.status.inactive {
+  color: var(--danger);
+}
+
+/* --- Animaciones clave --- */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+-------
+/* --- Contenedor del formulario dentro del modal --- */
+.crud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeInUp 0.5s ease;
+}
+
+/* --- Grid de campos --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* --- Campo individual --- */
+.form-item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-item label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: var(--primary);
+}
+
+.form-item input,
+.form-item select,
+.form-item textarea {
+  padding: 12px 14px;
+  border: 1px solid #ccd5d2;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background-color: #fefefe;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-item input:focus,
+.form-item select:focus,
+.form-item textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(11,61,46,0.25);
+  outline: none;
+}
+
+/* --- Placeholder animado (opcional si usas JS) --- */
+.form-item input::placeholder,
+.form-item textarea::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* --- Errores --- */
+.form-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* --- Botón de acción --- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.modal-footer button {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-footer button:hover {
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* --- Animación de entrada --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

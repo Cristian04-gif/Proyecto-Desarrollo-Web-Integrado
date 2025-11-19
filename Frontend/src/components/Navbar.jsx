@@ -1,7 +1,91 @@
 // src/components/Navbar.jsx
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { userService } from '../services/authService'; // usamos el objeto userService
 
 export default function Navbar() {
+  const [userName, setUserName] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // primero, si ya hay un nombre en localStorage, úsalo inmediatamente
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      setUserName(storedName);
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    // parse token para obtener email y luego buscar nombre en la API
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+      const payload = JSON.parse(jsonPayload);
+      const email = payload?.sub || payload?.username || payload?.email;
+      if (email) {
+        userService.list()
+          .then(list => {
+            const u = list.find(
+              x => x.email && x.email.toLowerCase() === email.toLowerCase()
+            );
+            if (u) {
+              const full =
+                (u.firstName || u.nombre || '') +
+                ' ' +
+                (u.lastName || u.apellido || '');
+              setUserName(full.trim() || email);
+              localStorage.setItem('userName', full.trim() || email);
+            }
+          })
+          .catch(() => {
+            // si falla, dejamos el email como fallback
+            setUserName(email);
+          });
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // escuchar cambios de autenticación dentro de la misma pestaña
+  useEffect(() => {
+    const handler = () => {
+      const name = localStorage.getItem('userName');
+      setUserName(name);
+    };
+    window.addEventListener('authChanged', handler);
+    window.addEventListener('storage', handler);
+    return () => {
+      window.removeEventListener('authChanged', handler);
+      window.removeEventListener('storage', handler);
+    };
+  }, []);
+
+  // revisa si hay userName al montar
+  useEffect(() => {
+    const name = localStorage.getItem('userName');
+    if (name) {
+      setUserName(name);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    setUserName(null);
+    navigate('/');
+  };
+
   return (
     <nav className="navbar">
       <link
@@ -20,8 +104,19 @@ export default function Navbar() {
         <Link to="/cultivos">Cultivos</Link>
         <Link to="/contacto">Contáctanos</Link>
         <div className="auth-buttons">
-          <Link to="/login" className="btn-login">Iniciar sesión</Link>
-          <Link to="/register" className="btn-register">Registrarse</Link>
+          {userName ? (
+            <>
+              <span className="welcome">Bienvenido, {userName}</span>
+              <button className="btn-logout" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn-login">Iniciar sesión</Link>
+              <Link to="/register" className="btn-register">Registrarse</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

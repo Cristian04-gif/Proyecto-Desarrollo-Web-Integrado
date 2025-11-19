@@ -1,15 +1,5 @@
 package biocampo.demo.Web.APIs;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import biocampo.demo.Domain.DTO.AutController.AuthResponse;
-import biocampo.demo.Domain.DTO.AutController.AuthServices;
-import biocampo.demo.Domain.DTO.AutController.RegisterRequest;
-import biocampo.demo.Domain.Model.User;
-import biocampo.demo.Domain.Services.UserService;
-import jakarta.persistence.EntityNotFoundException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
-
+import biocampo.demo.Domain.DTO.AutController.AuthResponse;
+import biocampo.demo.Domain.DTO.AutController.AuthServices;
+import biocampo.demo.Domain.DTO.AutController.RegisterRequest;
+import biocampo.demo.Domain.Model.User;
+import biocampo.demo.Domain.Services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,7 +35,7 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
-    }    
+    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -51,7 +47,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("update/{email}")
+    @PutMapping("/update/{email}")
     public ResponseEntity<AuthResponse> updateUser(@PathVariable String email, @RequestBody RegisterRequest user) {
         try {
             AuthResponse updatedUser = authServices.update(email, user);
@@ -59,7 +55,7 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }  
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
