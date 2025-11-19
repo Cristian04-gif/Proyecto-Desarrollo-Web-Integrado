@@ -37,88 +37,90 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PagoService {
 
-    private final MercadoPagoConfiguration configuration;
+        private final MercadoPagoConfiguration configuration;
 
-    @Autowired
-    private SaleDetailMapper detailMapper;
-    @Autowired
-    private RepoProducto repoProducto;
-    @Autowired
-    private SaleMapper saleMapper;
-    @Autowired
-    private RepoCliente repoCliente;
+        @Autowired
+        private SaleDetailMapper detailMapper;
+        @Autowired
+        private RepoProducto repoProducto;
+        @Autowired
+        private SaleMapper saleMapper;
+        @Autowired
+        private RepoCliente repoCliente;
 
-    public Preference crearPago(Sale sale, List<SaleDetail> details)
-            throws MPException, MPApiException, JsonProcessingException {
-        // calcular el costo total
-        double total = 0.0;
-        for (SaleDetail saleDetail : details) {
-            DetalleVenta detalleVenta = detailMapper.toDetalleVenta(saleDetail);
-            Producto producto = repoProducto.findById(detalleVenta.getProducto().getIdProducto()).orElseThrow();
+        public Preference crearPago(Sale sale, List<SaleDetail> details)
+                        throws MPException, MPApiException, JsonProcessingException {
+                // calcular el costo total
+                double total = 0.0;
+                for (SaleDetail saleDetail : details) {
+                        DetalleVenta detalleVenta = detailMapper.toDetalleVenta(saleDetail);
+                        Producto producto = repoProducto.findById(detalleVenta.getProducto().getIdProducto())
+                                        .orElseThrow();
 
-            if (detalleVenta.getCantidad() <= 0) {
-                throw new IllegalArgumentException("La cantidad no puede ser negatiba o cero");
-            }
-            if (detalleVenta.getCantidad() > producto.getStock()) {
-                throw new IllegalArgumentException(
-                        "Stock isuficiente para el producto: " + producto.getEtiqueta());
-            }
-            double subtotal = producto.getPrecio() * detalleVenta.getCantidad();
-            total += subtotal;
+                        if (detalleVenta.getCantidad() <= 0) {
+                                throw new IllegalArgumentException("La cantidad no puede ser negatiba o cero");
+                        }
+                        if (detalleVenta.getCantidad() > producto.getStock()) {
+                                throw new IllegalArgumentException(
+                                                "Stock isuficiente para el producto: " + producto.getEtiqueta());
+                        }
+                        double subtotal = producto.getPrecio() * detalleVenta.getCantidad();
+                        total += subtotal;
+                }
+                // descripciones
+                Venta venta = saleMapper.toVenta(sale);
+                Cliente cliente = repoCliente.findByUsuarioEmail(venta.getCliente().getUsuario().getEmail())
+                                .orElseThrow();
+                String idParameter = cliente.getIdCliente().toString();
+                String titulo = "Productos agrucolas";
+                String descripcion = details.size() + " productos agricolas comprados";
+
+                //
+
+                MercadoPagoConfig.setAccessToken(configuration.getAccessToken());
+                PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
+                                .id(idParameter)
+                                .title(titulo)
+                                .description(descripcion)
+                                .quantity(1)
+                                .currencyId("PEN")
+                                .unitPrice(new BigDecimal(total))
+                                .build();
+                List<PreferenceItemRequest> items = new ArrayList<>();
+                items.add(itemRequest);
+
+                PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
+                                .success("https://youtu.be/w6uvYEoC-LU?list=RDKkGK6UbgazA")
+                                .pending("https://www.tu-sitio/pending")
+                                .failure("https://www.tu-sitio/failure")
+                                .build();
+
+                ObjectMapper mapper = new ObjectMapper();
+                String additionalInfoJson = mapper.writeValueAsString(
+                                Map.of(
+                                                "sale", sale,
+                                                "details", details));
+
+                PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                                .items(items)
+                                .backUrls(backUrls)
+                                .notificationUrl("https://nancy-unmetered-jocelynn.ngrok-free.dev/api/webhook")
+                                .additionalInfo(additionalInfoJson)
+                                .build();
+                PreferenceClient client = new PreferenceClient();
+                Preference preference = client.create(preferenceRequest);
+                return preference;
         }
-        // descripciones
-        Venta venta = saleMapper.toVenta(sale);
-        Cliente cliente = repoCliente.findByUsuarioEmail(venta.getCliente().getUsuario().getEmail()).orElseThrow();
-        String idParameter = venta.getIdVenta().toString();
-        String titulo = "Productos agrucolas";
-        String descripcion = details.size() + " productos agricolas comprados";
 
-        //
-
-        MercadoPagoConfig.setAccessToken(configuration.getAccessToken());
-        PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
-                .id(idParameter)
-                .title(titulo)
-                .description(descripcion)
-                .quantity(1)
-                .currencyId("PEN")
-                .unitPrice(new BigDecimal(total))
-                .build();
-        List<PreferenceItemRequest> items = new ArrayList<>();
-        items.add(itemRequest);
-
-        PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                .success("https://youtu.be/w6uvYEoC-LU?list=RDKkGK6UbgazA")
-                .pending("https://www.tu-sitio/pending")
-                .failure("https://www.tu-sitio/failure")
-                .build();
-
-        ObjectMapper mapper = new ObjectMapper();
-        String additionalInfoJson = mapper.writeValueAsString(
-                Map.of(
-                        "sale", sale,
-                        "details", details));
-
-        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                .items(items)
-                .backUrls(backUrls)
-                .notificationUrl("")
-                .additionalInfo(additionalInfoJson)
-                .build();
-        PreferenceClient client = new PreferenceClient();
-        Preference preference = client.create(preferenceRequest);
-        return preference;
-    }
-
-    /*
-     * public Payment getPayment(String paymentId) throws MPException {
-     * MercadoPagoConfig.setAccessToken(configuration.getAccessToken()); // si no
-     * está global
-     * 
-     * // Consulta a la API de Mercado Pago
-     * Payment payment = Payment.findById(paymentId);
-     * return payment;
-     * }
-     */
+        /*
+         * public Payment getPayment(String paymentId) throws MPException {
+         * MercadoPagoConfig.setAccessToken(configuration.getAccessToken()); // si no
+         * está global
+         * 
+         * // Consulta a la API de Mercado Pago
+         * Payment payment = Payment.findById(paymentId);
+         * return payment;
+         * }
+         */
 
 }
