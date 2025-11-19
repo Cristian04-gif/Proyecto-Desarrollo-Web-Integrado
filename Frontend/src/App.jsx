@@ -25,6 +25,7 @@ function App() {
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/servicios" element={<Servicios />} />
       <Route path="/cultivos" element={<Cultivos />} />
+      <Route path="/admin" element={<ProtectedAdmin><AdminPanel /></ProtectedAdmin>} />
       <Route path="/tecnologia/mapeo" element={<Mapeo />} />
       <Route path="/tecnologia/seguimiento" element={<Seguimiento />} />
       <Route path="/tecnologia/defensa" element={<Defensa />} />

@@ -32,11 +32,19 @@ public class SecurityConfig {
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
+<<<<<<< HEAD
                                                 // Permitir preflight CORS
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                                 // Permitir login/register
                                                 .requestMatchers("/auth/**").permitAll()
                                                 // Requerir autenticación para APIs
+=======
+                                                // Permitir TODOS los OPTIONS sin autenticación (CORS preflight)
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                                // Permitir /auth/** sin autenticación
+                                                .requestMatchers("/auth/**").permitAll()
+                                                // Requerir autenticación para /api/**
+>>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
                                                 .requestMatchers("/api/**").authenticated()
                                                 // Denegar todo lo demás
                                                 .anyRequest().denyAll())
@@ -51,6 +59,7 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration config = new CorsConfiguration();
+<<<<<<< HEAD
                 config.setAllowedOrigins(List.of(
                                 "http://localhost:3000",
                                 "http://127.0.0.1:3000",
@@ -64,6 +73,13 @@ public class SecurityConfig {
                                 "X-Requested-With",
                                 "Access-Control-Allow-Origin",
                                 "Access-Control-Allow-Credentials"));
+=======
+                config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000",
+                                "http://127.0.0.1:5173", "http://127.0.0.1:3000"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+                config.setAllowedHeaders(List.of("*"));
+                config.setExposedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+>>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
                 config.setAllowCredentials(true);
                 config.setMaxAge(3600L);
 
