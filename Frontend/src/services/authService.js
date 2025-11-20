@@ -28,28 +28,32 @@ async function handleResponse(res, defaultMsg) {
 
 // ==================== AUTH ====================
 export async function login(correo, contraseña) {
+  //const params = new URLSearchParams({ email, contraseña });
   const res = await fetch(`${API_URL}/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: correo, password: contraseña })
+    method: 'POST', headers: {
+      'Content-Type': 'application/json'
+    }, body: JSON.stringify({ email: correo, password: contraseña })
   });
   if (!res.ok) throw new Error('Credenciales inválidas');
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem('token', data.token);
-  }
-  return data;
+  return await res.json().then(data => {
+    if (data.token && data.email) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem("user", data.email)
+      window.location.href = 'http://localhost:5173/';
+    }
+  });
 }
 
 export async function register(formData) {
   const res = await fetch(`${API_URL}/register`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(formData)
   });
   if (!res.ok) throw new Error('Error al registrar usuario');
-  const data = await res.json();
-  return data;
+  return await res.json().then(window.location.href = 'http://localhost:5173/login');
 }
 
 // ==================== USUARIOS ====================
