@@ -32,4 +32,16 @@ public class DetalleVenta {
     private Double impuestos;
     private Double porcentajeImpuestos;
     
+
+    public String getEtiquetaProducto() {
+        return producto != null ? producto.getEtiqueta() : null;
+    }
+
+    public Double getPrecioUnitario(){
+        return producto != null ? producto.getPrecio() : null;
+    }
+
+    public String getPesoUnidadMedida(){
+        return producto != null ? producto.getPeso() + " " + producto.getUnidadMedida() : null;
+    }
 }

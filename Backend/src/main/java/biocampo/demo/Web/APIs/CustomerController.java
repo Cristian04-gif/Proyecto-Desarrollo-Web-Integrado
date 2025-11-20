@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/customer")
 public class CustomerController {
 
+
     @Autowired
     private CustomerService customerService;
 
@@ -42,6 +43,12 @@ public class CustomerController {
         List<Customer> customers = customerService.getCustomersByType(type);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<Customer> getCustomerByEmailUser(@PathVariable String email){
+        Customer customer = customerService.getCustomerByEmailUser(email).orElseThrow();
+        return new ResponseEntity<>(customer, HttpStatus.OK);
+    }    
 
     @GetMapping("/id/{id}")
     public ResponseEntity<Customer> getCusomer(@PathVariable Long id) {

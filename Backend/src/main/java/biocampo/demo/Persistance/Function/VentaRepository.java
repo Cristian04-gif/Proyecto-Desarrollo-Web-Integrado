@@ -43,4 +43,10 @@ public class VentaRepository implements SaleRepository{
         repoVenta.deleteById(id);
     }
 
+    @Override
+    public List<Sale> getSaleByCustomerId(Long idCustomer) {
+        List<Venta> ventas = repoVenta.findByClienteIdCliente(idCustomer);
+        return saleMapper.toSales(ventas);
+    }
+
 }

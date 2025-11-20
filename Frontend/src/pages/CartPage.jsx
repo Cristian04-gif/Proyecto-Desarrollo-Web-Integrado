@@ -1,5 +1,6 @@
 import { useCart } from '../services/useCart';
 import "../styles/cartStyles.css";
+import MercadoPago from '../components/MercadoPago'
 
 export default function CartPage() {
   const { cartItems, removeItem, clearCart } = useCart();
@@ -51,7 +52,7 @@ export default function CartPage() {
           <div className="cart-summary">
             <div className="cart-actions">
               <button className="cart-clear-btn" onClick={clearCart}>Vaciar carrito</button>
-              <button className="cart-checkout-btn" onClick={handleCheckout}>Finalizar compra</button>
+              <MercadoPago></MercadoPago>
             </div>
             <div className="cart-total">
               Total: S/ {total.toFixed(2)}

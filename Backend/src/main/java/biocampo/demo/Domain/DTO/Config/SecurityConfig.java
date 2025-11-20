@@ -30,8 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
-                        .requestMatchers("/api/venta/**").hasRole("CLIENTE")
                         .requestMatchers("/api/plantCategory/**").permitAll()
+                        .requestMatchers("/api/webhook").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

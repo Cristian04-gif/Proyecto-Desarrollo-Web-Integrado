@@ -1,15 +1,20 @@
 package biocampo.demo.Domain.Services;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import biocampo.demo.Domain.Model.Customer;
 import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.SaleDetail;
+import biocampo.demo.Domain.Repository.CustomerRepository;
 import biocampo.demo.Domain.Repository.SaleRepository;
 import biocampo.demo.Persistance.CRUD.RepoCliente;
 import biocampo.demo.Persistance.CRUD.RepoDetalleVenta;
@@ -19,15 +24,26 @@ import biocampo.demo.Persistance.Entity.Cliente;
 import biocampo.demo.Persistance.Entity.DetalleVenta;
 import biocampo.demo.Persistance.Entity.Producto;
 import biocampo.demo.Persistance.Entity.Venta;
+import biocampo.demo.Persistance.Entity.Venta.Estado;
 import biocampo.demo.Persistance.Entity.Venta.Metodo;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
 import biocampo.demo.Persistance.Mappings.SaleMapper;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Service
 public class SaleService {
 
     @Autowired
     private SaleRepository saleRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private SaleMapper saleMapper;
@@ -47,22 +63,28 @@ public class SaleService {
         return saleRepository.getAll();
     }
 
+    public List<Sale> getSaleByCustomerId(String emailuser) {
+        Customer customer = customerRepository.findByUsuarioEmail(emailuser).orElseThrow();
+        return saleRepository.getSaleByCustomerId(customer.getCustomerId());
+    }
+
     // Obtener venta por ID
     public Optional<Sale> getSaleById(Long id) {
         return saleRepository.getById(id);
     }
 
     @Transactional
-    public Sale registerSale(Sale sale, List<SaleDetail> details) {
-        Venta ventaEntity = saleMapper.toVenta(sale);
-        Cliente clienteEntity = repoCliente.findById(ventaEntity.getCliente().getIdCliente())
+    public Sale registerSale(String email, List<SaleDetail> details) {
+        System.out.println("Usuario en sale register:"+email );
+        //Venta ventaEntity = saleMapper.toVenta(sale);
+        Cliente clienteEntity = repoCliente.findByUsuarioEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("El cliente no existe"));
-        ventaEntity.setCliente(clienteEntity);
+        Venta ventaEntity = Venta.builder().cliente(clienteEntity).build(); 
 
         Venta ventaGuardada = repoVenta.save(ventaEntity);
 
         double subTotal = 0.0, totalImpuestos = 0.0;
-        
+
         for (SaleDetail saleDetail : details) {
             DetalleVenta detalleVenta = saleDetailMapper.toDetalleVenta(saleDetail);
             Producto productoEntity = repoProducto.findById(detalleVenta.getProducto().getIdProducto()).orElseThrow();
@@ -98,8 +120,9 @@ public class SaleService {
         ventaGuardada.setSubTotal(subTotal);
         ventaGuardada.setImpuestoTotal(totalImpuestos);
         ventaGuardada.setTotal(subTotal + totalImpuestos);
+        ventaGuardada.setEstado(Estado.PAGADO);
         try {
-            ventaGuardada.setPago(Metodo.valueOf(sale.getPaymentMethod().toUpperCase()));
+            ventaGuardada.setPago(Metodo.MERCADO_PAGO);
         } catch (IllegalArgumentException e) {
             System.out.println("error: " + e);
             throw new IllegalArgumentException("El método de pago no es válido");
@@ -118,5 +141,38 @@ public class SaleService {
             repoDetalleVenta.deleteById(detalle.getIdDetalleVenta());
         }
         repoVenta.deleteById(id);
+    }
+
+    // comprobante de venta
+    public byte[] generarComprobanteVenta(String emailUser) throws JRException {
+        Cliente cliente = repoCliente.findByUsuarioEmail(emailUser).orElseThrow();
+        List<Venta> venta = repoVenta.findByClienteIdCliente(cliente.getIdCliente());
+
+        int ultimoIncice = venta.size() - 1;
+        Venta ventaReciente = venta.get(ultimoIncice);
+
+        List<DetalleVenta> detalleVentas = ventaReciente.getDetalle();
+        
+        InputStream reporteStream = getClass().getResourceAsStream("/Reports/comprobante_ventaV2.jasper");
+        JasperReport jasperReport;
+        if (reporteStream == null) {
+            InputStream jrxmlStream = getClass().getResourceAsStream("/Reports/comprobante_ventaV2.jrxml");
+            jasperReport = JasperCompileManager.compileReport(jrxmlStream);
+        } else {
+            jasperReport = (JasperReport) JRLoader.loadObject(reporteStream);
+        }
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("nombreCompleto", ventaReciente.getCliente().getNombreCompleto());
+        parametros.put("clienteEmail", ventaReciente.getCliente().getEmail());
+        parametros.put("fechaVenta", ventaReciente.getFechaVenta().toString());
+        parametros.put("pago", ventaReciente.getPago().toString());
+        parametros.put("total", ventaReciente.getTotal());
+
+
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(detalleVentas);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
+
+        return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 }

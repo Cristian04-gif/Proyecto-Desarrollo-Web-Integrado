@@ -45,4 +45,12 @@ public class Cliente {
     public enum Tipo {
         MAYORISTA, MINORISTA
     }
+
+    public String getNombreCompleto() {
+        return usuario.getNombre() + " " + usuario.getApellido();
+    }
+
+    public String getEmail() {
+        return usuario.getEmail();
+    }
 }
