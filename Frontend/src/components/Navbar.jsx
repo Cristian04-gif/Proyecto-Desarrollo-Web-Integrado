@@ -1,11 +1,7 @@
 // src/components/Navbar.jsx
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
 import { userService } from '../services/authService'; // usamos el objeto userService
-=======
-import { getUsuarios } from '../services/authService';
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
 
 export default function Navbar() {
   const [userName, setUserName] = useState(null);
@@ -22,7 +18,6 @@ export default function Navbar() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-<<<<<<< HEAD
     // parse token para obtener email y luego buscar nombre en la API
     try {
       const base64Url = token.split('.')[1];
@@ -56,28 +51,6 @@ export default function Navbar() {
             // si falla, dejamos el email como fallback
             setUserName(email);
           });
-=======
-    // parse token to get email y obtener nombre desde API si es necesario
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      const payload = JSON.parse(jsonPayload);
-      const email = payload?.sub || payload?.username || payload?.email;
-      if (email) {
-        getUsuarios().then(list => {
-          const u = list.find(x => x.email && x.email.toLowerCase() === email.toLowerCase());
-          if (u) {
-            const full = (u.firstName || u.nombre) + ' ' + (u.lastName || u.apellido);
-            setUserName(full);
-            localStorage.setItem('userName', full);
-          }
-        }).catch(() => {
-          // ignore
-        });
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
       }
     } catch (e) {
       // ignore
@@ -91,10 +64,6 @@ export default function Navbar() {
       setUserName(name);
     };
     window.addEventListener('authChanged', handler);
-<<<<<<< HEAD
-=======
-    // también escucha cambios en storage (otra pestaña o evento storage)
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
     window.addEventListener('storage', handler);
     return () => {
       window.removeEventListener('authChanged', handler);
@@ -102,11 +71,7 @@ export default function Navbar() {
     };
   }, []);
 
-<<<<<<< HEAD
   // revisa si hay userName al montar
-=======
-  // revisa si hay userName al montar, en caso de que ya esté en localStorage
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
   useEffect(() => {
     const name = localStorage.getItem('userName');
     if (name) {
@@ -142,13 +107,9 @@ export default function Navbar() {
           {userName ? (
             <>
               <span className="welcome">Bienvenido, {userName}</span>
-<<<<<<< HEAD
               <button className="btn-logout" onClick={handleLogout}>
                 Cerrar sesión
               </button>
-=======
-              <button className="btn-logout" onClick={handleLogout}>Cerrar sesión</button>
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
             </>
           ) : (
             <>

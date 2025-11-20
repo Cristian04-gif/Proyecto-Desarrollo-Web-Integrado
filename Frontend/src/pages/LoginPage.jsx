@@ -1,9 +1,5 @@
 import { useState } from 'react';
-<<<<<<< HEAD
 import { login, userService } from '../services/authService';
-=======
-import { login, getUsuarios } from '../services/authService';
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../styles/loginStyles.css';
@@ -39,11 +35,7 @@ export default function LoginPage() {
       // try to find full user info
       let foundUserName = emailFromToken; // fallback: usa el email si no encuentra el usuario
       try {
-<<<<<<< HEAD
         const list = await userService.list();
-=======
-        const list = await getUsuarios();
->>>>>>> 820fd712dfbb147e9f07f536cad78d77574f028b
         const user = list.find(u => u.email && u.email.toLowerCase() === emailFromToken.toLowerCase());
         if (user) {
           setUsuario(user);
