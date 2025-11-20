@@ -74,11 +74,12 @@ public class SaleService {
     }
 
     @Transactional
-    public Sale registerSale(Sale sale, List<SaleDetail> details) {
-        Venta ventaEntity = saleMapper.toVenta(sale);
-        Cliente clienteEntity = repoCliente.findByUsuarioEmail(ventaEntity.getCliente().getUsuario().getEmail())
+    public Sale registerSale(String email, List<SaleDetail> details) {
+        System.out.println("Usuario en sale register:"+email );
+        //Venta ventaEntity = saleMapper.toVenta(sale);
+        Cliente clienteEntity = repoCliente.findByUsuarioEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("El cliente no existe"));
-        ventaEntity.setCliente(clienteEntity);
+        Venta ventaEntity = Venta.builder().cliente(clienteEntity).build(); 
 
         Venta ventaGuardada = repoVenta.save(ventaEntity);
 
@@ -119,9 +120,9 @@ public class SaleService {
         ventaGuardada.setSubTotal(subTotal);
         ventaGuardada.setImpuestoTotal(totalImpuestos);
         ventaGuardada.setTotal(subTotal + totalImpuestos);
-        ventaGuardada.setEstado(Estado.PENDIENTE);
+        ventaGuardada.setEstado(Estado.PAGADO);
         try {
-            ventaGuardada.setPago(Metodo.valueOf(sale.getPaymentMethod().toUpperCase()));
+            ventaGuardada.setPago(Metodo.MERCADO_PAGO);
         } catch (IllegalArgumentException e) {
             System.out.println("error: " + e);
             throw new IllegalArgumentException("El método de pago no es válido");

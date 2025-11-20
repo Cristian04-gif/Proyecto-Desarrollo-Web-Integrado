@@ -50,7 +50,7 @@ public class SaleController {
     @PostMapping("/register")
     public ResponseEntity<Sale> registerSale(@RequestBody SaleRequest saleRequest) {
         try {
-            Sale sale = saleService.registerSale(saleRequest.getSale(), saleRequest.getDetails());
+            Sale sale = saleService.registerSale(saleRequest.getEmail(), saleRequest.getDetails());
             return new ResponseEntity<>(sale, HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println("error: "+e);

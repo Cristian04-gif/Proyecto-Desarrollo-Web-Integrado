@@ -10,10 +10,8 @@ const App = () => {
     useEffect(() => {
         async function loadPreference() {
             try {
-                const sale = {
-                    "customer": { "user": { "email": "U22240847@utp.edu.pe" } },
-                    "paymentMethod": "MERCADO_PAGO"
-                };
+                const user = "U22240847@utp.edu.pe"
+
                 const details = [{
                     "product": { "productId": 1 },
                     "quantity": 1
@@ -22,7 +20,7 @@ const App = () => {
                     "quantity": 1
                 }];
 
-                const res = await crearPago(sale, details);
+                const res = await crearPago(user, details);
                 setPreferenceId(res.preferenceId);
             } catch (err) {
                 setError(err.message)

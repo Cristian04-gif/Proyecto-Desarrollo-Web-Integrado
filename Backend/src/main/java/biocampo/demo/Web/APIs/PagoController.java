@@ -3,16 +3,17 @@ package biocampo.demo.Web.APIs;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.mercadopago.client.payment.PaymentClient;
+
 import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 
 import biocampo.demo.Domain.DTO.Request.SaleRequest;
-import biocampo.demo.Domain.Model.Sale;
+
 import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Domain.Services.PagoService;
 import biocampo.demo.Domain.Services.SaleService;
@@ -34,11 +35,13 @@ public class PagoController {
     private PagoService pagoService;
     @Autowired
     private SaleService saleService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostMapping("/pago")
     public ResponseEntity<?> pago(@RequestBody SaleRequest request) {
         try {
-            Preference preference = pagoService.crearPago(request.getSale(), request.getDetails());
+            Preference preference = pagoService.crearPago(request.getEmail(), request.getDetails());
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("preferenceId", preference.getId()));
 
@@ -50,79 +53,41 @@ public class PagoController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<String> recibirWebhook(@RequestBody String json) {
-        System.out.println("📩 Webhook recibido: " + json);
+    public ResponseEntity<String> recibirWebhook(@RequestBody String jsonBody) {
 
-        JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+        try {
+            JsonNode root = objectMapper.readTree(jsonBody);
 
-        // 1. Si viene "topic"
-        if (obj.has("topic")) {
-            String topic = obj.get("topic").getAsString();
-
-            // --- Webhook MERCHANT ORDER ---
-            if (topic.equals("merchant_order")) {
-                if (obj.has("resource")) {
-                    String resourceUrl = obj.get("resource").getAsString();
-                    System.out.println("🧾 Merchant Order URL: " + resourceUrl);
-                } else {
-                    System.out.println("⚠ 'merchant_order' sin resource");
-                }
-                return ResponseEntity.ok("OK");
+            if (!"payment".equals(root.path("type").asText())) {
+                return ResponseEntity.ok("IGNORED");
             }
 
-            // --- Webhook PAYMENT VÍA TOPIC ---
-            if (topic.equals("payment")) {
-                String paymentId = obj.get("resource").getAsString();
-                System.out.println("💰 Payment ID: " + paymentId);
-                return ResponseEntity.ok("OK");
+            long paymentId = root.path("data").path("id").asLong();
+
+            Payment payment = new PaymentClient().get(paymentId);
+            System.out.println("📦 Metadata recibido: " + payment.getMetadata());
+
+            if (!"approved".equalsIgnoreCase(payment.getStatus())) {
+                return ResponseEntity.ok("PAGO NO APROBADO");
             }
+
+            Map<String, Object> metadata = payment.getMetadata();
+            String emailUser = (String) metadata.get("email");
+            String jsonDetails = (String) metadata.get("details");
+
+            List<SaleDetail> details = objectMapper.readValue(
+                    jsonDetails,
+                    new TypeReference<List<SaleDetail>>() {
+                    });
+
+            saleService.registerSale(emailUser, details);
+
+            return ResponseEntity.ok("VENTA_REGISTRADA");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("ERROR: " + ex.getMessage());
         }
-
-        // 2. Webhook VÍA TYPE
-        if (obj.has("type") && obj.get("type").getAsString().equals("payment")) {
-            JsonObject dataObj = obj.getAsJsonObject("data");
-            if (dataObj != null && dataObj.has("id")) {
-                String paymentId = dataObj.get("id").getAsString();
-                System.out.println("💳 Payment (type webhook) ID: " + paymentId);
-
-                try {
-                    PaymentClient client = new PaymentClient();
-                    Payment payment = client.get(Long.parseLong(paymentId));
-
-                    // 👍 Leer directamente los campos personalizados del mapa
-                    Map<String, Object> metadata = payment.getMetadata();
-
-                    Gson gson = new Gson();
-
-                    // Extrae solo lo nuestro
-                    String saleJson = gson.toJson(metadata.get("sale"));
-                    String detailsJson = gson.toJson(metadata.get("details"));
-
-                    // Convierte solo esas partes
-                    Sale sale = gson.fromJson(saleJson, Sale.class);
-                    List<SaleDetail> details = gson.fromJson(
-                            detailsJson,
-                            new TypeToken<List<SaleDetail>>() {
-                            }.getType());
-
-                    saleService.registerSale(sale, details);
-
-                    return ResponseEntity.ok("Venta registrada");
-
-                } catch (Exception e) {
-                    System.out.println("Error en el registro de la venta: " + e.getMessage());
-                    e.printStackTrace();
-                    return ResponseEntity.status(500).body("Error: " + e.getMessage());
-                }
-
-            } else {
-                System.out.println("⚠ Webhook payment sin data.id");
-            }
-            return ResponseEntity.ok("OK");
-        }
-
-        System.out.println("⚠ Webhook NO RECONOCIDO");
-        return ResponseEntity.ok("IGNORED");
     }
 
 }

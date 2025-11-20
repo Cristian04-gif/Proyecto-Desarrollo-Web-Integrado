@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,20 +18,16 @@ import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 
 import biocampo.demo.Domain.DTO.Config.MercadoPagoConfiguration;
-import biocampo.demo.Domain.Model.Sale;
 import biocampo.demo.Domain.Model.SaleDetail;
 import biocampo.demo.Persistance.CRUD.RepoCliente;
 import biocampo.demo.Persistance.CRUD.RepoProducto;
 import biocampo.demo.Persistance.Entity.Cliente;
 import biocampo.demo.Persistance.Entity.DetalleVenta;
 import biocampo.demo.Persistance.Entity.Producto;
-import biocampo.demo.Persistance.Entity.Venta;
 import biocampo.demo.Persistance.Mappings.SaleDetailMapper;
-import biocampo.demo.Persistance.Mappings.SaleMapper;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,12 +40,13 @@ public class PagoService {
         private SaleDetailMapper detailMapper;
         @Autowired
         private RepoProducto repoProducto;
-        @Autowired
-        private SaleMapper saleMapper;
+
         @Autowired
         private RepoCliente repoCliente;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-        public Preference crearPago(Sale sale, List<SaleDetail> details)
+        public Preference crearPago(String email, List<SaleDetail> details)
                         throws MPException, MPApiException, JsonProcessingException {
                 // calcular el costo total
                 double total = 0.0;
@@ -68,9 +66,11 @@ public class PagoService {
                         total += subtotal;
                 }
                 // descripciones
-                Venta venta = saleMapper.toVenta(sale);
-                Cliente cliente = repoCliente.findByUsuarioEmail(venta.getCliente().getUsuario().getEmail())
-                                .orElseThrow();
+                // Venta venta = saleMapper.toVenta(sale);
+                Cliente cliente = repoCliente.findByUsuarioEmail(email).orElseThrow();
+
+                String orderId = UUID.randomUUID().toString();
+
                 String idParameter = cliente.getIdCliente().toString();
                 String titulo = "Productos agrucolas";
                 String descripcion = details.size() + " productos agricolas comprados";
@@ -95,20 +95,20 @@ public class PagoService {
                                 .failure("https://www.tu-sitio/failure")
                                 .build();
 
-                ObjectMapper mapper = new ObjectMapper();
-                String additionalInfoJson = mapper.writeValueAsString(
-                                Map.of(
-                                                "sale", sale,
-                                                "details", details));
+                Map<String, Object> metadata = Map.of(
+                                "orderId", orderId,
+                                "email", email,
+                                "details", objectMapper.writeValueAsString(details));
 
                 PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                                 .items(items)
                                 .backUrls(backUrls)
                                 .notificationUrl("https://nancy-unmetered-jocelynn.ngrok-free.dev/api/webhook")
-                                .additionalInfo(additionalInfoJson)
+                                .metadata(metadata)
                                 .build();
                 PreferenceClient client = new PreferenceClient();
                 Preference preference = client.create(preferenceRequest);
+                System.out.println("email del usarios: "+email);
                 return preference;
         }
 
