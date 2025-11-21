@@ -32,6 +32,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/api/plantCategory/**").permitAll()
                         .requestMatchers("/api/webhook").permitAll()
+                        .requestMatchers("/api/customer/**").permitAll()
+                        .requestMatchers("/api/pago").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
