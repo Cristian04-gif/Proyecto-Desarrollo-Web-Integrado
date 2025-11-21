@@ -90,7 +90,7 @@ public class PagoService {
                 items.add(itemRequest);
 
                 PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                .success("http://localhost:5173/carrito")
+                                .success("https://www.google.com")
                                 .pending("https://www.tu-sitio/pending")
                                 .failure("https://www.tu-sitio/failure")
                                 .build();
