@@ -1,0 +1,106 @@
+/* Fondo general */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #e6f4e6;
+}
+
+/* Contenedor centrado */
+.register-client-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: #bde3c8;
+  box-sizing: border-box;
+}
+
+/* Tarjeta de registro cliente */
+.register-client-box {
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Título */
+.register-client-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 2rem;
+}
+
+/* Campo individual */
+.register-client-field {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+/* Etiquetas */
+.register-client-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+  font-size: 14px;
+}
+
+/* Inputs */
+.register-client-input,
+.register-client-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-client-input:focus,
+.register-client-select:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(15, 17, 15, 0.2);
+  outline: none;
+}
+
+/* Botón principal */
+.register-client-button {
+  background-color: #6eb48f;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-client-button:hover {
+  background-color: #1b5e20;
+}
+
+/* Mensajes */
+.register-client-message {
+  margin-top: 1rem;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.register-client-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.register-client-error {
+  background-color: #fdecea;
+  color: #b71c1c;
+}

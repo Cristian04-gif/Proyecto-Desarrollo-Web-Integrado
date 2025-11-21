@@ -13,6 +13,7 @@ import Exploracion from './pages/tecnologia/Exploracion';
 import Sensores from './pages/tecnologia/Sensores';
 import Precision from './pages/tecnologia/Precision';
 import NewsPage from './pages/NewsPage';
+import RegisterClientPage from './pages/RegisterClientPage';
 
 import { CartProvider } from './pages/cartContext';
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register-client" element={<RegisterClientPage />} />
           <Route path="/catalogo" element={<CatalogPage />} />
           <Route path="/carrito" element={<CartPage />} />
           <Route path="/tecnologia/mapeo" element={<Mapeo />} />

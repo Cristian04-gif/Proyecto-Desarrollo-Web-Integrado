@@ -28,21 +28,27 @@ async function handleResponse(res, defaultMsg) {
 
 // ==================== AUTH ====================
 export async function login(correo, contraseña) {
-  //const params = new URLSearchParams({ email, contraseña });
   const res = await fetch(`${API_URL}/login`, {
-    method: 'POST', headers: {
-      'Content-Type': 'application/json'
-    }, body: JSON.stringify({ email: correo, password: contraseña })
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: correo, password: contraseña })
   });
+
   if (!res.ok) throw new Error('Credenciales inválidas');
-  return await res.json().then(data => {
-    if (data.token && data.email) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem("user", data.email)
-      window.location.href = 'http://localhost:5173/';
-    }
-  });
+
+  const data = await res.json();
+  console.log("Respuesta del backend:", data);
+
+  if (data.token && data.email) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem("user", JSON.stringify({
+      email: data.email
+    }));
+  }
+
+  return data; 
 }
+
 
 export async function register(formData) {
   const res = await fetch(`${API_URL}/register`, {
@@ -561,4 +567,10 @@ export function isLoggedIn() {
 // Cerrar sesión
 export function logout() {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
+
+export function getEmail() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.email || null;
 }
