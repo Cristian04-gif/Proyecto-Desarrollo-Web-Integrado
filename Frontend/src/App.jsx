@@ -14,6 +14,7 @@ import Sensores from './pages/tecnologia/Sensores';
 import Precision from './pages/tecnologia/Precision';
 import NewsPage from './pages/NewsPage';
 import RegisterClientPage from './pages/RegisterClientPage';
+import PagoExitoso from './pages/PagoExitoso';   
 
 import { CartProvider } from './pages/cartContext';
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/tecnologia/sensores" element={<Sensores />} />
           <Route path="/tecnologia/precision" element={<Precision />} />
           <Route path="/noticias" element={<NewsPage />} />
+          <Route path="/pago-exitoso" element={<PagoExitoso />} /> 
         </Route>
       </Routes>
     </CartProvider>
