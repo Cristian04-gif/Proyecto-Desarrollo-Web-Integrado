@@ -34,7 +34,7 @@ public class SaleDatailsController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/sale")
+    @GetMapping("/sale/{idSale}")
     public ResponseEntity<List<SaleDetail>> getDetailsBySale(@PathVariable Long idSale){
         List<SaleDetail> details = detailService.getSaleDetailBySale(idSale);
         return new ResponseEntity<>(details, HttpStatus.OK);

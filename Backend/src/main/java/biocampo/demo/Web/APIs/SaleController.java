@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
 @RestController
 @RequestMapping("/api/sale")
 public class SaleController {
@@ -33,6 +34,12 @@ public class SaleController {
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
+    @GetMapping("/customer/{emailUser}")
+    public ResponseEntity<List<Sale>> getSaleByCustomerId(@PathVariable String emailUser){
+        List<Sale> sales = saleService.getSaleByCustomerId(emailUser);
+        return new ResponseEntity<>(sales, HttpStatus.OK);
+    }    
+
     @GetMapping("/id/{id}")
     public ResponseEntity<Sale> getSale(@PathVariable Long id) {
         Optional<Sale> optional = saleService.getSaleById(id);
@@ -43,7 +50,7 @@ public class SaleController {
     @PostMapping("/register")
     public ResponseEntity<Sale> registerSale(@RequestBody SaleRequest saleRequest) {
         try {
-            Sale sale = saleService.registerSale(saleRequest.getSale(), saleRequest.getDetails());
+            Sale sale = saleService.registerSale(saleRequest.getEmail(), saleRequest.getDetails());
             return new ResponseEntity<>(sale, HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println("error: "+e);

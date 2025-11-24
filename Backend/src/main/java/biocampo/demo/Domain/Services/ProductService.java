@@ -139,7 +139,7 @@ public class ProductService {
         double precioKg = postHarvest.getPriceKg();
         double peso = existProduct.getWeight();
         double kgComercializables = postHarvest.getKgComerciables();
-        double precioFinal = precioKg * peso;
+        double precioFinal = precioKg * peso*1.18;
         double stock = Math.floor(kgComercializables / peso);
 
         existProduct.setPrice(precioFinal);

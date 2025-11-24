@@ -2,7 +2,6 @@ package biocampo.demo.Domain.Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,6 +30,6 @@ public class PostHarvest {
     private String status;
     private LocalDateTime conversionDate;
     private String observations;
-    private List<Employee> employees;
+    //private List<Employee> employees;
 
 }

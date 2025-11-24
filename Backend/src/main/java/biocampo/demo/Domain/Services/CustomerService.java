@@ -29,6 +29,10 @@ public class CustomerService {
         return customerRepository.getByIdCustomer(id);
     }
 
+    public Optional<Customer> getCustomerByEmailUser(String emailUser){
+        return customerRepository.findByUsuarioEmail(emailUser);
+    }
+
     public Customer registerCustomer(Customer customer) {
         User user = userRepository.getByEmail(customer.getUser().getEmail()).orElseThrow();
         customer.setUser(user);

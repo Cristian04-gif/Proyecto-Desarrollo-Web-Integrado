@@ -42,8 +42,8 @@ public class AuthServices {
         UserDetails user = repoUsuario.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         String token = jwtServices.getToken(user);
-        String usuario = request.getEmail();
-        return AuthResponse.builder().token(token).email(usuario).build();
+        String email = request.getEmail();
+        return AuthResponse.builder().token(token).email(email).build();
     }
 
     public AuthResponse register(RegisterRequest request) {

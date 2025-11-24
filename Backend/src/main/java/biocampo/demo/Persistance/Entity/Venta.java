@@ -16,12 +16,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Venta {
 
     @Id
@@ -39,9 +43,14 @@ public class Venta {
     private Double total;
     @Enumerated(EnumType.STRING)
     private Metodo pago;
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
 
     public enum Metodo {
-        PAYPAL, TARJETA
+        PAYPAL, MERCADO_PAGO
+    }
+    public enum Estado{
+        PENDIENTE, PAGADO
     }
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.MERGE)

@@ -27,5 +27,6 @@ public interface SaleMapper {
 
     @InheritInverseConfiguration
     @Mapping(target = "detalle", ignore = true)
+    @Mapping(target = "estado", ignore = true)
     Venta toVenta(Sale sale);
 }
