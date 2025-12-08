@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getUsuarios } from '../services/authService';
+import { getUsuarios } from '../services/users';
 
 export default function Navbar() {
   const [userName, setUserName] = useState(null);
@@ -97,6 +97,9 @@ export default function Navbar() {
           {userName ? (
             <>
               <span className="welcome">Bienvenido, {userName}</span>
+              {localStorage.getItem('rol') === 'ROLE_ADMIN' && (
+                <Link to="/admin" style={{marginLeft:12}}>Panel Admin</Link>
+              )}
               <button className="btn-logout" onClick={handleLogout}>Cerrar sesión</button>
             </>
           ) : (

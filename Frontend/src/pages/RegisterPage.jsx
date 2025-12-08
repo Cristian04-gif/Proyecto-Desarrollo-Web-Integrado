@@ -40,7 +40,13 @@ export default function RegisterPage() {
     }
 
     try {
-      const user = await register(form);
+      // Clonamos el form y añadimos rol si corresponde
+      const formWithRole = {
+        ...form,
+        rol: form.email.endsWith('@utp.edu.pe') ? 'admin' : 'user'
+      };
+
+      const user = await register(formWithRole);
       setUsuario(user);
       setError('');
     } catch (err) {
@@ -48,6 +54,7 @@ export default function RegisterPage() {
       setUsuario(null);
     }
   };
+
 
   return (
     <div className="register-wrapper">

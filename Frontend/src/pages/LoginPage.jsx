@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { login, getUsuarios } from '../services/authService';
+import { login } from '../services/authService';
+import { getUsuarios } from '../services/users';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../styles/loginStyles.css';

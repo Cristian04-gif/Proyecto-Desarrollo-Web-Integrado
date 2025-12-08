@@ -15,13 +15,14 @@ import Precision from './pages/tecnologia/Precision';
 import NewsPage from './pages/NewsPage';
 import RegisterClientPage from './pages/RegisterClientPage';
 import PagoExitoso from './pages/PagoExitoso';   
-
 import { CartProvider } from './pages/cartContext';
 
 function App() {
   return (
     <CartProvider>
       <Routes>
+
+
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
