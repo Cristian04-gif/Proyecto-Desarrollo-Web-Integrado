@@ -1,4 +1,17 @@
-// ==================== CULTIVOS ====================
+// src/services/cultivations.js
+
+// Ajusta esta URL si tu backend corre en otro puerto
+const API_BASE = "http://localhost:8080"; 
+
+// Helper para el token
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export async function getCultivos() {
   const res = await fetch(`${API_BASE}/api/cultivation/all`, {
     headers: getAuthHeaders()
@@ -15,6 +28,7 @@ export async function getCultivoById(id) {
   return await res.json();
 }
 
+// ✅ ESTA ES LA FUNCIÓN QUE TE DABA ERROR. Asegúrate que diga 'export'
 export async function crearCultivo(cultivo) {
   const res = await fetch(`${API_BASE}/api/cultivation/register`, {
     method: 'POST',
@@ -40,6 +54,12 @@ export async function eliminarCultivo(id) {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
+  // Nota: Si tu backend devuelve 204 No Content, res.json() fallará.
+  // Es mejor verificar res.ok y retornar true.
   if (!res.ok) throw new Error('Error al eliminar cultivo');
+  
+  // Si tu backend devuelve void o no content, usa esto:
+  if (res.status === 204) return true;
+  
   return await res.json();
 }

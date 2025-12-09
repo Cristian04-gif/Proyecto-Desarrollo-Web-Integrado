@@ -1,45 +1,37 @@
-// ==================== COSECHAS ====================
-export async function getCosechas() {
-  const res = await fetch(`${API_BASE}/api/harvest/all`, {
-    headers: getAuthHeaders()
-  });
+// src/services/harvests.js
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
+export async function getHarvests() {
+  const res = await fetch(`${API_BASE}/api/harvest/all`, { headers: getAuthHeaders() });
   if (!res.ok) throw new Error('Error al obtener cosechas');
   return await res.json();
 }
 
-export async function getCosechaById(id) {
-  const res = await fetch(`${API_BASE}/api/harvest/id/${id}`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener cosecha');
-  return await res.json();
-}
-
-export async function crearCosecha(cosecha) {
+export async function createHarvest(payload) {
+  // Tu controlador espera un HarvestRequest { harvest: {...}, employees: [...] }
   const res = await fetch(`${API_BASE}/api/harvest/register`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(cosecha)
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error('Error al crear cosecha');
+  if (!res.ok) throw new Error('Error al registrar cosecha');
   return await res.json();
 }
 
-export async function actualizarCosecha(id, cosecha) {
-  const res = await fetch(`${API_BASE}/api/harvest/update/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(cosecha)
-  });
-  if (!res.ok) throw new Error('Error al actualizar cosecha');
-  return await res.json();
-}
-
-export async function eliminarCosecha(id) {
+export async function deleteHarvest(id) {
   const res = await fetch(`${API_BASE}/api/harvest/delete/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
+  if (res.status === 204) return true;
   if (!res.ok) throw new Error('Error al eliminar cosecha');
-  return await res.json();
+  return true;
 }

@@ -14,15 +14,14 @@ import Sensores from './pages/tecnologia/Sensores';
 import Precision from './pages/tecnologia/Precision';
 import NewsPage from './pages/NewsPage';
 import RegisterClientPage from './pages/RegisterClientPage';
-import PagoExitoso from './pages/PagoExitoso';   
+import PagoExitoso from './pages/PagoExitoso'; 
 import { CartProvider } from './pages/cartContext';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
     <CartProvider>
       <Routes>
-
-
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -37,9 +36,12 @@ function App() {
           <Route path="/tecnologia/exploracion" element={<Exploracion />} />
           <Route path="/tecnologia/sensores" element={<Sensores />} />
           <Route path="/tecnologia/precision" element={<Precision />} />
+          
           <Route path="/noticias" element={<NewsPage />} />
           <Route path="/pago-exitoso" element={<PagoExitoso />} /> 
         </Route>
+        <Route path="/admin" element={<AdminDashboard />} />
+
       </Routes>
     </CartProvider>
   );

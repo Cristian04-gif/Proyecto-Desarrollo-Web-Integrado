@@ -1,46 +1,37 @@
-// ==================== POST HARVESTS ====================
+// src/services/postHarvests.js
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
 export async function getPostHarvests() {
-  const res = await fetch(`${API_BASE}/api/postHarvest/all`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener post-harvests');
+  const res = await fetch(`${API_BASE}/api/postHarvest/all`, { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Error al obtener post-cosechas');
   return await res.json();
 }
 
-export async function getPostHarvestById(id) {
-  const res = await fetch(`${API_BASE}/api/postHarvest/id/${id}`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener post-harvest');
-  return await res.json();
-}
-
-export async function crearPostHarvest(requestBody) {
-  // requestBody debe seguir la forma PostHarvestRequest { postHarvest, employees }
+export async function createPostHarvest(payload) {
+  // Tu controlador espera PostHarvestRequest { postHarvest: {...}, employees: [...] }
   const res = await fetch(`${API_BASE}/api/postHarvest/register`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(requestBody)
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error('Error al crear post-harvest');
+  if (!res.ok) throw new Error('Error al registrar post-cosecha');
   return await res.json();
 }
 
-export async function actualizarPostHarvest(id, body) {
-  const res = await fetch(`${API_BASE}/api/postHarvest/update/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error('Error al actualizar post-harvest');
-  return await res.json();
-}
-
-export async function eliminarPostHarvest(id) {
+export async function deletePostHarvest(id) {
   const res = await fetch(`${API_BASE}/api/postHarvest/delete/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
-  if (!res.ok) throw new Error('Error al eliminar post-harvest');
-  return await res.json();
+  if (res.status === 204) return true;
+  if (!res.ok) throw new Error('Error al eliminar post-cosecha');
+  return true;
 }

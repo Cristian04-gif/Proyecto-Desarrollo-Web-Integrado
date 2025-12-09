@@ -1,45 +1,42 @@
-// ==================== PLANT CATEGORIES ====================
-export async function getPlantCategories() {
+// src/services/plantCategories.js
+
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
+// GET /api/plantCategory/all
+export async function getCategories() {
   const res = await fetch(`${API_BASE}/api/plantCategory/all`, {
     headers: getAuthHeaders()
   });
-  if (!res.ok) throw new Error('Error al obtener categorías de planta');
+  if (!res.ok) throw new Error('Error al obtener categorías');
   return await res.json();
 }
 
-export async function getPlantCategoryById(id) {
-  const res = await fetch(`${API_BASE}/api/plantCategory/id/${id}`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener categoría');
-  return await res.json();
-}
-
-export async function crearPlantCategory(category) {
+// POST /api/plantCategory/register
+export async function createCategory(categoryData) {
   const res = await fetch(`${API_BASE}/api/plantCategory/register`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(category)
+    body: JSON.stringify(categoryData)
   });
-  if (!res.ok) throw new Error('Error al crear categoría');
+  if (!res.ok) throw new Error('Error al registrar categoría');
   return await res.json();
 }
 
-export async function actualizarPlantCategory(id, category) {
-  const res = await fetch(`${API_BASE}/api/plantCategory/update/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(category)
-  });
-  if (!res.ok) throw new Error('Error al actualizar categoría');
-  return await res.json();
-}
-
-export async function eliminarPlantCategory(id) {
+// DELETE /api/plantCategory/delete/{id}
+export async function deleteCategory(id) {
   const res = await fetch(`${API_BASE}/api/plantCategory/delete/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
+  if (res.status === 204) return true; // No Content
   if (!res.ok) throw new Error('Error al eliminar categoría');
-  return await res.json();
+  return true;
 }
