@@ -640,18 +640,16 @@ const PlantsCrud = () => {
     </div>
   );
 };
-// --- COMPONENTE CRUD DE COSECHAS Y POST-COSECHAS ---
+// --- COMPONENTE CRUD DE COSECHAS Y POST-COSECHAS (FINAL) ---
 const HarvestsCrud = () => {
-  const [activeSubTab, setActiveSubTab] = useState('harvest'); // 'harvest' o 'postharvest'
+  const [activeSubTab, setActiveSubTab] = useState('harvest'); 
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   
-  // Listas de datos
   const [harvests, setHarvests] = useState([]);
   const [postHarvests, setPostHarvests] = useState([]);
-  const [cultivations, setCultivations] = useState([]); // Para el dropdown de cosecha
+  const [cultivations, setCultivations] = useState([]); 
 
-  // Formulario Genérico
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -676,9 +674,8 @@ const HarvestsCrud = () => {
     }
   };
 
-  // --- MANEJADORES DE ELIMINACIÓN ---
   const handleDeleteHarvest = async (id) => {
-    if(!window.confirm("¿Eliminar esta cosecha? Esto podría afectar post-cosechas.")) return;
+    if(!window.confirm("¿Eliminar esta cosecha?")) return;
     try {
       await deleteHarvest(id);
       setHarvests(prev => prev.filter(h => h.harvestId !== id));
@@ -686,112 +683,100 @@ const HarvestsCrud = () => {
   };
 
   const handleDeletePostHarvest = async (id) => {
-    if(!window.confirm("¿Eliminar este registro de post-cosecha?")) return;
+    if(!window.confirm("¿Eliminar registro?")) return;
     try {
       await deletePostHarvest(id);
       setPostHarvests(prev => prev.filter(ph => ph.postHarvestId !== id));
     } catch(e) { alert("Error: " + e.message); }
   };
 
-  // --- MANEJADOR DE FORMULARIO (SUBMIT) ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
       if (activeSubTab === 'harvest') {
-        // --- LOGICA CREAR COSECHA ---
+        // --- CREAR COSECHA ---
         if (!formData.cultivationId) { alert("Selecciona un cultivo"); return; }
         
         const payload = {
           harvest: {
-            cultivation: { cultivationId: parseInt(formData.cultivationId) }, // Relación
-            harvestQuantity: parseFloat(formData.harvestQuantity),
+            cultivation: { cultivationId: parseInt(formData.cultivationId) }, 
+            harvestQuantity: parseFloat(formData.harvestQuantity) || 0.0,
             unitMeasure: formData.unitMeasure || 'Kg',
             cost: parseFloat(formData.cost) || 0.0,
-            yeilfHectare: 0.0, // Calculado o default
-            dateHarvested: new Date().toISOString().split('T')[0], // Fecha hoy
+            yeilfHectare: 0.0, 
+            dateHarvested: new Date().toISOString().split('T')[0], 
             employees: []
           },
-          employees: [] // Lista vacía requerida por Request
+          employees: [] 
         };
         await createHarvest(payload);
         alert("Cosecha registrada!");
 
       } else {
-        // --- LOGICA CREAR POST-COSECHA ---
-        if (!formData.harvestId) { alert("Selecciona una cosecha origen"); return; }
+        // --- CREAR POST-COSECHA ---
+        if (!formData.harvestId) { alert("Selecciona una cosecha"); return; }
+        if (!formData.status) { alert("Selecciona un estado"); return; } 
 
         const payload = {
           postHarvest: {
-            harvest: { harvestId: parseInt(formData.harvestId) }, // Relación
+            harvest: { harvestId: parseInt(formData.harvestId) }, 
             storageCost: parseFloat(formData.storageCost) || 0.0,
             costEmployee: parseFloat(formData.costEmployee) || 0.0,
             kgComerciables: parseFloat(formData.kgComerciables) || 0.0,
             priceKg: parseFloat(formData.priceKg) || 0.0,
             lossKg: parseFloat(formData.lossKg) || 0.0,
-            observations: formData.observations || '',
-            status: 'PROCESADO',
-            dateProcessed: new Date().toISOString().split('T')[0],
-            // Campos calculados (si el backend no los calcula, enviamos 0)
+            
             totalReveneu: 0.0, 
-            profit: 0.0
+            profit: 0.0,
+            
+            // ⚠️ AQUÍ USAMOS EL VALOR DEL SELECT (Coincide con tu Java)
+            status: formData.status, 
+            
+            observations: formData.observations || 'Sin observaciones',
+            dateProcessed: new Date().toISOString().split('T')[0], 
+            conversionDate: null 
           },
           employees: []
         };
+
+        console.log("Payload PostHarvest:", payload);
         await createPostHarvest(payload);
         alert("Post-Cosecha registrada!");
       }
 
       setShowModal(false);
       setFormData({});
-      loadAllData(); // Recargar todo
+      loadAllData(); 
     } catch (err) {
-      alert("Error al guardar: " + err.message);
+      console.error(err);
+      alert("Error 500. Revisa la consola.");
     }
   };
 
-  // --- RENDERIZADO ---
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
           <h2 style={{color: '#2F4842', margin: 0}}>Cosechas y Procesamiento</h2>
-          <p style={{color: '#666', margin: 0}}>Gestiona la recolección y el procesamiento posterior.</p>
+          <p style={{color: '#666', margin: 0}}>Gestión de recolección.</p>
         </div>
         <button className="btn-primary" onClick={() => setShowModal(true)}>
           + Registrar {activeSubTab === 'harvest' ? 'Cosecha' : 'Post-Cosecha'}
         </button>
       </div>
 
-      {/* Pestañas Internas */}
       <div style={{display:'flex', gap:'10px', marginBottom:'20px', borderBottom:'1px solid #eee', paddingBottom:'10px'}}>
-        <button 
-          onClick={() => setActiveSubTab('harvest')}
-          style={{
-            padding:'8px 16px', borderRadius:'20px', border:'none', cursor:'pointer', fontWeight:'bold',
-            background: activeSubTab === 'harvest' ? '#6B9080' : '#ddd', color: activeSubTab === 'harvest' ? 'white' : '#666'
-          }}
-        >
-          🚜 Recolección (Harvest)
-        </button>
-        <button 
-          onClick={() => setActiveSubTab('postharvest')}
-          style={{
-            padding:'8px 16px', borderRadius:'20px', border:'none', cursor:'pointer', fontWeight:'bold',
-            background: activeSubTab === 'postharvest' ? '#6B9080' : '#ddd', color: activeSubTab === 'postharvest' ? 'white' : '#666'
-          }}
-        >
-          🏭 Procesamiento (Post-Harvest)
-        </button>
+        <button onClick={() => setActiveSubTab('harvest')} style={{padding:'8px 16px', borderRadius:'20px', border:'none', cursor:'pointer', fontWeight:'bold', background: activeSubTab === 'harvest' ? '#6B9080' : '#ddd', color: activeSubTab === 'harvest' ? 'white' : '#666'}}>Recolección</button>
+        <button onClick={() => setActiveSubTab('postharvest')} style={{padding:'8px 16px', borderRadius:'20px', border:'none', cursor:'pointer', fontWeight:'bold', background: activeSubTab === 'postharvest' ? '#6B9080' : '#ddd', color: activeSubTab === 'postharvest' ? 'white' : '#666'}}>Procesamiento</button>
       </div>
 
       {loading ? <p>Cargando datos...</p> : (
         <div className="table-container">
           {activeSubTab === 'harvest' ? (
-            // TABLA DE COSECHAS
             <table className="admin-table">
               <thead>
-                <tr><th>ID</th><th>Cultivo Origen</th><th>Fecha</th><th>Cantidad</th><th>Costo</th><th>Acciones</th></tr>
+                <tr><th>ID</th><th>Cultivo</th><th>Fecha</th><th>Cantidad</th><th>Acciones</th></tr>
               </thead>
               <tbody>
                 {harvests.map(h => (
@@ -800,26 +785,23 @@ const HarvestsCrud = () => {
                     <td>{h.cultivation ? h.cultivation.plotName : 'N/A'}</td>
                     <td>{h.dateHarvested}</td>
                     <td>{h.harvestQuantity} {h.unitMeasure}</td>
-                    <td>${h.cost}</td>
                     <td><button className="btn-delete" onClick={() => handleDeleteHarvest(h.harvestId)}>Eliminar</button></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            // TABLA DE POST-COSECHAS
             <table className="admin-table">
               <thead>
-                <tr><th>ID</th><th>Cosecha ID</th><th>Procesado</th><th>Kg Comerciables</th><th>Pérdida</th><th>Acciones</th></tr>
+                <tr><th>ID</th><th>Cosecha ID</th><th>Estado</th><th>Kg Comerciables</th><th>Acciones</th></tr>
               </thead>
               <tbody>
                 {postHarvests.map(ph => (
                   <tr key={ph.postHarvestId}>
                     <td>{ph.postHarvestId}</td>
                     <td>{ph.harvest ? ph.harvest.harvestId : 'N/A'}</td>
-                    <td>{ph.dateProcessed}</td>
+                    <td>{ph.status}</td>
                     <td>{ph.kgComerciables} kg</td>
-                    <td style={{color:'red'}}>{ph.lossKg} kg</td>
                     <td><button className="btn-delete" onClick={() => handleDeletePostHarvest(ph.postHarvestId)}>Eliminar</button></td>
                   </tr>
                 ))}
@@ -829,90 +811,66 @@ const HarvestsCrud = () => {
         </div>
       )}
 
-      {/* MODAL */}
       {showModal && (
         <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.6)', display:'flex', justifyContent:'center', alignItems:'center', zIndex:1000}}>
           <div style={{background:'white', padding:'30px', borderRadius:'12px', width:'500px', maxHeight:'90vh', overflowY:'auto'}}>
-            <h3 style={{color:'#2F4842'}}>
-              {activeSubTab === 'harvest' ? 'Nueva Cosecha' : 'Nuevo Procesamiento'}
-            </h3>
+            <h3 style={{color:'#2F4842'}}>{activeSubTab === 'harvest' ? 'Nueva Cosecha' : 'Nuevo Procesamiento'}</h3>
             
             <form onSubmit={handleSubmit} style={{display:'grid', gap:'15px'}}>
               
-              {/* --- FORMULARIO PARA COSECHA --- */}
               {activeSubTab === 'harvest' && (
                 <>
-                  <label>Seleccionar Cultivo (Origen)</label>
-                  <select className="admin-input" required 
-                    value={formData.cultivationId || ''} onChange={e => setFormData({...formData, cultivationId: e.target.value})}>
+                  <label>Seleccionar Cultivo</label>
+                  <select className="admin-input" required value={formData.cultivationId || ''} onChange={e => setFormData({...formData, cultivationId: e.target.value})}>
                     <option value="">-- Elige un cultivo --</option>
-                    {cultivations.map(c => (
-                      <option key={c.cultivationId} value={c.cultivationId}>
-                        {c.plotName} - {c.season} (ID: {c.cultivationId})
-                      </option>
-                    ))}
+                    {cultivations.map(c => <option key={c.cultivationId} value={c.cultivationId}>{c.plotName}</option>)}
                   </select>
-
-                  <label>Cantidad Cosechada</label>
-                  <input type="number" step="0.01" className="admin-input" required placeholder="0.00"
-                    value={formData.harvestQuantity || ''} onChange={e => setFormData({...formData, harvestQuantity: e.target.value})} />
-
-                  <label>Unidad de Medida</label>
+                  <label>Cantidad</label>
+                  <input type="number" className="admin-input" required value={formData.harvestQuantity || ''} onChange={e => setFormData({...formData, harvestQuantity: e.target.value})} />
+                  <label>Unidad</label>
                   <select className="admin-input" value={formData.unitMeasure || 'Kg'} onChange={e => setFormData({...formData, unitMeasure: e.target.value})}>
-                    <option value="Kg">Kilogramos</option>
-                    <option value="Ton">Toneladas</option>
-                    <option value="Lbs">Libras</option>
+                    <option value="Kg">Kilogramos</option><option value="Ton">Toneladas</option>
                   </select>
-
-                  <label>Costo Operativo</label>
-                  <input type="number" step="0.01" className="admin-input" placeholder="0.00"
-                    value={formData.cost || ''} onChange={e => setFormData({...formData, cost: e.target.value})} />
+                  <label>Costo</label>
+                  <input type="number" className="admin-input" value={formData.cost || ''} onChange={e => setFormData({...formData, cost: e.target.value})} />
                 </>
               )}
 
-              {/* --- FORMULARIO PARA POST-COSECHA --- */}
               {activeSubTab === 'postharvest' && (
                 <>
-                  <label>Seleccionar Cosecha (Origen)</label>
-                  <select className="admin-input" required 
-                    value={formData.harvestId || ''} onChange={e => setFormData({...formData, harvestId: e.target.value})}>
+                  <label>Seleccionar Cosecha</label>
+                  <select className="admin-input" required value={formData.harvestId || ''} onChange={e => setFormData({...formData, harvestId: e.target.value})}>
                     <option value="">-- Elige una cosecha --</option>
-                    {harvests.map(h => (
-                      <option key={h.harvestId} value={h.harvestId}>
-                        ID: {h.harvestId} - {h.harvestQuantity} {h.unitMeasure} ({h.dateHarvested})
-                      </option>
-                    ))}
+                    {harvests.map(h => <option key={h.harvestId} value={h.harvestId}>ID: {h.harvestId} - {h.harvestQuantity} {h.unitMeasure}</option>)}
+                  </select>
+
+                  {/* ⚠️ SELECTOR DE ESTADO ACTUALIZADO */}
+                  <label style={{color:'#2F4842', fontWeight:'bold'}}>Estado del Proceso</label>
+                  <select 
+                    className="admin-input" 
+                    required 
+                    value={formData.status || ''} 
+                    onChange={e => setFormData({...formData, status: e.target.value})}
+                  >
+                    <option value="">-- Selecciona Estado --</option>
+                    
+                    {/* 👇 VALORES EXACTOS DE TU ENUM JAVA 👇 */}
+                    <option value="EN_ALMACENAMIENTO">En Almacenamiento</option>
+                    <option value="PROCESADA">Procesada</option>
+                    <option value="CONVERTIDA_EN_PRODUCTO">Convertida en Producto</option>
+                    
                   </select>
 
                   <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px'}}>
-                    <div>
-                      <label style={{fontSize:'12px'}}>Kg Comerciables</label>
-                      <input type="number" step="0.01" className="admin-input" required placeholder="0.00"
-                        value={formData.kgComerciables || ''} onChange={e => setFormData({...formData, kgComerciables: e.target.value})} />
-                    </div>
-                    <div>
-                      <label style={{fontSize:'12px'}}>Kg Pérdida</label>
-                      <input type="number" step="0.01" className="admin-input" placeholder="0.00"
-                        value={formData.lossKg || ''} onChange={e => setFormData({...formData, lossKg: e.target.value})} />
-                    </div>
+                    <div><label>Kg Comerciables</label><input type="number" className="admin-input" required value={formData.kgComerciables || ''} onChange={e => setFormData({...formData, kgComerciables: e.target.value})} /></div>
+                    <div><label>Kg Pérdida</label><input type="number" className="admin-input" value={formData.lossKg || ''} onChange={e => setFormData({...formData, lossKg: e.target.value})} /></div>
                   </div>
-
                   <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px'}}>
-                     <div>
-                      <label style={{fontSize:'12px'}}>Precio por Kg</label>
-                      <input type="number" step="0.01" className="admin-input" placeholder="0.00"
-                        value={formData.priceKg || ''} onChange={e => setFormData({...formData, priceKg: e.target.value})} />
-                     </div>
-                     <div>
-                      <label style={{fontSize:'12px'}}>Costo Almacén</label>
-                      <input type="number" step="0.01" className="admin-input" placeholder="0.00"
-                        value={formData.storageCost || ''} onChange={e => setFormData({...formData, storageCost: e.target.value})} />
-                     </div>
+                     <div><label>Precio/Kg</label><input type="number" className="admin-input" value={formData.priceKg || ''} onChange={e => setFormData({...formData, priceKg: e.target.value})} /></div>
+                     <div><label>Costo Almacén</label><input type="number" className="admin-input" value={formData.storageCost || ''} onChange={e => setFormData({...formData, storageCost: e.target.value})} /></div>
                   </div>
-
                   <label>Observaciones</label>
-                  <textarea className="admin-input" rows="3" 
-                    value={formData.observations || ''} onChange={e => setFormData({...formData, observations: e.target.value})} />
+                  <textarea className="admin-input" value={formData.observations || ''} onChange={e => setFormData({...formData, observations: e.target.value})} />
                 </>
               )}
 
@@ -927,8 +885,6 @@ const HarvestsCrud = () => {
     </div>
   );
 };
-
-
 export default function AdminDashboard() {
     // Estado para controlar qué pestaña se muestra
     const [activeTab, setActiveTab] = useState('home');
