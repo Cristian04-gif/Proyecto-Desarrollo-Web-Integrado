@@ -140,7 +140,7 @@ const JobPositionsCrud = () => {
     </div>
   );
 };
-// --- COMPONENTE GESTIÓN DE USUARIOS (DETECTA ID AUTOMÁTICO) ---
+// --- COMPONENTE GESTIÓN DE USUARIOS (VISUALIZACIÓN BLINDADA) ---
 const UsersView = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -149,7 +149,7 @@ const UsersView = () => {
 
   // Formulario
   const [formData, setFormData] = useState({
-    idUsuario: '',
+    id: '',
     nombre: '',
     apellido: '',
     email: '',
@@ -168,7 +168,7 @@ const UsersView = () => {
     setLoading(true);
     try {
       const data = await getUsuarios();
-      console.log("Usuarios cargados (REVISA ESTO EN CONSOLA):", data); 
+      console.log("DATA BACKEND:", data); // Mira la consola para ver qué llega realmente
       setUsers(data);
     } catch (err) {
       console.error(err);
@@ -177,42 +177,68 @@ const UsersView = () => {
     }
   };
 
-  // Función auxiliar para encontrar el ID sin importar cómo se llame
-  const getUserId = (user) => {
-    return user.idUsuario || user.id || user.userId;
+  // --- FUNCIÓN DETECTIVE DE DATOS ---
+  // Esta función busca los datos donde sea que estén escondidos
+  const safeUser = (u) => {
+    // 1. Detectar ID
+    const id = u.idUsuario || u.userId || u.id;
+
+    // 2. Detectar Nombre y Apellido
+    const nombre = u.nombre || u.firstName || u.firstname || 'Sin Nombre';
+    const apellido = u.apellido || u.lastName || u.lastname || '';
+
+    // 3. Detectar Rol (Aquí es donde suele fallar)
+    let rawRole = u.rol || u.role || 'CLIENTE';
+    
+    // A veces viene como objeto { authority: "ADMIN" }
+    if (typeof rawRole === 'object') {
+        rawRole = rawRole.authority || rawRole.name || 'CLIENTE';
+    }
+    // A veces viene en una lista authorities: [{authority: "ADMIN"}]
+    if (u.authorities && u.authorities.length > 0) {
+        rawRole = u.authorities[0].authority;
+    }
+
+    // Limpiamos el texto (Quitar ROLE_ si existe)
+    const cleanRole = String(rawRole).replace('ROLE_', '').toUpperCase();
+
+    return {
+        id,
+        nombre,
+        apellido,
+        email: u.email || 'Sin Email',
+        pais: u.pais || u.country || 'Sin País',
+        rol: cleanRole,
+        original: u // Guardamos el original por si acaso
+    };
   };
 
-  const handleDelete = async (user) => {
-    const id = getUserId(user);
-    if (!id) { alert("Error: No se encuentra el ID del usuario."); return; }
-    
-    if (!window.confirm(`¿Eliminar a ${user.nombre || user.firstName}?`)) return;
-    
+  const handleDelete = async (rawUser) => {
+    const user = safeUser(rawUser);
+    if (!window.confirm(`¿Eliminar al usuario ${user.nombre}?`)) return;
     try {
-      await eliminarUsuario(id);
-      setUsers(prev => prev.filter(u => getUserId(u) !== id));
+      await eliminarUsuario(user.id);
+      setUsers(prev => prev.filter(item => safeUser(item).id !== user.id));
       alert("Usuario eliminado.");
-    } catch (e) { 
-      alert("Error: " + e.message); 
-    }
+    } catch (e) { alert("Error: " + e.message); }
   };
 
   const handleCreate = () => {
     setIsEditing(false);
-    setFormData({ idUsuario: '', nombre: '', apellido: '', email: '', pais: '', rol: 'CLIENTE', contraseña: '' });
+    setFormData({ id: '', nombre: '', apellido: '', email: '', pais: '', rol: 'CLIENTE', contraseña: '' });
     setShowModal(true);
   };
 
-  const handleEdit = (user) => {
+  const handleEdit = (rawUser) => {
+    const user = safeUser(rawUser);
     setIsEditing(true);
-    // Mapeo inteligente de campos (Español/Inglés mix)
     setFormData({
-      idUsuario: getUserId(user),
-      nombre: user.nombre || user.firstName || '',
-      apellido: user.apellido || user.lastName || '',
-      email: user.email || '',
-      pais: user.pais || user.country || '',
-      rol: user.rol || 'CLIENTE',
+      id: user.id,
+      nombre: user.nombre,
+      apellido: user.apellido,
+      email: user.email,
+      pais: user.pais,
+      rol: user.rol, // Ya viene limpio (ej: ADMIN)
       contraseña: '' 
     });
     setOriginalEmail(user.email);
@@ -222,19 +248,19 @@ const UsersView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Payload compatible con tu backend Usuario.java
       const payload = {
         nombre: formData.nombre,
         apellido: formData.apellido,
         email: formData.email,
         pais: formData.pais,
-        rol: formData.rol,
+        rol: formData.rol,         // Enviamos "ADMIN"
+        role: formData.rol,        // Enviamos duplicado por si acaso
         contraseña: formData.contraseña
       };
 
       if (isEditing) {
         await actualizarUsuario(originalEmail, payload);
-        alert("Usuario actualizado.");
+        alert("Solicitud enviada. Si el rol no cambia, es una restricción de seguridad del Backend.");
       } else {
         if(!payload.contraseña) { alert("Contraseña obligatoria"); return; }
         await crearUsuario(payload);
@@ -244,7 +270,7 @@ const UsersView = () => {
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Error en la operación. Revisa si el email ya existe o faltan datos.");
+      alert("Error en la operación.");
     }
   };
 
@@ -262,22 +288,17 @@ const UsersView = () => {
         <div className="table-container">
           <table className="admin-table">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre Completo</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>País</th>
-                <th>Acciones</th>
-              </tr>
+              <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>País</th><th>Acciones</th></tr>
             </thead>
             <tbody>
-              {users.map((u, index) => {
-                const id = getUserId(u) || index; // Fallback para la key
+              {users.map((rawUser, index) => {
+                const u = safeUser(rawUser);
+                const uniqueKey = u.id || index; // Evita error de Keys
+                
                 return (
-                  <tr key={id}>
-                    <td>{id}</td>
-                    <td><strong>{u.nombre || u.firstName} {u.apellido || u.lastName}</strong></td>
+                  <tr key={uniqueKey}>
+                    <td>{u.id}</td>
+                    <td><strong>{u.nombre} {u.apellido}</strong></td>
                     <td>{u.email}</td>
                     <td>
                       <span style={{
@@ -288,10 +309,10 @@ const UsersView = () => {
                         {u.rol}
                       </span>
                     </td>
-                    <td>{u.pais || u.country}</td>
+                    <td>{u.pais}</td>
                     <td>
-                      <button className="btn-edit" onClick={() => handleEdit(u)} style={{ marginRight: '5px' }}>Editar</button>
-                      <button className="btn-delete" onClick={() => handleDelete(u)}>Eliminar</button>
+                      <button className="btn-edit" onClick={() => handleEdit(rawUser)} style={{ marginRight: '5px' }}>Editar</button>
+                      <button className="btn-delete" onClick={() => handleDelete(rawUser)}>Eliminar</button>
                     </td>
                   </tr>
                 );
@@ -309,28 +330,16 @@ const UsersView = () => {
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '15px' }}>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ fontWeight: 'bold' }}>Nombre</label>
-                  <input className="admin-input" required value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: e.target.value })} />
-                </div>
-                <div>
-                  <label style={{ fontWeight: 'bold' }}>Apellido</label>
-                  <input className="admin-input" required value={formData.apellido} onChange={e => setFormData({ ...formData, apellido: e.target.value })} />
-                </div>
+                <div><label>Nombre</label><input className="admin-input" required value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: e.target.value })} /></div>
+                <div><label>Apellido</label><input className="admin-input" required value={formData.apellido} onChange={e => setFormData({ ...formData, apellido: e.target.value })} /></div>
               </div>
 
-              <div>
-                <label style={{ fontWeight: 'bold' }}>Email</label>
-                <input type="email" className="admin-input" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-              </div>
+              <div><label>Email</label><input type="email" className="admin-input" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} /></div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div><label>País</label><input className="admin-input" value={formData.pais} onChange={e => setFormData({ ...formData, pais: e.target.value })} /></div>
                 <div>
-                  <label style={{ fontWeight: 'bold' }}>País</label>
-                  <input className="admin-input" value={formData.pais} onChange={e => setFormData({ ...formData, pais: e.target.value })} />
-                </div>
-                <div>
-                  <label style={{ fontWeight: 'bold' }}>Rol</label>
+                  <label>Rol</label>
                   <select className="admin-input" value={formData.rol} onChange={e => setFormData({ ...formData, rol: e.target.value })}>
                     <option value="CLIENTE">CLIENTE</option>
                     <option value="ADMIN">ADMIN</option>
@@ -343,10 +352,7 @@ const UsersView = () => {
                 </div>
               </div>
 
-              <div>
-                <label style={{ fontWeight: 'bold' }}>Contraseña</label>
-                <input type="password" className="admin-input" placeholder={isEditing ? "Opcional" : "Obligatoria"} value={formData.contraseña} onChange={e => setFormData({ ...formData, contraseña: e.target.value })} />
-              </div>
+              <div><label>Contraseña</label><input type="password" className="admin-input" placeholder={isEditing ? "Opcional" : "Obligatoria"} value={formData.contraseña} onChange={e => setFormData({ ...formData, contraseña: e.target.value })} /></div>
 
               <div style={{ marginTop: '20px', textAlign: 'right' }}>
                 <button type="button" onClick={() => setShowModal(false)} style={{ marginRight: '10px', background: 'none', border: '1px solid #ccc', padding: '8px 16px', cursor: 'pointer' }}>Cancelar</button>
@@ -1176,15 +1182,15 @@ const CategoriesCrud = () => {
     </div>
   );
 };
-// --- COMPONENTE CRUD DE CLIENTES (VINCULAR USUARIO + DIRECCIÓN VISIBLE) ---
+// --- COMPONENTE CRUD DE CLIENTES (FINAL: CON EMAIL) ---
 const CustomersCrud = () => {
   const [customers, setCustomers] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
-    userId: '',
+    idUsuarioSeleccionado: '',   
     age: '',
     phone: '',
     address: '',
@@ -1200,7 +1206,7 @@ const CustomersCrud = () => {
     try {
       const [customersData, usersData] = await Promise.all([
         getCustomers(),
-        getUsuarios()
+        getUsuarios() 
       ]);
       setCustomers(customersData);
       setUsers(usersData || []);
@@ -1211,8 +1217,31 @@ const CustomersCrud = () => {
     }
   };
 
+  const getSafeId = (u) => {
+    if (!u) return null;
+    return u.idUsuario || u.id || u.userId;
+  };
+
+  const getSafeName = (u) => {
+    if (!u) return 'Desconocido';
+    const nombre = u.nombre || u.firstName || '';
+    const apellido = u.apellido || u.lastName || '';
+    return `${nombre} ${apellido}`;
+  };
+
+  const getAvailableUsers = () => {
+    return users.filter(u => {
+      const uid = getSafeId(u);
+      const isAlreadyCustomer = customers.some(c => {
+        const cUid = getSafeId(c.user);
+        return String(cUid) === String(uid);
+      });
+      return !isAlreadyCustomer;
+    });
+  };
+
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Eliminar este perfil de cliente?")) return;
+    if(!window.confirm("¿Eliminar este perfil de cliente?")) return;
     try {
       await deleteCustomer(id);
       setCustomers(prev => prev.filter(c => c.customerId !== id));
@@ -1222,35 +1251,56 @@ const CustomersCrud = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.userId) { alert("Debes seleccionar un usuario"); return; }
+    if (!formData.idUsuarioSeleccionado) { alert("Debes seleccionar un usuario"); return; }
+
+    // 1. BUSCAR EL USUARIO COMPLETO PARA OBTENER SU EMAIL
+    const selectedUser = users.find(u => String(getSafeId(u)) === String(formData.idUsuarioSeleccionado));
+    
+    if (!selectedUser) {
+        alert("Error: No se pudieron recuperar los datos del usuario seleccionado.");
+        return;
+    }
 
     try {
+      // 2. ENVIAR EL OBJETO USUARIO COMPLETO (ID + EMAIL + DATOS)
+      // Esto evita que el backend busque 'where email is null'
       const payload = {
-        age: parseInt(formData.age) || 0,
+        age: parseInt(formData.age) || 18,
         phone: formData.phone,
         address: formData.address,
         type: formData.type,
-        user: { userId: parseInt(formData.userId) }
+        
+        user: { 
+          idUsuario: parseInt(formData.idUsuarioSeleccionado),
+          email: selectedUser.email, // ✅ CLAVE: Enviamos el email
+          nombre: selectedUser.nombre || selectedUser.firstName, // Enviamos nombre por si acaso
+          apellido: selectedUser.apellido || selectedUser.lastName,
+          pais: selectedUser.pais || selectedUser.country,
+          rol: selectedUser.rol || selectedUser.role || 'CLIENTE'
+        }
       };
 
+      console.log("Enviando Cliente con Email:", payload);
       await createCustomer(payload);
-
-      alert("¡Usuario convertido en Cliente exitosamente!");
+      
+      alert("¡Cliente registrado correctamente!");
       setShowModal(false);
-      setFormData({ userId: '', age: '', phone: '', address: '', type: 'MINORISTA' });
+      setFormData({ idUsuarioSeleccionado: '', age: '', phone: '', address: '', type: 'MINORISTA' });
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Error al guardar.");
+      alert("Error al registrar. Revisa la consola.");
     }
   };
+
+  const availableUsers = getAvailableUsers();
 
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
-          <h2 style={{ color: '#2F4842', margin: 0 }}>Gestión de Clientes</h2>
-          <p style={{ color: '#666', margin: 0 }}>Habilitar perfil de cliente a usuarios.</p>
+          <h2 style={{color: '#2F4842', margin: 0}}>Gestión de Clientes</h2>
+          <p style={{color: '#666', margin: 0}}>Habilitar perfil de venta a usuarios.</p>
         </div>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Vincular Cliente</button>
       </div>
@@ -1259,73 +1309,62 @@ const CustomersCrud = () => {
         <div className="table-container">
           <table className="admin-table">
             <thead>
-              {/* ✅ AQUI AGREGUÉ "DIRECCIÓN" */}
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Teléfono</th>
-                <th>Dirección</th>
-                <th>Tipo</th>
-                <th>Acciones</th>
-              </tr>
+              <tr><th>ID</th><th>Usuario</th><th>Email</th><th>Teléfono</th><th>Tipo</th><th>Acciones</th></tr>
             </thead>
             <tbody>
-              {customers.map(c => (
-                <tr key={c.customerId}>
-                  <td>{c.customerId}</td>
-                  <td>
-                    <strong>{c.user ? `${c.user.firstName} ${c.user.lastName}` : 'Desconocido'}</strong><br />
-                    <small style={{ color: '#666' }}>{c.user ? c.user.email : '-'}</small>
-                  </td>
-                  <td>{c.phone || '-'}</td>
-
-                  {/* ✅ AQUI MOSTRAMOS LA DIRECCIÓN */}
-                  <td>{c.address || '-'}</td>
-
-                  <td><span style={{ fontSize: '12px', background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>{c.type}</span></td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDelete(c.customerId)}>Eliminar</button>
-                  </td>
-                </tr>
-              ))}
+              {customers.map(c => {
+                const uId = getSafeId(c.user) || Math.random();
+                return (
+                  <tr key={c.customerId || uId}>
+                    <td>{c.customerId}</td>
+                    <td><strong>{getSafeName(c.user)}</strong></td>
+                    <td>{c.user ? c.user.email : '-'}</td>
+                    <td>{c.phone || '-'}</td>
+                    <td><span style={{fontSize:'12px', background:'#eee', padding:'2px 6px', borderRadius:'4px'}}>{c.type}</span></td>
+                    <td>
+                      <button className="btn-delete" onClick={() => handleDelete(c.customerId)}>Eliminar</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
-      {/* MODAL */}
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '500px' }}>
-            <h3 style={{ color: '#2F4842', marginTop: 0 }}>Habilitar Cliente</h3>
-
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '15px' }}>
+        <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.6)', display:'flex', justifyContent:'center', alignItems:'center', zIndex:1000}}>
+          <div style={{background:'white', padding:'30px', borderRadius:'12px', width:'500px'}}>
+            <h3 style={{color:'#2F4842', marginTop:0}}>Habilitar Cliente</h3>
+            <form onSubmit={handleSubmit} style={{display:'grid', gap:'15px'}}>
               <div>
-                <label style={{ fontWeight: 'bold', color: '#2F4842' }}>Seleccionar Usuario</label>
-                <select className="admin-input" required value={formData.userId} onChange={e => setFormData({ ...formData, userId: e.target.value })}>
-                  <option value="">-- Busca un usuario --</option>
-                  {users.length > 0 ? users.map(u => (
-                    <option key={u.userId} value={u.userId}>{u.firstName} {u.lastName} ({u.email})</option>
-                  )) : <option disabled>No hay usuarios disponibles</option>}
+                <label style={{fontWeight:'bold', color:'#2F4842'}}>Usuario Disponible</label>
+                <select 
+                  className="admin-input" required 
+                  value={formData.idUsuarioSeleccionado} 
+                  onChange={e => setFormData({...formData, idUsuarioSeleccionado: e.target.value})}
+                >
+                  <option value="">-- Selecciona Usuario --</option>
+                  {availableUsers.map(u => {
+                    const uid = getSafeId(u);
+                    return <option key={uid} value={uid}>{getSafeName(u)} ({u.email})</option>;
+                  })}
                 </select>
+                {availableUsers.length === 0 && <small style={{color:'#d32f2f', fontWeight:'bold'}}>⚠️ Todos los usuarios ya son clientes.</small>}
               </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div><label>Teléfono</label><input className="admin-input" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} /></div>
-                <div><label>Edad</label><input type="number" className="admin-input" value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value })} /></div>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px'}}>
+                <div><label>Teléfono</label><input className="admin-input" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} /></div>
+                <div><label>Edad</label><input type="number" className="admin-input" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} /></div>
               </div>
-
               <div><label>Tipo</label>
-                <select className="admin-input" value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
+                <select className="admin-input" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
                   <option value="MINORISTA">Minorista</option><option value="MAYORISTA">Mayorista</option>
                 </select>
               </div>
-
-              <div><label>Dirección de Entrega</label><input className="admin-input" required value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} /></div>
-
-              <div style={{ marginTop: '20px', textAlign: 'right' }}>
-                <button type="button" onClick={() => setShowModal(false)} style={{ marginRight: '10px', background: 'none', border: '1px solid #ccc', padding: '8px 16px', cursor: 'pointer' }}>Cancelar</button>
-                <button type="submit" className="btn-primary">Guardar</button>
+              <div><label>Dirección</label><input className="admin-input" required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} /></div>
+              <div style={{marginTop:'20px', textAlign:'right'}}>
+                <button type="button" onClick={() => setShowModal(false)} style={{marginRight:'10px'}}>Cancelar</button>
+                <button type="submit" className="btn-primary" disabled={availableUsers.length === 0}>Guardar</button>
               </div>
             </form>
           </div>
