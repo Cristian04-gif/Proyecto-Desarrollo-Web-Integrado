@@ -140,21 +140,19 @@ const JobPositionsCrud = () => {
     </div>
   );
 };
-// --- COMPONENTE GESTIÓN DE USUARIOS (VISUALIZACIÓN BLINDADA) ---
+// --- COMPONENTE GESTIÓN DE USUARIOS (ROL AUTOMÁTICO) ---
 const UsersView = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Formulario
   const [formData, setFormData] = useState({
     id: '',
     nombre: '',
     apellido: '',
     email: '',
     pais: '',
-    rol: 'CLIENTE',
     contraseña: ''
   });
 
@@ -168,7 +166,6 @@ const UsersView = () => {
     setLoading(true);
     try {
       const data = await getUsuarios();
-      console.log("DATA BACKEND:", data); // Mira la consola para ver qué llega realmente
       setUsers(data);
     } catch (err) {
       console.error(err);
@@ -177,29 +174,18 @@ const UsersView = () => {
     }
   };
 
-  // --- FUNCIÓN DETECTIVE DE DATOS ---
-  // Esta función busca los datos donde sea que estén escondidos
   const safeUser = (u) => {
-    // 1. Detectar ID
     const id = u.idUsuario || u.userId || u.id;
-
-    // 2. Detectar Nombre y Apellido
     const nombre = u.nombre || u.firstName || u.firstname || 'Sin Nombre';
     const apellido = u.apellido || u.lastName || u.lastname || '';
-
-    // 3. Detectar Rol (Aquí es donde suele fallar)
-    let rawRole = u.rol || u.role || 'CLIENTE';
     
-    // A veces viene como objeto { authority: "ADMIN" }
+    let rawRole = u.rol || u.role || 'CLIENTE';
     if (typeof rawRole === 'object') {
         rawRole = rawRole.authority || rawRole.name || 'CLIENTE';
     }
-    // A veces viene en una lista authorities: [{authority: "ADMIN"}]
     if (u.authorities && u.authorities.length > 0) {
         rawRole = u.authorities[0].authority;
     }
-
-    // Limpiamos el texto (Quitar ROLE_ si existe)
     const cleanRole = String(rawRole).replace('ROLE_', '').toUpperCase();
 
     return {
@@ -208,8 +194,7 @@ const UsersView = () => {
         apellido,
         email: u.email || 'Sin Email',
         pais: u.pais || u.country || 'Sin País',
-        rol: cleanRole,
-        original: u // Guardamos el original por si acaso
+        rol: cleanRole
     };
   };
 
@@ -225,7 +210,8 @@ const UsersView = () => {
 
   const handleCreate = () => {
     setIsEditing(false);
-    setFormData({ id: '', nombre: '', apellido: '', email: '', pais: '', rol: 'CLIENTE', contraseña: '' });
+    // Ya no inicializamos rol, porque no se usa en el form
+    setFormData({ id: '', nombre: '', apellido: '', email: '', pais: '', contraseña: '' });
     setShowModal(true);
   };
 
@@ -238,7 +224,6 @@ const UsersView = () => {
       apellido: user.apellido,
       email: user.email,
       pais: user.pais,
-      rol: user.rol, // Ya viene limpio (ej: ADMIN)
       contraseña: '' 
     });
     setOriginalEmail(user.email);
@@ -253,18 +238,20 @@ const UsersView = () => {
         apellido: formData.apellido,
         email: formData.email,
         pais: formData.pais,
-        rol: formData.rol,         // Enviamos "ADMIN"
-        role: formData.rol,        // Enviamos duplicado por si acaso
-        contraseña: formData.contraseña
+        contraseña: formData.contraseña,
+        // Mandamos datos extra para compatibilidad, pero SIN rol
+        firstname: formData.nombre,
+        lastname: formData.apellido,
+        country: formData.pais
       };
 
       if (isEditing) {
         await actualizarUsuario(originalEmail, payload);
-        alert("Solicitud enviada. Si el rol no cambia, es una restricción de seguridad del Backend.");
+        alert("Usuario actualizado correctamente.");
       } else {
         if(!payload.contraseña) { alert("Contraseña obligatoria"); return; }
         await crearUsuario(payload);
-        alert("Usuario creado.");
+        alert("Usuario creado (Rol: Cliente por defecto).");
       }
       setShowModal(false);
       loadData();
@@ -293,14 +280,13 @@ const UsersView = () => {
             <tbody>
               {users.map((rawUser, index) => {
                 const u = safeUser(rawUser);
-                const uniqueKey = u.id || index; // Evita error de Keys
-                
                 return (
-                  <tr key={uniqueKey}>
+                  <tr key={u.id || index}>
                     <td>{u.id}</td>
                     <td><strong>{u.nombre} {u.apellido}</strong></td>
                     <td>{u.email}</td>
                     <td>
+                      {/* Mostramos el Rol, aunque no se pueda editar desde aquí */}
                       <span style={{
                         background: u.rol === 'ADMIN' ? '#fce4ec' : '#e3f2fd',
                         color: u.rol === 'ADMIN' ? '#c2185b' : '#1565c0',
@@ -322,7 +308,7 @@ const UsersView = () => {
         </div>
       )}
 
-      {/* MODAL */}
+      {/* MODAL SIN SELECTOR DE ROL */}
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '500px' }}>
@@ -336,20 +322,13 @@ const UsersView = () => {
 
               <div><label>Email</label><input type="email" className="admin-input" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} /></div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div><label>País</label><input className="admin-input" value={formData.pais} onChange={e => setFormData({ ...formData, pais: e.target.value })} /></div>
-                <div>
-                  <label>Rol</label>
-                  <select className="admin-input" value={formData.rol} onChange={e => setFormData({ ...formData, rol: e.target.value })}>
-                    <option value="CLIENTE">CLIENTE</option>
-                    <option value="ADMIN">ADMIN</option>
-                    <option value="AGRONOMO">AGRONOMO</option>
-                    <option value="COMPRADOR">COMPRADOR</option>
-                    <option value="SUPERVISOR">SUPERVISOR</option>
-                    <option value="ALMACEN">ALMACEN</option>
-                    <option value="VENDEDOR">VENDEDOR</option>
-                  </select>
-                </div>
+              {/* País ocupa todo el ancho ahora */}
+              <div><label>País</label><input className="admin-input" value={formData.pais} onChange={e => setFormData({ ...formData, pais: e.target.value })} /></div>
+
+              {/* MENSAJE INFORMATIVO EN LUGAR DE SELECTOR */}
+              <div style={{background:'#f8f9fa', padding:'10px', borderRadius:'6px', fontSize:'13px', color:'#666', border:'1px solid #eee'}}>
+                ℹ️ <strong>Rol del Usuario:</strong> Se asigna automáticamente como <strong>CLIENTE</strong>. <br/>
+                
               </div>
 
               <div><label>Contraseña</label><input type="password" className="admin-input" placeholder={isEditing ? "Opcional" : "Obligatoria"} value={formData.contraseña} onChange={e => setFormData({ ...formData, contraseña: e.target.value })} /></div>
