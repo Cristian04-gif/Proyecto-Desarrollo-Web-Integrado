@@ -64,7 +64,8 @@ public class EmpleadoRepository implements EmployeeRepository {
 
     @Override
     public Optional<Employee> getByDni(String dni) {
-        return repoEmpleado.findByDni(dni).map(e -> employeeMapper.toEmployee(e));
+        Optional<Empleado> empleado = repoEmpleado.findByDni(dni);
+        return empleado.map(e -> employeeMapper.toEmployee(e));
     }
 
 }

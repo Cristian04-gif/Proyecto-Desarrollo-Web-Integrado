@@ -13,6 +13,7 @@ import biocampo.demo.Domain.Model.JobPosition;
 import biocampo.demo.Domain.Model.User;
 import biocampo.demo.Domain.Repository.EmployeeRepository;
 import biocampo.demo.Domain.Repository.JobPositionRepository;
+import biocampo.demo.Persistance.Entity.Empleado;
 import biocampo.demo.Persistance.Entity.Usuario;
 
 @Service
@@ -30,12 +31,11 @@ public class EmployeeService {
     @Autowired
     private UserService userService;
 
-
     public List<Employee> getAllEmployees() {
         return employeeRepository.getAll();
     }
 
-    public List<Employee> getAvailable(boolean available){
+    public List<Employee> getAvailable(boolean available) {
         return employeeRepository.getAvailable(available);
     }
 
@@ -52,13 +52,12 @@ public class EmployeeService {
         JobPosition jobPosition = jobPositionRepository
                 .getJobPosition(employee.getJobPosition().getPositionId())
                 .orElseThrow(() -> new IllegalArgumentException("El puesto relacionado no existe"));
-        // Employee emp;
-        Employee existingEmployee = employeeRepository.getByDni(employee.getDni()).orElseThrow();
-        if (existingEmployee != null) {
-            throw new IllegalArgumentException("El empleado con DNI " + employee.getDni() + " ya existe");        
+
+        Optional<Employee> employeeExist = employeeRepository.getByDni(employee.getDni());
+        if (employeeExist.isPresent()) {
+            throw new IllegalArgumentException("Ya existe un empleado con el dni: " + employee.getDni());
         }
 
-        // JobPosition jp = jobPosition.get();
         employee.setAvailable(true);
         employee.setJobPosition(jobPosition);
         System.out.println("puesto: " + jobPosition.getPositionName());
