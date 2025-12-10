@@ -1,4 +1,4 @@
-export const API_BASE = "http://localhost:8080";
+const API_BASE = "http://localhost:8080";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
@@ -16,11 +16,13 @@ export async function getUsuarios() {
   return await res.json();
 }
 
-export async function getUsuarioById(id) {
-  const res = await fetch(`${API_BASE}/api/users/id/${id}`, {
-    headers: getAuthHeaders()
+export async function crearUsuario(payload) {
+  const res = await fetch(`${API_BASE}/auth/register`, { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error('Error al obtener usuario');
+  if (!res.ok) throw new Error('Error al crear usuario');
   return await res.json();
 }
 
@@ -40,5 +42,5 @@ export async function eliminarUsuario(id) {
     headers: getAuthHeaders()
   });
   if (!res.ok) throw new Error('Error al eliminar usuario');
-  return await res.json();
+  return true; // Retornamos true si salió bien
 }
