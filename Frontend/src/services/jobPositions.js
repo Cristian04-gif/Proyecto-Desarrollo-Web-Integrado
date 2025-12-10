@@ -1,45 +1,38 @@
-// ==================== JOB POSITIONS ====================
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
+// Obtener todos
 export async function getJobPositions() {
-  const res = await fetch(`${API_BASE}/api/jobPosition/all`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener puestos');
+  const res = await fetch(`${API_BASE}/api/jobPosition/all`, { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error('Error al obtener cargos');
   return await res.json();
 }
 
-export async function getJobPositionById(id) {
-  const res = await fetch(`${API_BASE}/api/jobPosition/id/${id}`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener puesto');
-  return await res.json();
-}
-
-export async function crearJobPosition(jobPosition) {
+// Crear nuevo
+export async function createJobPosition(payload) {
   const res = await fetch(`${API_BASE}/api/jobPosition/register`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(jobPosition)
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error('Error al crear puesto');
+  if (!res.ok) throw new Error('Error al crear cargo');
   return await res.json();
 }
 
-export async function actualizarJobPosition(id, jobPosition) {
-  const res = await fetch(`${API_BASE}/api/jobPosition/update/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(jobPosition)
-  });
-  if (!res.ok) throw new Error('Error al actualizar puesto');
-  return await res.json();
-}
-
-export async function eliminarJobPosition(id) {
+// Eliminar
+export async function deleteJobPosition(id) {
   const res = await fetch(`${API_BASE}/api/jobPosition/delete/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
-  if (!res.ok) throw new Error('Error al eliminar puesto');
-  return await res.json();
+  if (res.status === 204) return true;
+  if (!res.ok) throw new Error('Error al eliminar cargo');
+  return true;
 }

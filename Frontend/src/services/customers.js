@@ -1,45 +1,38 @@
-// ==================== CLIENTES ====================
-export async function getClientes() {
-  const res = await fetch(`${API_BASE}/api/customer/all`, {
-    headers: getAuthHeaders()
-  });
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
+
+// GET /api/customer/all
+export async function getCustomers() {
+  const res = await fetch(`${API_BASE}/api/customer/all`, { headers: getAuthHeaders() });
   if (!res.ok) throw new Error('Error al obtener clientes');
   return await res.json();
 }
 
-export async function getClienteById(id) {
-  const res = await fetch(`${API_BASE}/api/customer/id/${id}`, {
-    headers: getAuthHeaders()
-  });
-  if (!res.ok) throw new Error('Error al obtener cliente');
-  return await res.json();
-}
-
-export async function crearCliente(cliente) {
+// POST /api/customer/register
+export async function createCustomer(customerData) {
   const res = await fetch(`${API_BASE}/api/customer/register`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(cliente)
+    body: JSON.stringify(customerData)
   });
-  if (!res.ok) throw new Error('Error al crear cliente');
+  if (!res.ok) throw new Error('Error al registrar cliente');
   return await res.json();
 }
 
-export async function actualizarCliente(id, cliente) {
-  const res = await fetch(`${API_BASE}/api/customer/update/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(cliente)
-  });
-  if (!res.ok) throw new Error('Error al actualizar cliente');
-  return await res.json();
-}
-
-export async function eliminarCliente(id) {
+// DELETE /api/customer/delete/{id}
+export async function deleteCustomer(id) {
   const res = await fetch(`${API_BASE}/api/customer/delete/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
+  if (res.status === 204) return true;
   if (!res.ok) throw new Error('Error al eliminar cliente');
-  return await res.json();
+  return true;
 }

@@ -1,3 +1,12 @@
+const API_BASE = "http://localhost:8080"; 
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+};
 // ==================== INSUMOS ====================
 export async function getInsumos() {
   const res = await fetch(`${API_BASE}/api/input/all`, {
@@ -40,6 +49,7 @@ export async function eliminarInsumo(id) {
     method: 'DELETE',
     headers: getAuthHeaders()
   });
+  if (res.status === 204) return true; // 204 No Content
   if (!res.ok) throw new Error('Error al eliminar insumo');
-  return await res.json();
+  return true;
 }
