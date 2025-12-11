@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout'; 
+import Layout from './Components/Layout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -17,6 +17,10 @@ import RegisterClientPage from './pages/RegisterClientPage';
 import PagoExitoso from './pages/PagoExitoso'; 
 import { CartProvider } from './pages/cartContext';
 import AdminDashboard from './pages/AdminDashboard';
+import Nosotros from './pages/Nosotros';
+import Servicios from './pages/Servicios';
+import Cultivos from './pages/Cultivos';
+import Contactos from './pages/Contactos';
 
 function App() {
   return (
@@ -36,9 +40,12 @@ function App() {
           <Route path="/tecnologia/exploracion" element={<Exploracion />} />
           <Route path="/tecnologia/sensores" element={<Sensores />} />
           <Route path="/tecnologia/precision" element={<Precision />} />
-          
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/servicios" element={<Servicios />} />
+          <Route path="/cultivos" element={<Cultivos />} />
           <Route path="/noticias" element={<NewsPage />} />
           <Route path="/pago-exitoso" element={<PagoExitoso />} /> 
+          <Route path="/contacto" element={<Contactos />} />
         </Route>
         <Route path="/admin" element={<AdminDashboard />} />
 
