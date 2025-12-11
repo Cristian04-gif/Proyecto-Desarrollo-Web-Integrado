@@ -13,6 +13,7 @@ import { getOrders, createOrder, deleteOrder, getOrderDetails } from '../service
 import { getUsuarios, actualizarUsuario, eliminarUsuario, crearUsuario } from '../services/users';
 import { getEmployees, createEmployee, deleteEmployee } from '../services/employees';
 import { getJobPositions, createJobPosition, deleteJobPosition } from '../services/jobPositions';
+import { downloadExcel } from '../services/exportService';
 import '../styles/adminStyles.css';
 
 // 1. Vista de Inicio
@@ -344,7 +345,8 @@ const UsersView = () => {
     </div>
   );
 };
-// --- COMPONENTE CRUD DE EMPLEADOS (VERSION FINAL ESTRICTA) ---
+/*
+// --- COMPONENTE CRUD DE EMPLEADOS  ---
 const EmployeesView = () => {
   const [employees, setEmployees] = useState([]);
   const [jobPositions, setJobPositions] = useState([]);
@@ -442,7 +444,9 @@ const EmployeesView = () => {
       alert("Error (500). Si el error persiste, verifica que el DNI no esté duplicado o que el cargo exista.");
     }
   };
-
+const handleExport = () => {
+    downloadExcel('/api/reporte/empleados/excel', 'Reporte_Empleados.xlsx');
+  };
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -450,6 +454,9 @@ const EmployeesView = () => {
           <h2 style={{color: '#2F4842', margin: 0}}>Gestión de Empleados</h2>
           <p style={{color: '#666', margin: 0}}>Planilla y Recursos Humanos.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Contratar Empleado</button>
       </div>
 
@@ -500,13 +507,13 @@ const EmployeesView = () => {
         </div>
       )}
 
-      {/* MODAL */}
+      { MODAL }
       {showModal && (
         <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.6)', display:'flex', justifyContent:'center', alignItems:'center', zIndex:1000}}>
           <div style={{background:'white', padding:'30px', borderRadius:'12px', width:'700px', maxHeight:'90vh', overflowY:'auto'}}>
             <h3 style={{color:'#2F4842', marginTop:0}}>Nuevo Contrato</h3>
             
-            {/* Aviso si no hay cargos */}
+            { Aviso si no hay cargos }
             {jobPositions.length === 0 && (
                 <div style={{background:'#ffebee', color:'#c62828', padding:'10px', borderRadius:'4px', marginBottom:'15px', border:'1px solid #ef9a9a'}}>
                     ⚠️ <strong>ATENCIÓN:</strong> No hay cargos creados. Debes crear al menos un cargo en la pestaña "Cargos" antes de registrar empleados.
@@ -595,6 +602,7 @@ const EmployeesView = () => {
     </div>
   );
 };
+*/
 // --- COMPONENTE CRUD DE PRODUCTOS (COMPLETO CON TODOS LOS CAMPOS) ---
 const ProductsView = () => {
   const [products, setProducts] = useState([]);
@@ -698,7 +706,9 @@ const ProductsView = () => {
       alert("Error al guardar producto.");
     }
   };
-
+const handleExport = () => {
+    downloadExcel('/api/reporte/productos/excel', 'Reporte_Productos.xlsx');
+  };
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -706,6 +716,9 @@ const ProductsView = () => {
           <h2 style={{ color: '#2F4842', margin: 0 }}>Catálogo de Productos</h2>
           <p style={{ color: '#666', margin: 0 }}>Gestión completa de productos finales.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Nuevo Producto</button>
       </div>
 
@@ -1273,7 +1286,9 @@ const CustomersCrud = () => {
   };
 
   const availableUsers = getAvailableUsers();
-
+  const handleExport = () => {
+    downloadExcel('/api/reporte/clientes/excel', 'Reporte_Clientes.xlsx');
+  };
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -1281,8 +1296,12 @@ const CustomersCrud = () => {
           <h2 style={{color: '#2F4842', margin: 0}}>Gestión de Clientes</h2>
           <p style={{color: '#666', margin: 0}}>Habilitar perfil de venta a usuarios.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Vincular Cliente</button>
       </div>
+      
 
       {loading ? <p>Cargando...</p> : (
         <div className="table-container">
@@ -1448,7 +1467,9 @@ const CultivationsCrud = () => {
       alert("Error del Servidor. Revisa la consola de Java.");
     }
   };
-
+const handleExport = () => {
+    downloadExcel('/api/reporte/cutivos/excel', 'Reporte_Cultivos.xlsx');
+  };
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -1456,6 +1477,9 @@ const CultivationsCrud = () => {
           <h2 style={{ color: '#2F4842', margin: 0 }}>Gestión de Cultivos</h2>
           <p style={{ color: '#666', margin: 0 }}>Administra tus parcelas, siembras y costos.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Nuevo Cultivo</button>
       </div>
 
@@ -2054,7 +2078,9 @@ const HarvestsCrud = () => {
       alert("Error 500. Revisa la consola.");
     }
   };
-
+const handleExport = () => {
+    downloadExcel('/api/reporte/cosechas/excel', 'Reporte_Cosechas.xlsx');
+};
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -2062,6 +2088,9 @@ const HarvestsCrud = () => {
           <h2 style={{ color: '#2F4842', margin: 0 }}>Cosechas y Procesamiento</h2>
           <p style={{ color: '#666', margin: 0 }}>Gestión de recolección.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>
           + Registrar {activeSubTab === 'harvest' ? 'Cosecha' : 'Post-Cosecha'}
         </button>
@@ -2306,7 +2335,9 @@ const OrdersCrud = () => {
       setOrders(prev => prev.filter(o => o.orderId !== id));
     } catch (e) { alert(e.message); }
   };
-
+  const handleExport = () => {
+    downloadExcel('/api/reporte/pedidos/excel', 'Reporte_Pedidos.xlsx');
+};
   return (
     <div className="admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -2314,6 +2345,9 @@ const OrdersCrud = () => {
           <h2 style={{ color: '#2F4842', margin: 0 }}>Gestión de Pedidos</h2>
           <p style={{ color: '#666', margin: 0 }}>Compras a Proveedores.</p>
         </div>
+        <button onClick={handleExport} style={{backgroundColor:'#217346', color:'white', border:'none', padding:'10px 15px', borderRadius:'5px', cursor:'pointer', marginRight:'10px', fontWeight:'bold'}}>
+              📊 Excel
+            </button>
         <button className="btn-primary" onClick={() => setShowModal(true)}>+ Nuevo Pedido</button>
       </div>
 
