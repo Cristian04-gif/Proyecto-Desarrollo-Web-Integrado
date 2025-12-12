@@ -1,6 +1,6 @@
 import { useCart } from '../services/useCart';
 import "../styles/cartStyles.css";
-import MercadoPago from '../components/MercadoPago';
+import MercadoPago from '../Components/MercadoPago';
 import { getEmail } from '../services/authService';   // ✅ quitamos getRole
 import { customerService } from '../services/customerService';
 import { useState, useEffect } from 'react';
