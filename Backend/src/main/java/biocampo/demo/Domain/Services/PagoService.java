@@ -90,7 +90,7 @@ public class PagoService {
                 items.add(itemRequest);
 
                 PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                .success("http://localhost:5173/pago-exitoso")
+                                .success("https://proyecto-desarrollo-web-integrado-kohl.vercel.app//pago-exitoso")
                                 .pending("https://www.tu-sitio/pending")
                                 .failure("https://www.tu-sitio/failure")
                                 .build();
@@ -103,7 +103,7 @@ public class PagoService {
                 PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                                 .items(items)
                                 .backUrls(backUrls)
-                                .notificationUrl("https://nancy-unmetered-jocelynn.ngrok-free.dev/api/webhook")
+                                .notificationUrl("https://servidor-biocampo-latest.onrender.com/api/webhook")
                                 .metadata(metadata)
                                 .build();
                 PreferenceClient client = new PreferenceClient();
