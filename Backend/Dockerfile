@@ -1,26 +1,30 @@
-# --------------------------------------------------------------------------------
-# Solución de una sola etapa (Más simple, pero la imagen final es más grande)
-# Usamos una imagen que tiene tanto el JDK 21 como Maven.
-# --------------------------------------------------------------------------------
-FROM maven:3.9.6-jdk-21 
+# -----------------------------
+# ETAPA 1: BUILD (Compilación)
+# Utilizamos la etiqueta estable de Maven con OpenJDK 21.
+# -----------------------------
+FROM maven:3.9-openjdk-21 AS build 
 
-# Establece el directorio de trabajo dentro del contenedor
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos del proyecto a la carpeta de trabajo
-# Esto es necesario para que Maven pueda acceder a ellos.
-COPY . . 
+# Copia los archivos de configuración y código
+COPY pom.xml .
+COPY src ./src
 
-# Comando de compilación: Compila el código y genera el JAR ejecutable en la carpeta target/
-# ¡Esta línea reemplaza la necesidad de la etapa de "build" separada!
+# Compila el proyecto y genera el JAR ejecutable.
 RUN mvn clean package -DskipTests
 
-# Mantenemos las líneas de tu código:
-VOLUME /tmp
-# Nota: La línea de COPY no es necesaria porque el JAR está ahora en /app/target/
+# -----------------------------
+# ETAPA 2: RUN (Ejecución)
+# Utilizamos la imagen ligera Eclipse Temurin JRE 21 (estable).
+# -----------------------------
+FROM eclipse-temurin:21-jre-alpine 
 
+# Define el puerto interno que Spring Boot escuchará
 EXPOSE 8080
 
-# Comando para iniciar la aplicación (Asegúrate de cambiar el nombre del JAR)
-# Usamos la ruta completa dentro del contenedor: /app/target/demo-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java","-jar","/app/target/demo-0.0.1-SNAPSHOT.jar"]
+# Copia el JAR compilado (Nombre: demo-0.0.1-SNAPSHOT.jar)
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
+
+# Comando para iniciar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
