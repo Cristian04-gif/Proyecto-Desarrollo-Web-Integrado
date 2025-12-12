@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/Precision.css'; // Asegúrate de tener un archivo CSS para estilos específicos
+import '../../styles/precision.css'; // Asegúrate de tener un archivo CSS para estilos específicos
 
 export default function Precision() {
   

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/Seguimiento.css'; // Asegúrate de tener un archivo CSS para estilos específicos
+import '../../styles/seguimiento.css'; // Asegúrate de tener un archivo CSS para estilos específicos
 
 export default function Seguimiento() {
   

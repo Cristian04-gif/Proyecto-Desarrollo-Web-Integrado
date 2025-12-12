@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/Defensa.css'; // Asegúrate de tener un archivo CSS para estilos específicos
+import '../../styles/defensa.css'; // Asegúrate de tener un archivo CSS para estilos específicos
 
 export default function Defensa() {
   

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/Sensores.css'; // Asegúrate de tener un archivo CSS para estilos específicos
+import '../../styles/sensores.css'; // Asegúrate de tener un archivo CSS para estilos específicos
 
 export default function Sensores() {
   
