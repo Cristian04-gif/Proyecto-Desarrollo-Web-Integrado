@@ -75,7 +75,7 @@ public class ProductService {
                 .orElseThrow();
         CategoriaPlanta categoriaPlantaEntity = repoCategoriaPlanta
                 .findById(productoEntity.getCategoriaPlanta().getIdCategoriaPlanta()).orElseThrow();
-        
+
         for (Empleado emp : postCosechaEntity.getEmpleados()) {
             Empleado existeEmpleado = repoEmpleado.findById(emp.getIdEmpleado()).orElseThrow();
             existeEmpleado.setDisponible(true);
@@ -84,7 +84,6 @@ public class ProductService {
         postCosechaEntity.setEstado(EstadoPostCosecha.CONVERTIDA_EN_PRODUCTO);
         postCosechaEntity.setFechaConversion(LocalDateTime.now());
         repoPostCosecha.save(postCosechaEntity);
-        
 
         double precioKg = postCosechaEntity.getPrecioKg();
         double peso = productoEntity.getPeso();
@@ -92,7 +91,7 @@ public class ProductService {
         double precioFinal = precioKg * peso;
         double stock = Math.floor(kgComercializables / peso);
 
-        productoEntity.setPrecio(precioFinal);
+        productoEntity.setPrecio((double) Math.round(precioFinal * 100) / 100);
         productoEntity.setCantidad((int) stock);
         productoEntity.setStock((int) stock);
         if (productoEntity.getStock() > (productoEntity.getCantidad() * 0.15)) {
@@ -102,10 +101,9 @@ public class ProductService {
         }
         productoEntity.setPostCosecha(postCosechaEntity);
         productoEntity.setCategoriaPlanta(categoriaPlantaEntity);
-        Producto productoGuardado =repoProducto.save(productoEntity);
+        Producto productoGuardado = repoProducto.save(productoEntity);
         return productMapper.toProduct(productoGuardado);
     }
-    
 
     @Transactional
     public Product updateProduct(Long id, Product product) {
@@ -139,7 +137,7 @@ public class ProductService {
         double precioKg = postHarvest.getPriceKg();
         double peso = existProduct.getWeight();
         double kgComercializables = postHarvest.getKgComerciables();
-        double precioFinal = precioKg * peso*1.18;
+        double precioFinal = precioKg * peso * 1.18;
         double stock = Math.floor(kgComercializables / peso);
 
         existProduct.setPrice(precioFinal);

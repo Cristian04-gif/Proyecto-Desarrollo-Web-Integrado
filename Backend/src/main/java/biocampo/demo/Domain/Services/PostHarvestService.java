@@ -56,7 +56,7 @@ public class PostHarvestService {
         double costoEmpleado = postCosecha.getCostoEmpleado();
 
         double sumaCostos = costoCosecha + costoCultivo + costoPostCosecha + costoEmpleado;
-        double margen = 1.5;
+        double margen = 2;
         double kgComercializables = convertirKg - perdida;
 
         System.out.println("suma de costos: " + sumaCostos);

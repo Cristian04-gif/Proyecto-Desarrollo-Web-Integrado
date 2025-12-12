@@ -13,7 +13,6 @@ import biocampo.demo.Domain.Model.JobPosition;
 import biocampo.demo.Domain.Model.User;
 import biocampo.demo.Domain.Repository.EmployeeRepository;
 import biocampo.demo.Domain.Repository.JobPositionRepository;
-import biocampo.demo.Persistance.Entity.Empleado;
 import biocampo.demo.Persistance.Entity.Usuario;
 
 @Service
