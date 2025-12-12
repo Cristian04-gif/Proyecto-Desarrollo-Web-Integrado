@@ -1,8 +1,8 @@
 # -----------------------------
 # ETAPA 1: BUILD (Compilación)
-# Utilizamos la imagen oficial de Maven con la etiqueta '21-jdk' (que es estable).
+# Utilizamos la imagen oficial de Maven con el JDK 21
 # -----------------------------
-FROM maven:21-jdk AS build 
+FROM maven:21-jdk AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
@@ -16,9 +16,9 @@ RUN mvn clean package -DskipTests
 
 # -----------------------------
 # ETAPA 2: RUN (Ejecución)
-# Utilizamos una imagen ligera y estable de Java 21
+# ¡CRÍTICO! Usamos la imagen ligera estable 'eclipse-temurin:21-jre-alpine'
 # -----------------------------
-FROM openjdk:21-jdk-slim 
+FROM eclipse-temurin:21-jre-alpine 
 
 # Define el puerto interno que Spring Boot escuchará
 EXPOSE 8080
