@@ -8,7 +8,7 @@ export default function Filters({ onChange }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('https://servidor-biocampo-latest.onrender.com/api/plantCategory/all')
+    fetch('https://servidor2-biocampo-latest.onrender.com/api/plantCategory/all')
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         return res.json();

@@ -103,7 +103,7 @@ public class PagoService {
                 PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                                 .items(items)
                                 .backUrls(backUrls)
-                                .notificationUrl("https://servidor-biocampo-latest.onrender.com/api/webhook")
+                                .notificationUrl("https://servidor2-biocampo-latest.onrender.com/api/webhook")
                                 .metadata(metadata)
                                 .build();
                 PreferenceClient client = new PreferenceClient();

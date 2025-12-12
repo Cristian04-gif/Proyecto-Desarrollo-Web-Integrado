@@ -1,4 +1,4 @@
-const API = "https://servidor-biocampo-latest.onrender.com/api/pago";
+const API = "https://servidor2-biocampo-latest.onrender.com/api/pago";
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 export async function crearPago(detailsSale) {
@@ -30,7 +30,7 @@ export async function crearPago(detailsSale) {
 
 
 export async function comprobantePago() {
-  const res = await fetch(`https://servidor-biocampo-latest.onrender.com/sale/customer/${user.email}`, {
+  const res = await fetch(`https://servidor2-biocampo-latest.onrender.com/sale/customer/${user.email}`, {
     method: 'GET',
     headers: {
       "Content-Type": "application/json",

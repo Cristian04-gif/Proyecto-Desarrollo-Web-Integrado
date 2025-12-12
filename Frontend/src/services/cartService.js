@@ -1,4 +1,4 @@
-const API_BASE = "https://servidor-biocampo-latest.onrender.com";
+const API_BASE = "https://servidor2-biocampo-latest.onrender.com";
 
 // Obtener token desde localStorage
 function getToken() {
