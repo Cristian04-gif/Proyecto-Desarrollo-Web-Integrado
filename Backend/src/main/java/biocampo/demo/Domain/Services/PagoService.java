@@ -90,7 +90,7 @@ public class PagoService {
                 items.add(itemRequest);
 
                 PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                .success("https://proyecto-desarrollo-web-integrado-dun.vercel.app//pago-exitoso")
+                                .success("https://proyecto-desarrollo-web-integrado-dun.vercel.app/pago-exitoso")
                                 .pending("https://www.tu-sitio/pending")
                                 .failure("https://www.tu-sitio/failure")
                                 .build();
