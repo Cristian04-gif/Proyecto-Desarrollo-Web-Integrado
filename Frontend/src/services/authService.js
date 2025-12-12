@@ -1,6 +1,6 @@
 // src/services/authService.js
-const API_URL = 'http://localhost:8080/auth';
-const API_BASE = 'http://localhost:8080';
+const API_URL = 'https://servidor-biocampo-latest.onrender.com/auth';
+const API_BASE = 'https://servidor-biocampo-latest.onrender.com';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');

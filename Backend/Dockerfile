@@ -1,29 +1,30 @@
-# -----------------------------
-# ETAPA 1: BUILD (Compilación)
-# Utilizamos una etiqueta de Maven/JDK 21 muy común.
-# -----------------------------
-FROM maven:3.9-jdk-21 AS build
-# Establece el directorio de trabajo
+# ============================
+# 1) BUILD STAGE
+# ============================
+FROM eclipse-temurin:24-jdk AS build
+
 WORKDIR /app
 
-# Copia los archivos de configuración y código
-COPY pom.xml .
-COPY src ./src
+# Copiar todo el proyecto
+COPY . .
 
-# Compila el proyecto y genera el JAR ejecutable.
-RUN mvn clean package -DskipTests
+# Permitir ejecutar Maven Wrapper
+RUN chmod +x mvnw
 
-# -----------------------------
-# ETAPA 2: RUN (Ejecución)
-# Utilizamos una imagen JRE 21 LTS basada en Ubuntu Focal (muy estable).
-# -----------------------------
-FROM eclipse-temurin:21-jre-focal
+# Compilar el proyecto sin tests
+RUN ./mvnw -DskipTests clean package
 
-# Define el puerto interno que Spring Boot escuchará
+
+# ============================
+# 2) RUN STAGE
+# ============================
+FROM eclipse-temurin:24-jre
+
+WORKDIR /app
+
+# Copiar el jar ya compilado
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Copia el JAR compilado (Nombre: demo-0.0.1-SNAPSHOT.jar)
-COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
-
-# Comando para iniciar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]

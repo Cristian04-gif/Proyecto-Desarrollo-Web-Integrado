@@ -6,7 +6,7 @@ const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
 async function comprobantePago() {
-  const res = await fetch(`http://localhost:8080/sale/customer/${user.email}`, {
+  const res = await fetch(`https://servidor-biocampo-latest.onrender.com/sale/customer/${user.email}`, {
     method: 'GET',
     headers: {
       "Content-Type": "application/json",

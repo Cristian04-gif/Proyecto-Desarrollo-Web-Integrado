@@ -1,7 +1,7 @@
 // src/services/cultivations.js
 
 // Ajusta esta URL si tu backend corre en otro puerto
-const API_BASE = "http://localhost:8080"; 
+const API_BASE = "https://servidor-biocampo-latest.onrender.com"; 
 
 // Helper para el token
 const getAuthHeaders = () => {

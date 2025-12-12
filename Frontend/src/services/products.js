@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080"; 
+const API_BASE = "https://servidor-biocampo-latest.onrender.com"; 
 const getAuthHeaders = () => ({ "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` });
 
 export async function getProducts() {

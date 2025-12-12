@@ -1,6 +1,6 @@
 // src/services/plantCategories.js
 
-const API_BASE = "http://localhost:8080"; 
+const API_BASE = "https://servidor-biocampo-latest.onrender.com"; 
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

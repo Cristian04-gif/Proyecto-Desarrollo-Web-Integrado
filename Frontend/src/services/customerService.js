@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:8080/api/customer';
+const BASE = 'https://servidor-biocampo-latest.onrender.com/api/customer';
 
 export const customerService = {
   // ✅ Verifica si existe un cliente por email
