@@ -1,0 +1,315 @@
+/* src/styles/adminStyles.css */
+
+/* --- 1. Variables de Diseño (Paleta BioCampo) --- */
+:root {
+  --bio-green-dark: #2F4842;   /* Verde bosque (Sidebar) */
+  --bio-green-med: #6B9080;    /* Verde salvia (Botones/Acentos) */
+  --bio-green-light: #E8F3EE;  /* Verde muy pálido (Fondos suaves) */
+  --bio-gold: #C5A880;         /* Beige/Dorado (Acentos/Hover) */
+  --bio-bg: #F4F7F6;           /* Fondo general (Grisáceo orgánico) */
+  --bio-text: #333333;         /* Texto principal */
+  --bio-text-light: #666666;   /* Texto secundario */
+  --bio-white: #ffffff;
+  --bio-danger: #e57373;       /* Rojo suave para errores/eliminar */
+}
+
+/* --- 2. Estructura General --- */
+.admin-container {
+  display: flex;
+  height: 100vh;
+  background-color: var(--bio-bg);
+  font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+  color: var(--bio-text);
+}
+
+/* --- 3. Sidebar (Barra Lateral) --- */
+.admin-sidebar {
+  width: 260px;
+  background-color: var(--bio-green-dark);
+  color: var(--bio-white);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 30px 20px;
+  background-color: rgba(0,0,0,0.15); /* Fondo sutilmente más oscuro */
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.brand-logo {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.brand-bio { color: var(--bio-green-med); filter: brightness(1.3); } 
+.brand-campo { color: var(--bio-gold); }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.sidebar-nav button {
+  background: transparent;
+  border: none;
+  color: #cfd8dc;
+  padding: 14px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-nav button:hover {
+  background-color: rgba(255,255,255,0.08);
+  color: var(--bio-white);
+  padding-left: 25px; /* Efecto de deslizamiento */
+}
+
+.sidebar-nav button.active {
+  background: linear-gradient(90deg, rgba(197, 168, 128, 0.15) 0%, transparent 100%);
+  color: var(--bio-gold);
+  border-left: 4px solid var(--bio-gold);
+  border-radius: 4px 8px 8px 4px; /* Borde recto a la izquierda */
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background-color: rgba(0,0,0,0.1);
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  color: #e57373;
+  border: 1px solid #e57373;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background-color: #e57373;
+  color: white;
+}
+
+/* --- 4. Área Principal (Main) --- */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evita doble scroll */
+}
+
+.admin-header {
+  height: 70px;
+  background-color: var(--bio-white);
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.header-title {
+  font-size: 20px;
+  color: var(--bio-green-dark);
+  font-weight: 700;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bio-text);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--bio-green-med);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.admin-content-area {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* --- 5. Tarjetas (Cards) --- */
+.admin-card {
+  background: var(--bio-white);
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  border-top: 5px solid var(--bio-green-med);
+  margin-bottom: 30px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.admin-card h2 {
+  color: var(--bio-green-dark);
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 24px;
+  border-bottom: 2px solid var(--bio-green-light);
+  padding-bottom: 10px;
+  display: inline-block;
+}
+
+.admin-card p {
+  color: var(--bio-text-light);
+  line-height: 1.6;
+}
+
+/* --- 6. Tablas CRUD (Estilos genéricos para tus tablas) --- */
+.table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table th {
+  background-color: var(--bio-green-dark);
+  color: white;
+  text-align: left;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.admin-table th:first-child { border-top-left-radius: 8px; }
+.admin-table th:last-child { border-top-right-radius: 8px; }
+
+.admin-table td {
+  padding: 14px 15px;
+  border-bottom: 1px solid #eee;
+  color: var(--bio-text);
+}
+
+.admin-table tr:hover {
+  background-color: var(--bio-green-light); /* Hover suave verde */
+}
+
+/* --- 7. Botones de Acción (Editar/Eliminar/Crear) --- */
+.btn-primary {
+  background-color: var(--bio-green-med);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+  font-size: 14px;
+}
+
+.btn-primary:hover {
+  background-color: var(--bio-green-dark);
+}
+
+.btn-edit {
+  background-color: var(--bio-gold);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-delete {
+  background-color: var(--bio-danger);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-edit:hover { filter: brightness(0.9); }
+.btn-delete:hover { filter: brightness(0.9); }
+
+/* --- 8. Formularios (Inputs) --- */
+.admin-input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 20px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--bio-green-med);
+  box-shadow: 0 0 0 3px rgba(107, 144, 128, 0.2);
+}
+
+/* --- Animaciones --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Responsive (Móvil) --- */
+@media (max-width: 768px) {
+  .admin-container {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+  .sidebar-nav {
+    display: none; 
+  }
+  .admin-main {
+    height: calc(100vh - 70px);
+  }
+}

@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import biocampo.demo.Domain.DTO.JWT.JwtAutenticationFilter;
 
@@ -18,24 +19,33 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private final JwtAutenticationFilter jwtAutenticationFilter;
-        private final AuthenticationProvider authProvider;
+    private final JwtAutenticationFilter jwtAutenticationFilter;
+    private final AuthenticationProvider authProvider;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                return http
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(
-                                                authRequest -> authRequest
-                                                                .requestMatchers("/auth/**", "/api/webhook")
-                                                                .permitAll()
-                                                                .anyRequest().authenticated())
-                                .sessionManagement(
-                                                sessionManager -> sessionManager
-                                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .authenticationProvider(authProvider)
-                                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                                .build();
-        }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/api/plantCategory/**").permitAll()
+                        .requestMatchers("/api/webhook").permitAll()
+                        .requestMatchers("/api/customer/**").permitAll()
+                        .requestMatchers("/api/pago").authenticated()
 
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAutenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // ✅ Aplica la configuración CORS definida en ApplicationConfig
+        http.setSharedObject(CorsConfigurationSource.class, corsConfigurationSource);
+
+        return http.build();
+    }
 }

@@ -115,53 +115,53 @@ public class CultivationService {
         Cultivo cultivoguardado = repoCultivo.saveAndFlush(cultivoEntity);
         System.out.println("✅ ID del cultivo generado: " + cultivoguardado.getIdCultivo());
 
-        if (inputCultivations == null || inputCultivations.isEmpty()) {
+        /*if (inputCultivations == null || inputCultivations.isEmpty()) {
             throw new IllegalArgumentException("Los insumos no pueden ser nulos");
-        }
+        }*/
         System.out.println("Insumos llenos");
         double costo = 0.0;
+        if (inputCultivations != null && !inputCultivations.isEmpty()) {
+            int i = 0;
+            for (InputCultivation ci : inputCultivations) {
+                System.out.println("Vuelta Insumo: " + (i + 1));
+                CultivoInsumo cultivoInsumoEntity = inputCultivationMapper.toCultivoInsumo(ci);
+                System.out.println("Id insumo: " + ci.getInput().getInputId());
+                Insumo insumoEntity = repoInsumo.findById(ci.getInput().getInputId()).orElseThrow();
+                System.out.println("nombre: " + insumoEntity.getNombre());
+                cultivoInsumoEntity.setCultivo(cultivoguardado);
+                cultivoInsumoEntity.setInsumo(insumoEntity);
 
-        int i = 0;
-        for (InputCultivation ci : inputCultivations) {
-            System.out.println("Vuelta Insumo: " + (i + 1));
-            CultivoInsumo cultivoInsumoEntity = inputCultivationMapper.toCultivoInsumo(ci);
-            System.out.println("Id insumo: " + ci.getInput().getInputId());
-            Insumo insumoEntity = repoInsumo.findById(ci.getInput().getInputId()).orElseThrow();
-            System.out.println("nombre: " + insumoEntity.getNombre());
-            cultivoInsumoEntity.setCultivo(cultivoguardado);
-            cultivoInsumoEntity.setInsumo(insumoEntity);
-
-            System.out.println("Cultivo e insumos setteados");
-            if (ci.getQuantity() > 0.0) {
-                System.out.println("Sumando costo");
-                if (insumoEntity.getStock() >= ci.getQuantity()) {
-                    costo += ci.getQuantity() * insumoEntity.getPrecioUnitario();
-                    insumoEntity.setStock(insumoEntity.getStock() - ci.getQuantity());
-                    repoInsumo.save(insumoEntity);
+                System.out.println("Cultivo e insumos setteados");
+                if (ci.getQuantity() > 0.0) {
+                    System.out.println("Sumando costo");
+                    if (insumoEntity.getStock() >= ci.getQuantity()) {
+                        costo += ci.getQuantity() * insumoEntity.getPrecioUnitario();
+                        insumoEntity.setStock(insumoEntity.getStock() - ci.getQuantity());
+                        repoInsumo.save(insumoEntity);
+                    } else {
+                        System.out.println("insumos insuficientes");
+                        throw new IllegalArgumentException("Error! no hay suficiente stock del insumo");
+                    }
                 } else {
-                    System.out.println("insumos insuficientes");
-                    throw new IllegalArgumentException("Error! no hay suficiente stock del insumo");
+                    System.out.println("No se sumo ni mrd");
+                    throw new IllegalArgumentException("Error! la cantidad no puede ser nula o menor que cero");
                 }
-            } else {
-                System.out.println("No se sumo ni mrd");
-                throw new IllegalArgumentException("Error! la cantidad no puede ser nula o menor que cero");
+                System.out.println("idCultivo: " + cultivoInsumoEntity.getCultivo().getIdCultivo());
+                System.out.println("idInsumo: " + cultivoInsumoEntity.getInsumo().getIdInsumo());
+
+                CultivoInsumoId id = new CultivoInsumoId(cultivoInsumoEntity.getCultivo().getIdCultivo(),
+                        cultivoInsumoEntity.getInsumo().getIdInsumo());
+                cultivoInsumoEntity.setId(id);
+                System.out.println("CultivoInsumo → cultivo ID: " + cultivoInsumoEntity.getCultivo().getIdCultivo());
+                System.out.println("CultivoInsumo → insumo ID: " + cultivoInsumoEntity.getInsumo().getIdInsumo());
+                System.out.println("CultivoInsumo → id compuesto: " + cultivoInsumoEntity.getId());
+
+                repoCultivoInsumo.save(cultivoInsumoEntity);
+                System.out.println("Insumo " + (i + 1) + " guardado");
+                i++;
             }
-            System.out.println("idCultivo: " + cultivoInsumoEntity.getCultivo().getIdCultivo());
-            System.out.println("idInsumo: " + cultivoInsumoEntity.getInsumo().getIdInsumo());
-
-            CultivoInsumoId id = new CultivoInsumoId(cultivoInsumoEntity.getCultivo().getIdCultivo(),
-                    cultivoInsumoEntity.getInsumo().getIdInsumo());
-            cultivoInsumoEntity.setId(id);
-            System.out.println("CultivoInsumo → cultivo ID: " + cultivoInsumoEntity.getCultivo().getIdCultivo());
-            System.out.println("CultivoInsumo → insumo ID: " + cultivoInsumoEntity.getInsumo().getIdInsumo());
-            System.out.println("CultivoInsumo → id compuesto: " + cultivoInsumoEntity.getId());
-
-            repoCultivoInsumo.save(cultivoInsumoEntity);
-            System.out.println("Insumo " + (i + 1) + " guardado");
-            i++;
+            System.out.println("Insumos agregados");
         }
-        System.out.println("Insumos agregados");
-
         int j = 0;
         for (Employee empleado : employees) {
             try {

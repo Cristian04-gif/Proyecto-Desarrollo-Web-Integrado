@@ -90,7 +90,7 @@ public class PagoService {
                 items.add(itemRequest);
 
                 PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                .success("https://youtu.be/w6uvYEoC-LU?list=RDKkGK6UbgazA")
+                                .success("http://localhost:5173/pago-exitoso")
                                 .pending("https://www.tu-sitio/pending")
                                 .failure("https://www.tu-sitio/failure")
                                 .build();
