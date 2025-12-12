@@ -4,7 +4,7 @@ import { crearPago } from '../Service/pago';
 
 // 1. Obtener la clave pública desde el entorno
 // (Asegúrate de configurar VITE_MP_PUBLIC_KEY en Vercel)
-const PUBLIC_KEY = import.meta.env.VITE_MP_PUBLIC_KEY; 
+const PUBLIC_KEY = "APP_USR-f621e718-bb03-42f4-83c0-cc29dec0ffd6" 
 
 // Inicializa Mercado Pago solo si la clave existe (protección contra errores)
 if (PUBLIC_KEY) {
