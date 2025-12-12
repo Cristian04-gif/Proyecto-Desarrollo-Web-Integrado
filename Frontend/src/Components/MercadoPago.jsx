@@ -6,8 +6,9 @@ initMercadoPago('APP_USR-04798869-a63e-489b-9884-027d4f456d8d');
 const App = () => {
     const [preferenceId, setPreferenceId] = useState('');
     const [error, setError] = useState('');
-    const cartItems = localStorage.getItem("cartItems")
+    
     useEffect(() => {
+        const cartItems = localStorage.getItem("cartItems");
         async function loadPreference() {
             /*Esta parte se reemplaza, en la funcion crear pago se ingresa el
             email de usuario que se guarda en el localstorage y lo mismo con los productos*/

@@ -1,6 +1,7 @@
 const API = "https://servidor2-biocampo-latest.onrender.com/api/pago";
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
+
 export async function crearPago(detailsSale) {
 
   const email = user.email;
