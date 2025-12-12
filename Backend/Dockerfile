@@ -1,8 +1,8 @@
 # -----------------------------
 # ETAPA 1: BUILD (Compilación)
-# Utilizamos la imagen de Maven con el JDK 21
+# Utilizamos la imagen oficial de Maven con la etiqueta '21-jdk' (que es estable).
 # -----------------------------
-FROM maven:3.9.6-openjdk-21 AS build 
+FROM maven:21-jdk AS build 
 
 # Establece el directorio de trabajo
 WORKDIR /app
